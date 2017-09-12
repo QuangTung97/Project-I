@@ -1,22 +1,74 @@
 #include <graphics/shader_program.h>
+#include <vector>
 
 namespace tung {
 
 void ShaderProgram::create_and_link(const char *vs,
         const char *fs) 
 {
+    int is_compiled;
+    // Create and compile vertex shader
 	GLuint glvs = glCreateShader(GL_VERTEX_SHADER);
 	glShaderSource(glvs, 1, &vs, NULL);
 	glCompileShader(glvs);
 
+    glGetShaderiv(glvs, GL_COMPILE_STATUS, &is_compiled);
+    // Error happened while compile fragment shader
+	if (is_compiled == GL_FALSE) {
+        GLint max_len = 0;
+        glGetShaderiv(glvs, GL_INFO_LOG_LENGTH, &max_len);
+
+        std::vector<GLchar> error_log(max_len);
+        // Copy error message to error_log
+        glGetShaderInfoLog(glvs, max_len, &max_len, error_log.data());
+
+        std::string error_string(error_log.begin(), error_log.end());
+
+        glDeleteShader(glvs);
+        throw ShaderException(error_string);
+    }
+
+    // Create and compile fragment shader
 	GLuint glfs = glCreateShader(GL_FRAGMENT_SHADER);
 	glShaderSource(glfs, 1, &fs, NULL);
-	glCompileShader(glfs);
+    glCompileShader(glfs);
 
+    glGetShaderiv(glfs, GL_COMPILE_STATUS, &is_compiled);
+    // Error happened while compile fragment shader
+	if (is_compiled == GL_FALSE) {
+        GLint max_len = 0;
+        glGetShaderiv(glfs, GL_INFO_LOG_LENGTH, &max_len);
+
+        std::vector<GLchar> error_log(max_len);
+        glGetShaderInfoLog(glfs, max_len, &max_len, error_log.data());
+        glDeleteShader(glfs);
+        std::string error_string(error_log.begin(), error_log.end());
+        throw ShaderException(error_string);
+    }
+
+    // Link vertex shader and fragment shader to form a program
     program = glCreateProgram();
     glAttachShader(program, glvs);
     glAttachShader(program, glfs);
     glLinkProgram(program);
+
+    int isLinked;
+    glGetProgramiv(program, GL_LINK_STATUS, (int *)&isLinked);
+    // Error happned while linking
+    if (isLinked == GL_FALSE) {
+        int max_len;
+        glGetProgramiv(program, GL_INFO_LOG_LENGTH, &max_len);
+        std::vector<char> info_log(max_len);
+        // Copy error message to info_log
+        glGetProgramInfoLog(program, max_len, &max_len, info_log.data());
+        std::string error_string(info_log.begin(), info_log.end());
+
+        // We don't need anymore
+        glDeleteProgram(program);
+        glDeleteShader(glvs);
+        glDeleteShader(glfs);
+        throw ShaderException(error_string);
+    }
 
     glDeleteShader(glvs);
     glDeleteShader(glfs);

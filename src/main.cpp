@@ -26,8 +26,8 @@ void draw(tung::GLFW &glfw) {
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
 
-    std::ifstream vs{"asset/tung.vs"};
-    std::ifstream fs{"asset/tung.fs"};
+    std::ifstream vs{"asset/ui.vs"};
+    std::ifstream fs{"asset/ui.fs"};
     tung::ShaderProgram program{vs, fs};
 
     auto func = [&vao, &program]() {
