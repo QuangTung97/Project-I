@@ -2,7 +2,7 @@
 #include <string>
 #include <fstream>
 #include <graphics/glfw.h>
-#include <graphics/shader_program.h>
+#include <graphics/ui_shader_program.h>
 
 void draw(tung::GLFW &glfw) {
 	float points[] = {
@@ -24,16 +24,17 @@ void draw(tung::GLFW &glfw) {
 	glBindVertexArray(vao);
 	glEnableVertexAttribArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
 
-    std::ifstream vs{"asset/ui.vs"};
-    std::ifstream fs{"asset/ui.fs"};
-    tung::ShaderProgram program{vs, fs};
+    tung::UIShaderProgram program{"asset/ui.vs", "asset/ui.fs"};
 
     auto func = [&vao, &program]() {
 		glClear(GL_COLOR_BUFFER_BIT |
 			GL_DEPTH_BUFFER_BIT);
-		glUseProgram(program);
+
+        program.predraw();
+        program.draw();
+        program.postdraw();
 
 		glBindVertexArray(vao);
 

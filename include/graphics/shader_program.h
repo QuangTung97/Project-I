@@ -4,6 +4,8 @@
 #include <iostream>
 #include <string>
 #include <GL/glew.h>
+#include <graphics/abstract/shader.h>
+#include <vector>
 
 namespace tung {
 
@@ -20,33 +22,31 @@ public:
     }
 };
 
-class ShaderProgram {
+// Base class
+class ShaderProgram: public IShaderProgram {
 public:
-    // @vs: precompile vertex shader
-    // @fs: precompile fragment shader
-    ShaderProgram(GLuint vs, GLuint fs);
+    void predraw() override;
 
-    // @vs: content of vertex shader
-    // @fs: content of fragment shader
-    ShaderProgram(const std::string& vs,
-                const std::string& fs);
+    void postdraw() override;
 
-    ShaderProgram(const ShaderProgram&) = delete;
+    void attach_drawable(IDrawable& drawable) override;
 
-    // Move constructor
-    ShaderProgram(ShaderProgram&& other) noexcept;
+    void detach_drawable(IDrawable& drawable) override;
+
+protected:
+    ShaderProgram();
 
     // input streams for read vertex shader and fragment shader
-    ShaderProgram(std::istream& vs, std::istream& fs);
+    void make_program(std::istream& vs, std::istream& fs);
 
     ~ShaderProgram();
-
-    operator GLuint () const;
 
 private:
     // @vs: content of vertex shader
     // @fs: content of fragment shader
     void create_and_link(const char *vs, const char *fs);
+
+    std::vector<IDrawable *> drawable_list;
     GLuint program = -1;
 };
 

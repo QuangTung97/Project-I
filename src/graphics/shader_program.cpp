@@ -1,5 +1,6 @@
 #include <graphics/shader_program.h>
 #include <vector>
+#include <algorithm>
 
 namespace tung {
 
@@ -74,25 +75,10 @@ void ShaderProgram::create_and_link(const char *vs,
     glDeleteShader(glfs);
 }
 
-ShaderProgram::ShaderProgram(GLuint vs, GLuint fs) {
-    GLuint program = glCreateProgram();
-    glAttachShader(program, vs);
-    glAttachShader(program, fs);
-    glLinkProgram(program);
-}
+ShaderProgram::ShaderProgram() {}
 
-ShaderProgram::ShaderProgram(const std::string& vs,
-        const std::string& fs) 
-{
-    create_and_link(vs.c_str(), fs.c_str());
-}
 
-ShaderProgram::ShaderProgram(ShaderProgram&& other) noexcept {
-    program = other.program;
-    other.program = -1;
-}
-
-ShaderProgram::ShaderProgram(std::istream& vs, std::istream& fs) 
+void ShaderProgram::make_program(std::istream& vs, std::istream& fs) 
 {
     std::string line;
     std::string vs_string;
@@ -113,8 +99,24 @@ ShaderProgram::~ShaderProgram() {
     glDeleteProgram(program);
 }
 
-ShaderProgram::operator GLuint() const {
-    return program;
+void ShaderProgram::predraw() {
+    glUseProgram(this->program);
+}
+
+void ShaderProgram::postdraw() {
+}
+
+void ShaderProgram::attach_drawable(IDrawable& drawable) {
+    drawable_list.push_back(&drawable);
+    drawable.on_attach_drawable(*this);
+}
+
+void ShaderProgram::detach_drawable(IDrawable& drawable) {
+    drawable.on_detach_drawable(*this);
+    drawable_list.erase(
+            std::remove(drawable_list.begin(), drawable_list.end(), &drawable),
+            drawable_list.end()
+    );
 }
 
 } // namespace tung
