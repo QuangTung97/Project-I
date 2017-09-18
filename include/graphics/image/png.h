@@ -1,0 +1,39 @@
+#ifndef GRAPHICS_IMAGE_PNG
+#define GRAPHICS_IMAGE_PNG
+
+#include <graphics/abstract/image.h>
+
+namespace tung {
+
+class PngImage: public IImage {
+private:
+    int width_, height_;
+    BitDepth bit_depth_;
+    void *data_;
+    Format format_;
+    friend class PngImageLoader;
+
+public:
+    PngImage();
+
+    int width() const override;
+
+    int height() const override;
+
+    const void *data() const override;
+
+    int color_component_count() const override;
+
+    BitDepth bit_depth() const override;
+
+    Format format() const override;
+};
+
+class PngImageLoader: public IImageLoader {
+public:
+    IImagePtr load(std::string filename) override;
+};
+
+} // namespace tung
+
+#endif

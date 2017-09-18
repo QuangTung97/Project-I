@@ -3,6 +3,7 @@
 #include <fstream>
 #include <graphics/glfw.h>
 #include <graphics/ui_shader_program.h>
+#include <glm/stdafx.h>
 
 void draw(tung::GLFW &glfw) {
 	float points[] = {

@@ -1,5 +1,7 @@
 project(graphics)
 
+add_subdirectory(image)
+
 add_library(graphics 
     glfw.cpp
     opengl_info.cpp
@@ -8,5 +10,6 @@ add_library(graphics
 )
 
 target_link_libraries(graphics
+    graphics-image
     GL GLEW glfw
 )
