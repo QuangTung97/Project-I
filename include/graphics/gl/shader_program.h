@@ -25,13 +25,15 @@ public:
 // Base class
 class ShaderProgram: public IShaderProgram {
 public:
-    void predraw() override;
+    void predraw(float width, float height) override;
+
+    void draw() override;
 
     void postdraw() override;
 
-    void attach_drawable(IDrawable& drawable) override;
+    void set_drawable(const IDrawablePtr& drawable) override;
 
-    void detach_drawable(IDrawable& drawable) override;
+    std::vector<glm::mat4>& model_matrix_stack() override;
 
 protected:
     std::unordered_map<std::string, int> locations_;
@@ -50,7 +52,8 @@ private:
     // @fs: content of fragment shader
     void create_and_link(const char *vs, const char *fs);
 
-    std::vector<IDrawable *> drawable_list;
+    IDrawablePtr drawable_;
+    std::vector<glm::mat4> model_matrix_stack_;
 };
 
 } // namespace tung

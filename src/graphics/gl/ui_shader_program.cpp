@@ -1,5 +1,7 @@
 #include <graphics/gl/ui_shader_program.h>
 #include <fstream>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 namespace tung {
 
@@ -9,7 +11,14 @@ UIShaderProgram::UIShaderProgram(std::string vs_file, std::string fs_file) {
     make_program(vs, fs);
 }
 
-void UIShaderProgram::draw() {
+void UIShaderProgram::predraw(float width, float height) {
+    ShaderProgram::predraw(width, height);
+    
+    float ratio = width / height;
+    glm::mat4 ortho = glm::orthoLH(
+            -ratio, ratio, -1.0f, 1.0f, -1.0f, 1.0f);
+    glUniformMatrix4fv(locations_.at("projectionMatrix"), 1,
+            GL_FALSE, glm::value_ptr(ortho));
 }
 
 const std::unordered_map<std::string, int> &UIShaderProgram::locations() {

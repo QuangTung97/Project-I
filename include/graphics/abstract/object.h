@@ -4,11 +4,12 @@
 #include <memory>
 #include <string>
 #include <unordered_map>
+#include <vector>
 
 namespace tung {
 
 struct IVertexObject {
-    virtual void bind() = 0;
+    virtual void draw() = 0;
 
     virtual ~IVertexObject() {}
 };
@@ -24,8 +25,9 @@ struct IVertexObjectBuilder {
             const float *data, int dimension_count,
             int element_count) = 0;
 
-    virtual IVertexObjectPtr build(
-            const std::unordered_map<std::string, int>& locations) = 0;
+    virtual void set_indices(const std::vector<unsigned short>& indices) = 0;
+
+    virtual IVertexObjectPtr build() = 0;
 
     virtual ~IVertexObjectBuilder() {}
 };

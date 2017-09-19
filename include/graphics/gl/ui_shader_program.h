@@ -9,7 +9,7 @@ class UIShaderProgram: public ShaderProgram {
 public:
     UIShaderProgram(std::string vs_file, std::string fs_file);
 
-    void draw() override;
+    void predraw(float width, float height) override;
 
     const std::unordered_map<std::string, int>& locations() override;
 };

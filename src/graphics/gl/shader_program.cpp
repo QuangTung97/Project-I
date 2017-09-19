@@ -75,8 +75,9 @@ void ShaderProgram::create_and_link(const char *vs,
     glDeleteShader(glfs);
 }
 
-ShaderProgram::ShaderProgram() {}
-
+ShaderProgram::ShaderProgram() {
+    model_matrix_stack_.push_back(glm::mat4(1.0));
+}
 
 void ShaderProgram::make_program(std::istream& vs, std::istream& fs) 
 {
@@ -99,24 +100,23 @@ ShaderProgram::~ShaderProgram() {
     glDeleteProgram(program_);
 }
 
-void ShaderProgram::predraw() {
+void ShaderProgram::predraw(float width, float height) {
     glUseProgram(this->program_);
+}
+
+void ShaderProgram::draw() {
+    drawable_->on_draw(*this);
 }
 
 void ShaderProgram::postdraw() {
 }
 
-void ShaderProgram::attach_drawable(IDrawable& drawable) {
-    drawable_list.push_back(&drawable);
-    drawable.on_attach_drawable(*this);
+void ShaderProgram::set_drawable(const IDrawablePtr& drawable) {
+    drawable_ = drawable;
 }
 
-void ShaderProgram::detach_drawable(IDrawable& drawable) {
-    drawable.on_detach_drawable(*this);
-    drawable_list.erase(
-            std::remove(drawable_list.begin(), drawable_list.end(), &drawable),
-            drawable_list.end()
-    );
+std::vector<glm::mat4>& ShaderProgram::model_matrix_stack() {
+    return model_matrix_stack_;
 }
 
 } // namespace tung

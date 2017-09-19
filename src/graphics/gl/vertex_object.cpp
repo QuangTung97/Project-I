@@ -1,11 +1,14 @@
 #include <graphics/gl/vertex_object.h>
 #include <iostream>
+#include <cassert>
 
 namespace tung {
 
 // Vertex Object
-void VertexObject::bind() {
+void VertexObject::draw() {
     glBindVertexArray(vao_);
+    glDrawElements(GL_TRIANGLES, indices_.size(),
+            GL_UNSIGNED_SHORT, indices_.data());
 }
 
 VertexObject::~VertexObject() {
@@ -14,8 +17,14 @@ VertexObject::~VertexObject() {
 }
 
 // Vertex Object Builder
+VertexObjectBuilder::VertexObjectBuilder(
+        IShaderProgram& program)
+    : locations_(program.locations())
+{}
+
 void VertexObjectBuilder::clear() {
     attributes_.clear();
+    indices_.clear();
 }
 
 void VertexObjectBuilder::add_attribute(
@@ -33,9 +42,16 @@ void VertexObjectBuilder::add_attribute(
     attributes_.push_back(attrib);
 }
 
-IVertexObjectPtr VertexObjectBuilder::build(
-        const std::unordered_map<std::string, int>& locations) {
+void VertexObjectBuilder::set_indices(
+        const std::vector<unsigned short>& indices) 
+{
+    this->indices_ = indices;
+}
+
+IVertexObjectPtr VertexObjectBuilder::build() {
     auto result = std::make_unique<VertexObject>();
+    assert (indices_.size() != 0);
+    result->indices_ = std::move(this->indices_);
 
     int stride = 0;
     int total_dimension = 0;
@@ -70,16 +86,15 @@ IVertexObjectPtr VertexObjectBuilder::build(
 	glBindBuffer(GL_ARRAY_BUFFER, result->vbo_);
 
     for (auto& attrib: attributes_) {
-        glEnableVertexAttribArray(locations.at(attrib.name_));
+        glEnableVertexAttribArray(locations_.at(attrib.name_));
 
-        glVertexAttribPointer(locations.at(attrib.name_), 
+        glVertexAttribPointer(locations_.at(attrib.name_), 
                 attrib.dimension_count_, GL_FLOAT, 
                 GL_FALSE, stride, nullptr);
     }
     return result;
 }
 
-VertexObjectBuilder::~VertexObjectBuilder() {
-}
+VertexObjectBuilder::~VertexObjectBuilder() {}
 
 } // namespace tung
