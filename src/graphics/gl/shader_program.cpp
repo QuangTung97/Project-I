@@ -1,4 +1,4 @@
-#include <graphics/shader_program.h>
+#include <graphics/gl/shader_program.h>
 #include <vector>
 #include <algorithm>
 
@@ -48,24 +48,24 @@ void ShaderProgram::create_and_link(const char *vs,
     }
 
     // Link vertex shader and fragment shader to form a program
-    program = glCreateProgram();
-    glAttachShader(program, glvs);
-    glAttachShader(program, glfs);
-    glLinkProgram(program);
+    program_ = glCreateProgram();
+    glAttachShader(program_, glvs);
+    glAttachShader(program_, glfs);
+    glLinkProgram(program_);
 
     int isLinked;
-    glGetProgramiv(program, GL_LINK_STATUS, (int *)&isLinked);
+    glGetProgramiv(program_, GL_LINK_STATUS, (int *)&isLinked);
     // Error happned while linking
     if (isLinked == GL_FALSE) {
         int max_len;
-        glGetProgramiv(program, GL_INFO_LOG_LENGTH, &max_len);
+        glGetProgramiv(program_, GL_INFO_LOG_LENGTH, &max_len);
         std::vector<char> info_log(max_len);
         // Copy error message to info_log
-        glGetProgramInfoLog(program, max_len, &max_len, info_log.data());
+        glGetProgramInfoLog(program_, max_len, &max_len, info_log.data());
         std::string error_string(info_log.begin(), info_log.end());
 
         // We don't need anymore
-        glDeleteProgram(program);
+        glDeleteProgram(program_);
         glDeleteShader(glvs);
         glDeleteShader(glfs);
         throw ShaderException(error_string);
@@ -96,11 +96,11 @@ void ShaderProgram::make_program(std::istream& vs, std::istream& fs)
 }
 
 ShaderProgram::~ShaderProgram() {
-    glDeleteProgram(program);
+    glDeleteProgram(program_);
 }
 
 void ShaderProgram::predraw() {
-    glUseProgram(this->program);
+    glUseProgram(this->program_);
 }
 
 void ShaderProgram::postdraw() {

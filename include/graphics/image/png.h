@@ -31,7 +31,7 @@ public:
 
 class PngImageLoader: public IImageLoader {
 public:
-    IImagePtr load(std::string filename) override;
+    IImagePtr load(const std::string& filename) override;
 };
 
 } // namespace tung

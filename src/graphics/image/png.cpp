@@ -32,7 +32,7 @@ int PngImage::color_component_count() const {
 }
 
 // class PngImageLoader
-IImagePtr PngImageLoader::load(std::string filename) {
+IImagePtr PngImageLoader::load(const std::string& filename) {
     png_structp png_ptr;
     png_infop info_ptr;
     unsigned int sig_read = 0;

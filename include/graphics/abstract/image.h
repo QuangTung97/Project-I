@@ -33,7 +33,7 @@ struct IImage {
 typedef std::unique_ptr<IImage> IImagePtr;
 
 struct IImageLoader {
-    virtual IImagePtr load(std::string filename) = 0;
+    virtual IImagePtr load(const std::string& filename) = 0;
 };
 
 typedef std::unique_ptr<IImageLoader> IImageLoaderPtr;

@@ -1,4 +1,4 @@
-#include <graphics/glfw.h>
+#include <graphics/gl/glfw.h>
 #include <exception>
 #include <iostream>
 

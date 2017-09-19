@@ -1,7 +1,7 @@
 #ifndef UI_SHADER_PROGRAM
 #define UI_SHADER_PROGRAM
 
-#include <graphics/shader_program.h>
+#include "shader_program.h"
 
 namespace tung {
 
@@ -11,7 +11,7 @@ public:
 
     void draw() override;
 
-    std::unordered_map<std::string, int> locations() override;
+    const std::unordered_map<std::string, int>& locations() override;
 };
 
 } // namespace tung

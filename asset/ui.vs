@@ -2,8 +2,8 @@
 attribute vec2 position;
 attribute vec2 texCoord;
 
-uniform mat4 projectionMatrix;
 uniform mat4 modelMatrix;
+uniform mat4 projectionMatrix;
 
 varying mediump vec2 fsTexCoord;
 

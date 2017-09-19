@@ -1,35 +1,37 @@
 #include <iostream>
 #include <string>
 #include <fstream>
-#include <graphics/glfw.h>
-#include <graphics/ui_shader_program.h>
+#include <graphics/gl/glfw.h>
+#include <graphics/gl/ui_shader_program.h>
+#include <graphics/gl/vertex_object.h>
 #include <glm/stdafx.h>
+#include <glm/gtc/stdafx.h>
 
 void draw(tung::GLFW &glfw) {
 	float points[] = {
-		0.0f, 0.5f, 0.0f,
-		0.5f, -0.5f, 0.0f,
-		-0.5f, -0.5f, 0.0f
+		0.0f, 0.5f,
+		0.8f, -0.5f,
+		-0.5f, -0.5f,
 	};
 
-    // vertex buffer object
-	GLuint vbo = 0;
-	glGenBuffers(1, &vbo);
-	glBindBuffer(GL_ARRAY_BUFFER, vbo);
-	glBufferData(GL_ARRAY_BUFFER, 9 * sizeof(float), points, 
-			GL_STATIC_DRAW);
-
-    // vertex array object
-	GLuint vao = 0;
-	glGenVertexArrays(1, &vao);
-	glBindVertexArray(vao);
-	glEnableVertexAttribArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, vbo);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
+    float tex_coord[] = {
+        0.0f, 0.0f,
+        1.0f, 0.0f,
+        1.0f, 1.0f
+    };
 
     tung::UIShaderProgram program{"asset/ui.vs", "asset/ui.fs"};
 
-    auto func = [&vao, &program]() {
+    auto builder = std::make_unique<tung::VertexObjectBuilder>();
+    builder->clear();
+    builder->add_attribute("position", points, 2, 3);
+    builder->add_attribute("texCoord", tex_coord, 2, 3);
+    auto object = builder->build(program.locations());
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    auto func = [&object, &program]() {
 		glClear(GL_COLOR_BUFFER_BIT |
 			GL_DEPTH_BUFFER_BIT);
 
@@ -37,7 +39,18 @@ void draw(tung::GLFW &glfw) {
         program.draw();
         program.postdraw();
 
-		glBindVertexArray(vao);
+        glm::mat4 ortho = glm::orthoLH(-1.5f, 1.5f, -1.0f, 1.0f, -10.f, 10.f);
+        glm::mat4 model(1.0);
+        model = glm::translate(model, glm::vec3(0, 0.5, 0));
+
+        auto& locations = program.locations();
+        glUniformMatrix4fv(locations.at("projectionMatrix"), 1,
+                GL_FALSE, glm::value_ptr(ortho));
+
+        glUniformMatrix4fv(locations.at("modelMatrix"), 1, GL_FALSE,
+                glm::value_ptr(model));
+
+        object->bind();
 
 		glDrawArrays(GL_TRIANGLES, 0, 3);
     };

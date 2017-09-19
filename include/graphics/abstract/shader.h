@@ -31,7 +31,7 @@ struct IShaderProgram {
 
     virtual void postdraw() = 0;
 
-    virtual std::unordered_map<std::string, int> locations() = 0;
+    virtual const std::unordered_map<std::string, int>& locations() = 0;
 
     virtual void attach_drawable(IDrawable& drawable) = 0;
 

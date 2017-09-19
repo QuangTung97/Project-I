@@ -34,6 +34,10 @@ public:
     void detach_drawable(IDrawable& drawable) override;
 
 protected:
+    std::unordered_map<std::string, int> locations_;
+    GLuint program_ = -1;
+
+protected:
     ShaderProgram();
 
     // input streams for read vertex shader and fragment shader
@@ -47,7 +51,6 @@ private:
     void create_and_link(const char *vs, const char *fs);
 
     std::vector<IDrawable *> drawable_list;
-    GLuint program = -1;
 };
 
 } // namespace tung
