@@ -8,6 +8,7 @@ add_library(graphics-gl
     shader_program.cpp
     ui_shader_program.cpp
     vertex_object.cpp
+    texture.cpp
 )
 
 target_link_libraries(graphics-gl

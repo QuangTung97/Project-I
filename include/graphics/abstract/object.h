@@ -5,6 +5,7 @@
 #include <string>
 #include <unordered_map>
 #include <vector>
+#include "texture.h"
 
 namespace tung {
 
@@ -24,6 +25,11 @@ struct IVertexObjectBuilder {
             const std::string& name,
             const float *data, int dimension_count,
             int element_count) = 0;
+
+    virtual void add_texture(
+            unsigned int active_number,
+            const std::string& name,
+            const ITexturePtr& texture) = 0;
 
     virtual void set_indices(const std::vector<unsigned short>& indices) = 0;
 

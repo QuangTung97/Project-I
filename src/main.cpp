@@ -5,6 +5,13 @@
 #include <graphics/gl/ui_shader_program.h>
 #include <graphics/gl/vertex_object.h>
 #include <graphics/gl/drawable.h>
+#include <graphics/gl/texture.h>
+#include <graphics/image/png.h>
+#include <sound/sound.h>
+#include <chrono>
+
+using namespace std::chrono;
+
 #include <glm/stdafx.h>
 #include <glm/gtc/stdafx.h>
 
@@ -17,13 +24,22 @@ void draw(tung::GLFW &glfw) {
 	};
 
     float tex_coord[] = {
+        0.0f, 1.0f,
         0.0f, 0.0f,
         1.0f, 0.0f,
-        1.0f, 1.0f,
-        0.0f, 1.0f
+        1.0f, 1.0f
     };
 
     tung::UIShaderProgram program{"asset/ui.vs", "asset/ui.fs"};
+
+    auto image_loader = std::make_unique<tung::PngImageLoader>();
+    auto texture_factory 
+        = std::make_unique<tung::TextureFactory>();
+
+    tung::IImagePtr image 
+        = image_loader->load("asset/cute.png");
+    tung::ITexturePtr texture 
+        = texture_factory->create(image);
 
     auto builder 
         = std::make_unique<tung::VertexObjectBuilder>(program);
@@ -31,11 +47,14 @@ void draw(tung::GLFW &glfw) {
     builder->clear();
     builder->add_attribute("position", points, 2, 4);
     builder->add_attribute("texCoord", tex_coord, 2, 4);
+    builder->add_texture(0, "image", texture);
     builder->set_indices({0, 1, 2, 0, 2, 3});
     auto object = builder->build();
 
-    auto drawable = std::make_shared<tung::Drawable>(std::move(object));
-    drawable->translate(glm::vec3(-0.5, 0, 0));
+    auto drawable = 
+        std::make_shared<tung::Drawable>(std::move(object));
+
+    // drawable->translate(glm::vec3(-0.2, 0, 0));
 
     auto group = std::make_shared<tung::DrawableGroup>();
     group->attach_drawable(drawable);
@@ -47,7 +66,35 @@ void draw(tung::GLFW &glfw) {
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    auto func = [&program]() {
+
+
+    auto sound_manager = std::make_unique<tung::SoundManager>();
+    auto despacito = sound_manager->load("Despacito.mp3");
+
+    tung::ISoundPtr clone = nullptr;
+    despacito->play();
+
+    auto t0 = steady_clock::now();
+
+    bool if_ran[3] = {false, false, false};
+
+    auto func = [&]() {
+        sound_manager->update();
+
+        auto t1 = steady_clock::now();
+        auto delta = duration_cast<milliseconds>(t1 - t0);
+        if (!if_ran[0] && delta.count() > 2000) {
+            despacito->pause();
+            clone = despacito->clone();
+            // clone->play();
+            if_ran[0] = true;
+        }
+
+        if (!if_ran[1] && delta.count() > 3000) {
+            despacito->resume();
+            if_ran[1] = true;
+        }
+
 		glClear(GL_COLOR_BUFFER_BIT |
 			GL_DEPTH_BUFFER_BIT);
 

@@ -14,9 +14,17 @@ namespace tung {
 
 class VertexObject: public IVertexObject {
 private:
+    struct TextureBind {
+        unsigned active_number_;
+        int location_;
+        ITexturePtr texture_;
+    };
+
     GLuint vbo_;
     GLuint vao_;
     std::vector<unsigned short> indices_;
+    std::vector<TextureBind> textures_;
+
     friend class VertexObjectBuilder;
 
 public:
@@ -30,9 +38,10 @@ private:
     int element_count_ = 0;
     std::unordered_map<std::string, int> locations_;
     std::vector<unsigned short> indices_;
+    std::vector<VertexObject::TextureBind> textures_;
 
     struct Attribute {
-        std::string name_;
+        int location_;
         const float *data_;
         int dimension_count_;
         int element_count_;
@@ -49,6 +58,11 @@ public:
     void add_attribute(const std::string& name,
             const float *data, int dimension_count,
             int element_count) override;
+
+    void add_texture(
+            unsigned int active_number,
+            const std::string& name,
+            const ITexturePtr& texture) override;
 
     void set_indices(
             const std::vector<unsigned short>& indices) override;

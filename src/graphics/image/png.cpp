@@ -31,6 +31,10 @@ int PngImage::color_component_count() const {
     return -1;
 }
 
+PngImage::~PngImage() {
+    ::free(data_);
+}
+
 // class PngImageLoader
 IImagePtr PngImageLoader::load(const std::string& filename) {
     png_structp png_ptr;
@@ -86,8 +90,7 @@ IImagePtr PngImageLoader::load(const std::string& filename) {
      * read some of the signature */
     png_set_sig_bytes(png_ptr, sig_read);
  
-    std::unique_ptr<PngImage> result 
-        = std::make_unique<PngImage>();
+    auto result = std::make_shared<PngImage>();
 
     png_read_png(png_ptr, info_ptr, 
             PNG_TRANSFORM_STRIP_16 | PNG_TRANSFORM_PACKING | 
@@ -133,6 +136,9 @@ IImagePtr PngImageLoader::load(const std::string& filename) {
     png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
     fclose(fp);
     return result;
+}
+
+PngImageLoader::~PngImageLoader() {
 }
 
 } // namespace tung

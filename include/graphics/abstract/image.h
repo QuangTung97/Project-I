@@ -28,12 +28,16 @@ struct IImage {
     virtual BitDepth bit_depth() const = 0;
 
     virtual Format format() const = 0;
+
+    virtual ~IImage() {}
 };
 
-typedef std::unique_ptr<IImage> IImagePtr;
+typedef std::shared_ptr<IImage> IImagePtr;
 
 struct IImageLoader {
     virtual IImagePtr load(const std::string& filename) = 0;
+
+    virtual ~IImageLoader() {}
 };
 
 typedef std::unique_ptr<IImageLoader> IImageLoaderPtr;

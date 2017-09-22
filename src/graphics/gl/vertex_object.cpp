@@ -7,6 +7,10 @@ namespace tung {
 // Vertex Object
 void VertexObject::draw() {
     glBindVertexArray(vao_);
+    for (auto& tex: textures_) {
+        tex.texture_->bind(tex.active_number_, tex.location_);
+    }
+
     glDrawElements(GL_TRIANGLES, indices_.size(),
             GL_UNSIGNED_SHORT, indices_.data());
 }
@@ -24,6 +28,7 @@ VertexObjectBuilder::VertexObjectBuilder(
 
 void VertexObjectBuilder::clear() {
     attributes_.clear();
+    textures_.clear();
     indices_.clear();
 }
 
@@ -35,11 +40,22 @@ void VertexObjectBuilder::add_attribute(
     this->element_count_ = element_count;
 
     Attribute attrib;
-    attrib.name_ = name;
+    attrib.location_ = locations_.at(name);
     attrib.data_ = data;
     attrib.dimension_count_ = dimension_count;
     attrib.element_count_ = element_count;
     attributes_.push_back(attrib);
+}
+
+void VertexObjectBuilder::add_texture(
+        unsigned int active_number,
+        const std::string& name,
+        const ITexturePtr& texture) {
+    VertexObject::TextureBind tex;
+    tex.active_number_ = active_number;
+    tex.location_ = locations_.at(name);
+    tex.texture_ = texture;
+    textures_.push_back(tex);
 }
 
 void VertexObjectBuilder::set_indices(
@@ -51,7 +67,9 @@ void VertexObjectBuilder::set_indices(
 IVertexObjectPtr VertexObjectBuilder::build() {
     auto result = std::make_unique<VertexObject>();
     assert (indices_.size() != 0);
+
     result->indices_ = std::move(this->indices_);
+    result->textures_ = std::move(this->textures_);
 
     int stride = 0;
     int total_dimension = 0;
@@ -75,24 +93,25 @@ IVertexObjectPtr VertexObjectBuilder::build() {
     }
 
     glGenBuffers(1, &result->vbo_);
+
+    glGenVertexArrays(1, &result->vao_);
+    glBindVertexArray(result->vao_);
+
 	glBindBuffer(GL_ARRAY_BUFFER, result->vbo_);
 	glBufferData(GL_ARRAY_BUFFER, 
             element_count_ * stride, 
             data.data(), GL_STATIC_DRAW);
 
-
-    glGenVertexArrays(1, &result->vao_);
-    glBindVertexArray(result->vao_);
-	glBindBuffer(GL_ARRAY_BUFFER, result->vbo_);
-
+    long offset = 0;
     for (auto& attrib: attributes_) {
-        glEnableVertexAttribArray(locations_.at(attrib.name_));
+        glEnableVertexAttribArray(attrib.location_);
 
-        glVertexAttribPointer(locations_.at(attrib.name_), 
+        glVertexAttribPointer(attrib.location_,
                 attrib.dimension_count_, GL_FLOAT, 
-                GL_FALSE, stride, nullptr);
+                GL_FALSE, stride, (const void *)offset);
+        offset += attrib.dimension_count_ * sizeof(float);
     }
-    return result;
+    return std::move(result);
 }
 
 VertexObjectBuilder::~VertexObjectBuilder() {}

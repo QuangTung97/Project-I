@@ -1,7 +1,7 @@
 #ifndef GRAPHICS_VIEW_H
 #define GRAPHICS_VIEW_H
 
-#include <graphics/abstract/view.h>
+#include "abstract/view.h"
 
 namespace tung {
 

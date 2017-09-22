@@ -27,11 +27,15 @@ public:
     BitDepth bit_depth() const override;
 
     Format format() const override;
+
+    virtual ~PngImage();
 };
 
 class PngImageLoader: public IImageLoader {
 public:
     IImagePtr load(const std::string& filename) override;
+
+    virtual ~PngImageLoader();
 };
 
 } // namespace tung
