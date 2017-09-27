@@ -1,4 +1,4 @@
-#include <graphics/gl/opengl_info.h>
+#include <graphics/gl/opengl_info.hpp>
 #include <GL/glew.h>
 
 tung::OpenGLInfo::OpenGLInfo() {

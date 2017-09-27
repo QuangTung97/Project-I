@@ -1,4 +1,4 @@
-#include <graphics/gl/vertex_object.h>
+#include <graphics/gl/vertex_object.hpp>
 #include <iostream>
 #include <cassert>
 

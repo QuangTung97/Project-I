@@ -1,4 +1,4 @@
-#include <graphics/gl/shader_program.h>
+#include <graphics/gl/shader_program.hpp>
 #include <vector>
 #include <algorithm>
 

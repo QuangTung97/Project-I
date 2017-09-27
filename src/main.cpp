@@ -1,13 +1,13 @@
 #include <iostream>
 #include <string>
 #include <fstream>
-#include <graphics/gl/glfw.h>
-#include <graphics/gl/ui_shader_program.h>
-#include <graphics/gl/vertex_object.h>
-#include <graphics/gl/drawable.h>
-#include <graphics/gl/texture.h>
-#include <graphics/image/png.h>
-#include <sound/sound.h>
+#include <graphics/gl/glfw.hpp>
+#include <graphics/gl/ui_shader_program.hpp>
+#include <graphics/gl/vertex_object.hpp>
+#include <graphics/gl/drawable.hpp>
+#include <graphics/gl/texture.hpp>
+#include <graphics/image/png.hpp>
+#include <sound/sound.hpp>
 #include <chrono>
 
 using namespace std::chrono;
@@ -65,9 +65,9 @@ void draw(tung::GLFW &glfw) {
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
+    
     auto sound_manager = std::make_unique<tung::SoundManager>();
-    auto despacito = sound_manager->load("Despacito.mp3");
+    auto despacito = sound_manager->load("asset/Despacito.mp3");
 
     tung::ISoundPtr clone = nullptr;
     despacito->play();

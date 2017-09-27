@@ -1,5 +1,5 @@
-#include <graphics/abstract/image.h>
-#include <graphics/image/png.h>
+#include <graphics/abstract/image.hpp>
+#include <graphics/image/png.hpp>
 #include <png.h>
 #include <iostream>
 

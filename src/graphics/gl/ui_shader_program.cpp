@@ -1,4 +1,4 @@
-#include <graphics/gl/ui_shader_program.h>
+#include <graphics/gl/ui_shader_program.hpp>
 #include <fstream>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>

@@ -1,4 +1,4 @@
-#include <sound/sound.h>
+#include <sound/sound.hpp>
 
 namespace tung {
 

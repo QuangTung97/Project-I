@@ -1,4 +1,4 @@
-#include <graphics/image/font.h>
+#include <graphics/image/font.hpp>
 
 namespace tung {
 
