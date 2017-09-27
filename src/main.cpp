@@ -66,8 +66,6 @@ void draw(tung::GLFW &glfw) {
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-
-
     auto sound_manager = std::make_unique<tung::SoundManager>();
     auto despacito = sound_manager->load("Despacito.mp3");
 

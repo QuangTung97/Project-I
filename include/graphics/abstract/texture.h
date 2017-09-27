@@ -17,8 +17,6 @@ typedef std::shared_ptr<ITexture> ITexturePtr;
 
 struct ITextureFactory {
     // Create bindable texture
-    // @number: 0 <=> GL_TEXTURE0
-    // @name: name of uniform sampler2D inside shader code
     // @image: image had read
     virtual ITexturePtr create(const IImagePtr& image) = 0;
 

@@ -39,7 +39,7 @@ ITexturePtr TextureFactory::create(
         type = GL_UNSIGNED_BYTE;
     else if (image->bit_depth() == IImage::BIT_DEPTH_16)
         type = GL_UNSIGNED_SHORT;
-    else
+    else 
         return nullptr;
 
     glTexImage2D(GL_TEXTURE_2D, 
