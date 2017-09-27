@@ -1,3 +1,119 @@
 #include <view/view.hpp>
+#include <algorithm>
+
+namespace tung {
+
+// Mouse Event
+MouseEvent::MouseEvent(Type type, float x, float y):
+    type_{type}, x_{x}, y_{y} {}
+
+MouseEvent::Type MouseEvent::type() const {
+    return type_;
+}
+
+float MouseEvent::x() const {
+    return x_;
+}
+
+float MouseEvent::y() const {
+    return y_;
+}
+
+// View
+View::View(float x, float y, float width, float height) {
+    x_ = x;
+    y_ = y;
+    w_ = width;
+    h_ = height;
+}
+
+void View::set_size(float width, float height) {
+    w_ = width;
+    h_ = height;
+}
+
+void View::set_top_left(float x, float y) {
+    x_ = x;
+    y_ = y;
+}
+
+void View::set_mouse_listener(MouseListener listener) {
+    mouse_listener_ = listener;
+}
+
+bool View::on_mouse_event(const IMouseEvent& event) {
+    if (mouse_listener_ == nullptr)
+        return false;
+
+    if (event.type() == IMouseEvent::MOUSE_DOWN) {
+        if (event.x() < x_ && event.x() > x_ + w_)
+            return false;
+
+        if (event.y() < y_ && event.y() > y_ + h_)
+            return false;
+    }
+
+    return mouse_listener_(event);
+}
+
+View::~View() {}
 
 
+// View Group
+ViewGroup::ViewGroup(float x, float y, float width, float height)
+{
+    x_ = x;
+    y_ = y;
+    w_ = width;
+    h_ = height;
+}
+
+void ViewGroup::set_size(float width, float height) {
+    w_ = width;
+    h_ = height;
+}
+
+void ViewGroup::set_top_left(float x, float y) {
+    x_ = x;
+    y_ = y;
+}
+
+void ViewGroup::set_mouse_listener(MouseListener listener) {
+    mouse_listener_ = listener;
+}
+
+bool ViewGroup::on_mouse_event(const IMouseEvent& event) {
+    if (event.type() == IMouseEvent::MOUSE_DOWN) {
+        for (const auto& view: view_list_) {
+            MouseEvent new_event(event.type(), 
+                    event.x() - this->x_,
+                    event.y() - this->y_);
+
+            bool result = view->on_mouse_event(new_event);
+            if (result == true) {
+                view_mouse_move_ = view.get();
+                return true;
+            }
+        }
+    }
+    else {
+        return view_mouse_move_->on_mouse_event(event);
+    }
+
+    if (mouse_listener_ == nullptr)
+        return false;
+
+    return mouse_listener_(event);
+}
+
+void ViewGroup::add_view(const IViewPtr& view) {
+    view_list_.push_back(view);
+}
+
+void ViewGroup::remove_view(const IViewPtr& view) {
+    auto it = 
+        std::remove(view_list_.begin(), view_list_.end(), view);
+    view_list_.erase(it, view_list_.end());
+}
+
+} // namespace tung
