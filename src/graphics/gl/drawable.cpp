@@ -49,6 +49,9 @@ void Drawable::translate(glm::vec3 vec) {
     model_matrix_ = translation_matrix_ * rotation_matrix_;
 }
 
+Drawable::~Drawable() {
+}
+
 // DrawableGroup
 DrawableGroup::DrawableGroup(): Drawable() {}
 
@@ -76,6 +79,9 @@ void DrawableGroup::detach_drawable(const IDrawablePtr& drawable)
                 drawables_.end(), drawable),
             drawables_.end()
     );
+}
+
+DrawableGroup::~DrawableGroup() {
 }
 
 } // namespace tung

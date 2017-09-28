@@ -25,6 +25,8 @@ public:
     void translate(glm::vec3 vec) override;
 
     void rotate(float angle, glm::vec3 orientation) override;
+
+    virtual ~Drawable();
 };
 
 class DrawableGroup: public Drawable, public IDrawableManager {
@@ -39,6 +41,8 @@ public:
     void attach_drawable(const IDrawablePtr& drawable) override;
 
     void detach_drawable(const IDrawablePtr& drawable) override;
+
+    virtual ~DrawableGroup();
 };
 
 } // namespace tung
