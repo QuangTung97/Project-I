@@ -1,7 +1,7 @@
 project(src)
 
 add_subdirectory(graphics)
-# add_subdirectory(logic)
+add_subdirectory(logic)
 add_subdirectory(sound)
 add_subdirectory(view)
 
@@ -11,5 +11,6 @@ target_link_libraries(src
     graphics
     view
     sound
+    logic
 )
 
