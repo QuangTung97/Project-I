@@ -7,7 +7,10 @@ namespace tung {
 
 struct IEventManager {
     virtual void add_listener(IEventType& event_type,
-            EventListener listener) = 0;
+            const EventListener& listener) = 0;
+
+    virtual void remove_listener(IEventType& event_type,
+            const EventListener& listener) = 0;
 
     virtual void trigger(IEventData& event) = 0;
 

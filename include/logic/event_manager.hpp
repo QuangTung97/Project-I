@@ -23,20 +23,14 @@ public:
     EventManager() = default;
 
     void add_listener(IEventType& event_type,
-            EventListener listener) override {
-        listener_map_[&event_type].push_back(listener);
-    }
+            const EventListener& listener) override;
 
-    void trigger(IEventData& event) override {
-        for (auto& listener: 
-                listener_map_[&event.get_event_type()]) {
-            listener(event);
-        }
-    }
+    void remove_listener(IEventType& event_type,
+            const EventListener& listener) override;
 
-    void queue(IEventData& event) override {
-        event_queue_.push_back(event.clone());
-    }
+    void trigger(IEventData& event) override;
+
+    void queue(IEventData& event) override;
 
     void update();
 

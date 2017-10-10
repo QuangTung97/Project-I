@@ -2,6 +2,7 @@ project(test_main)
 
 add_executable(test_main
     main.cpp
+    logic/event.cpp
 )
 
 target_link_libraries(test_main 
