@@ -3,6 +3,7 @@ project(test_main)
 add_executable(test_main
     main.cpp
     logic/event.cpp
+    logic/process.cpp
 )
 
 target_link_libraries(test_main 

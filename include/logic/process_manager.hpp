@@ -14,14 +14,13 @@ private:
 public:
     ProcessManager() = default;
 
-    void update_processes(unsigned long delta_ms);
+    void update_processes(milliseconds dt);
 
     void attach_process(StrongProcessPtr process);
 
     void abort_all_processes(bool immediate = true);
 
     ~ProcessManager();
-
 };
 
 } // namespace tung

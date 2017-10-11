@@ -2,6 +2,9 @@
 #define LOGIC_ABSTRACT_PROCESS_HPP
 
 #include <memory>
+#include <chrono>
+
+using namespace std::chrono;
 
 namespace tung {
 
@@ -64,7 +67,7 @@ public:
 protected:
     virtual void on_init() { state_ = RUNNING; }
 
-    virtual void on_update(unsigned long delta_ms) = 0;
+    virtual void on_update(milliseconds dt) = 0;
 
     virtual void on_success() {}
 

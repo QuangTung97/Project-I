@@ -2,7 +2,7 @@
 
 namespace tung {
 
-void ProcessManager::update_processes(unsigned long delta_ms) {
+void ProcessManager::update_processes(milliseconds dt) {
     auto it = process_list_.begin();
     while (it != process_list_.end()) {
         StrongProcessPtr current = *it;
@@ -11,7 +11,7 @@ void ProcessManager::update_processes(unsigned long delta_ms) {
             current->on_init();
 
         if (current->get_state() == Process::RUNNING) 
-            current->on_update(delta_ms);
+            current->on_update(dt);
 
         if (current->is_dead()) {
             Process::State state = current->get_state();
@@ -51,5 +51,7 @@ void ProcessManager::abort_all_processes(bool immediate) {
         }
     }
 }
+
+ProcessManager::~ProcessManager() {}
 
 } // namespace tung
