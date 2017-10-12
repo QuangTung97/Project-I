@@ -36,12 +36,12 @@ struct IView {
 
 typedef std::shared_ptr<IView> IViewPtr;
 
-struct IViewGroup: IView {
+struct IViewManager {
     virtual void add_view(const IViewPtr& view) = 0;
 
     virtual void remove_view(const IViewPtr& view) = 0;
 
-    virtual ~IViewGroup() {}
+    virtual ~IViewManager() {}
 };
 
 } // namespace tung

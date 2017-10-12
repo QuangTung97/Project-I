@@ -40,8 +40,6 @@ struct IImageLoader {
     virtual ~IImageLoader() {}
 };
 
-typedef std::unique_ptr<IImageLoader> IImageLoaderPtr;
-
 } // namespace tung
 
 #endif

@@ -2,7 +2,7 @@
 #define TEXT_HPP
 
 #include <view/abstract/text.hpp>
-#include <graphics/abstract/shader.hpp>
+#include <graphics/abstract/shader_program.hpp>
 #include <graphics/abstract/object.hpp>
 #include <ft2build.h>
 #include FT_FREETYPE_H

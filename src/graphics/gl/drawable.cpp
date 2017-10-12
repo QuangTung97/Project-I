@@ -1,5 +1,6 @@
 #include <GL/glew.h>
 #include <graphics/gl/drawable.hpp>
+#include <graphics/gl/shader_program.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <algorithm>

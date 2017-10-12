@@ -22,7 +22,7 @@ public:
 };
 
 class View: public IView {
-private:
+protected:
     MouseListener mouse_listener_ = nullptr;
     float x_, y_, w_, h_;
 
@@ -40,11 +40,8 @@ public:
     virtual ~View();
 };
 
-class ViewGroup: public IViewGroup {
+class ViewGroup: public View, public IViewManager {
 private:
-    MouseListener mouse_listener_ = nullptr;
-    float x_, y_, w_, h_;
-
     typedef std::vector<IViewPtr> ViewList;
     ViewList view_list_;
 
@@ -52,12 +49,6 @@ private:
 
 public:
     ViewGroup(float x, float y, float width, float height);
-
-    void set_size(float width, float height) override;
-
-    void set_top_left(float x, float y) override;
-
-    void set_mouse_listener(MouseListener listener) override;
 
     bool on_mouse_event(const IMouseEvent& event) override;
 

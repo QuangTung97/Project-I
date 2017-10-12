@@ -1,13 +1,13 @@
-#ifndef SHADER_H
-#define SHADER_H
+#ifndef GRAPHICS_ABSTRACT_DRAWABLE_HPP
+#define GRAPHICS_ABSTRACT_DRAWABLE_HPP
 
 #include <iostream>
 #include <string>
 #include <unordered_map>
-#include <memory>
 #include <vector>
 #include <glm/mat4x4.hpp>
 #include <glm/vec3.hpp>
+#include <memory>
 
 namespace tung {
 
@@ -33,22 +33,6 @@ struct IDrawableManager {
     virtual void detach_drawable(const IDrawablePtr& drawable) = 0;
 
     virtual ~IDrawableManager() {}
-};
-
-struct IShaderProgram {
-    virtual void predraw(float width, float height) = 0;
-
-    virtual void draw() = 0;
-
-    virtual void postdraw() = 0;
-
-    virtual const std::unordered_map<std::string, int>& locations() = 0;
-
-    virtual void set_drawable(const IDrawablePtr& drawable) = 0;
-
-    virtual std::vector<glm::mat4>& model_matrix_stack() = 0;
-
-    virtual ~IShaderProgram() {}
 };
 
 } // namespace tung

@@ -1,7 +1,7 @@
 #ifndef VERTEX_OBJECT_H
 #define VERTEX_OBJECT_H
 
-#include <graphics/abstract/shader.hpp>
+#include <graphics/abstract/shader_program.hpp>
 #include <graphics/abstract/object.hpp>
 #include <GL/glew.h>
 #include <vector>

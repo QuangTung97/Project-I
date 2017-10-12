@@ -2,7 +2,7 @@
 #define TEXT_ABSTRACT_HPP
 
 #include <memory>
-#include <graphics/abstract/shader.hpp>
+#include <graphics/abstract/shader_program.hpp>
 
 namespace tung {
 

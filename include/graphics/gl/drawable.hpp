@@ -1,8 +1,8 @@
-#ifndef GRAPHICS_GL_DRAWABLE_H
-#define GRAPHICS_GL_DRAWABLE_H
+#ifndef GRAPHICS_DRAWABLE_HPP
+#define GRAPHICS_DRAWABLE_HPP
 
-#include "../abstract/shader.hpp"
-#include "../abstract/object.hpp"
+#include <graphics/abstract/drawable.hpp>
+#include <graphics/abstract/object.hpp>
 
 namespace tung {
 
@@ -22,15 +22,15 @@ public:
 
     void on_draw(IShaderProgram& program) override;
 
-    void translate(glm::vec3 vec) override;
-
     void rotate(float angle, glm::vec3 orientation) override;
+
+    void translate(glm::vec3 vec) override;
 
     virtual ~Drawable();
 };
 
 class DrawableGroup: public Drawable, public IDrawableManager {
-protected:
+private:
     std::vector<IDrawablePtr> drawables_;
 
 public:

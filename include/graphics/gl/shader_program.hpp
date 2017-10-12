@@ -4,7 +4,7 @@
 #include <iostream>
 #include <string>
 #include <GL/glew.h>
-#include <graphics/abstract/shader.hpp>
+#include <graphics/abstract/shader_program.hpp>
 #include <vector>
 
 namespace tung {

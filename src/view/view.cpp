@@ -61,26 +61,7 @@ View::~View() {}
 
 // View Group
 ViewGroup::ViewGroup(float x, float y, float width, float height)
-{
-    x_ = x;
-    y_ = y;
-    w_ = width;
-    h_ = height;
-}
-
-void ViewGroup::set_size(float width, float height) {
-    w_ = width;
-    h_ = height;
-}
-
-void ViewGroup::set_top_left(float x, float y) {
-    x_ = x;
-    y_ = y;
-}
-
-void ViewGroup::set_mouse_listener(MouseListener listener) {
-    mouse_listener_ = listener;
-}
+    : View(x, y, width, height) {}
 
 bool ViewGroup::on_mouse_event(const IMouseEvent& event) {
     if (event.type() == IMouseEvent::MOUSE_DOWN) {

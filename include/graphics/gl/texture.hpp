@@ -1,5 +1,5 @@
 #include "../abstract/texture.hpp"
-#include "../abstract/shader.hpp"
+#include "../abstract/shader_program.hpp"
 
 namespace tung {
 
