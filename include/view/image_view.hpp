@@ -3,14 +3,34 @@
 
 #include <view/view.hpp>
 #include <graphics/abstract/image.hpp>
+#include <graphics/abstract/object.hpp>
+#include <graphics/gl/drawable.hpp>
+#include <graphics/abstract/texture.hpp>
 
 namespace tung {
 
 class ImageView: public View {
 protected:
+    static IVertexObjectBuilder *builder_;
+    static ITextureFactory *texture_factory_;
+
 public:
     ImageView(float x, float y, float width, float height, 
             const IImagePtr& image);
+
+    static void set_vertex_object_builder(IVertexObjectBuilder& builder) {
+        builder_ = &builder;
+    }
+
+    static void set_texture_factory(ITextureFactory& texture_factory) {
+        texture_factory_ = &texture_factory;
+    }
+
+    void set_size(float, float) override {
+        throw std::runtime_error("set_size Not supported");
+    }
+
+    virtual ~ImageView() {}
 
 };
 

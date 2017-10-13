@@ -1,7 +1,11 @@
 #include <view/view.hpp>
+#include <graphics/gl/drawable.hpp>
+#include <graphics/gl/null_drawable.hpp>
 #include <algorithm>
 
 namespace tung {
+
+static const auto null_drawable = std::make_shared<NullDrawable>();
 
 // Mouse Event
 MouseEvent::MouseEvent(Type type, float x, float y):
@@ -25,6 +29,7 @@ View::View(float x, float y, float width, float height) {
     y_ = y;
     w_ = width;
     h_ = height;
+    drawable_ = null_drawable;
 }
 
 void View::set_size(float width, float height) {
@@ -35,6 +40,7 @@ void View::set_size(float width, float height) {
 void View::set_top_left(float x, float y) {
     x_ = x;
     y_ = y;
+    drawable_->translate({x + w_ / 2, y + h_ / 2, 0});
 }
 
 void View::set_mouse_listener(MouseListener listener) {
@@ -56,12 +62,13 @@ bool View::on_mouse_event(const IMouseEvent& event) {
     return mouse_listener_(event);
 }
 
-View::~View() {}
-
 
 // View Group
 ViewGroup::ViewGroup(float x, float y, float width, float height)
-    : View(x, y, width, height) {}
+    : View(x, y, width, height) 
+{
+    drawable_ = std::make_shared<DrawableGroup>();
+}
 
 bool ViewGroup::on_mouse_event(const IMouseEvent& event) {
     if (event.type() == IMouseEvent::MOUSE_DOWN) {
@@ -89,12 +96,17 @@ bool ViewGroup::on_mouse_event(const IMouseEvent& event) {
 
 void ViewGroup::add_view(const IViewPtr& view) {
     view_list_.push_back(view);
+    dynamic_cast<DrawableGroup&>(*this->drawable_).attach_drawable(
+            dynamic_cast<View&>(*view).get_drawable());
 }
 
 void ViewGroup::remove_view(const IViewPtr& view) {
     auto it = 
         std::remove(view_list_.begin(), view_list_.end(), view);
     view_list_.erase(it, view_list_.end());
+
+    dynamic_cast<DrawableGroup&>(*this->drawable_).detach_drawable(
+            dynamic_cast<View&>(*view).get_drawable());
 }
 
 } // namespace tung

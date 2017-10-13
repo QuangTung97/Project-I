@@ -1,9 +1,9 @@
 project(graphics-gl)
 
-
 add_library(graphics-gl
     glfw.cpp
     drawable.cpp
+    null_drawable.cpp
     opengl_info.cpp
     shader_program.cpp
     ui_shader_program.cpp

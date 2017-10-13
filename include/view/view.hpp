@@ -2,6 +2,7 @@
 #define GRAPHICS_VIEW_H
 
 #include "abstract/view.hpp"
+#include <graphics/abstract/drawable.hpp>
 #include <vector>
 
 namespace tung {
@@ -25,6 +26,7 @@ class View: public IView {
 protected:
     MouseListener mouse_listener_ = nullptr;
     float x_, y_, w_, h_;
+    IDrawablePtr drawable_;
 
 public:
     View(float x, float y, float width, float height);
@@ -37,7 +39,11 @@ public:
 
     bool on_mouse_event(const IMouseEvent& event) override;
 
-    virtual ~View();
+    const IDrawablePtr& get_drawable() const {
+        return drawable_;
+    }
+
+    virtual ~View() {}
 };
 
 class ViewGroup: public View, public IViewManager {

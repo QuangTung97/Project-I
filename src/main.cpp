@@ -14,52 +14,29 @@ using namespace std::chrono;
 
 #include <glm/stdafx.h>
 #include <glm/gtc/stdafx.h>
+#include <view/image_view.hpp>
 
 void draw(tung::GLFW &glfw) {
-	float points[] = {
-		-0.5f, 0.5f,
-		-0.5f, -0.5f,
-		0.5f, -0.5f,
-		0.5f, 0.5f,
-	};
-
-    float tex_coord[] = {
-        0.0f, 1.0f,
-        0.0f, 0.0f,
-        1.0f, 0.0f,
-        1.0f, 1.0f
-    };
-
     tung::UIShaderProgram program{"asset/ui.vs", "asset/ui.fs"};
 
     auto image_loader = std::make_unique<tung::PngImageLoader>();
     auto texture_factory 
         = std::make_unique<tung::TextureFactory>();
-
-    tung::IImagePtr image 
-        = image_loader->load("asset/cute.png");
-    tung::ITexturePtr texture 
-        = texture_factory->create(image);
-
     auto builder 
         = std::make_unique<tung::VertexObjectBuilder>(program);
 
-    builder->clear();
-    builder->add_attribute("position", points, 2, 4);
-    builder->add_attribute("texCoord", tex_coord, 2, 4);
-    builder->add_texture(0, "image", texture);
-    builder->set_indices({0, 1, 2, 0, 2, 3});
-    auto object = builder->build();
+    tung::ImageView::set_vertex_object_builder(*builder);
+    tung::ImageView::set_texture_factory(*texture_factory);
 
-    auto drawable = 
-        std::make_shared<tung::Drawable>(std::move(object));
+    tung::IImagePtr image 
+        = image_loader->load("asset/cute.png");
 
-    // drawable->translate(glm::vec3(-0.2, 0, 0));
+    tung::ImageView image_view(0, 0, 200, 200, image);
 
     auto group = std::make_shared<tung::DrawableGroup>();
-    group->attach_drawable(drawable);
+    group->attach_drawable(image_view.get_drawable());
 
-    group->rotate(3.14159 / 4, glm::vec3(0, 0, 1));
+    // group->rotate(3.14159 / 4, glm::vec3(0, 0, 1));
 
     program.set_drawable(group);
 

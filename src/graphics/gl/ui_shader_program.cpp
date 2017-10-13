@@ -14,9 +14,9 @@ UIShaderProgram::UIShaderProgram(std::string vs_file, std::string fs_file) {
 void UIShaderProgram::predraw(float width, float height) {
     ShaderProgram::predraw(width, height);
     
-    float ratio = width / height;
     glm::mat4 ortho = glm::orthoLH(
-            -ratio, ratio, -1.0f, 1.0f, -1.0f, 1.0f);
+            0.0f, width, height, 0.0f, -1.0f, 1.0f);
+
     glUniformMatrix4fv(locations_.at("projectionMatrix"), 1,
             GL_FALSE, glm::value_ptr(ortho));
 }
