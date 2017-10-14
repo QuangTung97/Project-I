@@ -28,17 +28,21 @@ void draw(tung::GLFW &glfw) {
     tung::ImageView::set_vertex_object_builder(*builder);
     tung::ImageView::set_texture_factory(*texture_factory);
 
-    tung::IImagePtr image 
-        = image_loader->load("asset/cute.png");
+    auto image = image_loader->load("asset/cute.png");
+    auto background = image_loader->load("asset/llvm.png");
 
-    tung::ImageView image_view(0, 0, 200, 200, image);
+    auto background_view = std::make_shared<tung::ImageView>(
+            0, 0, 640, 480, background);
+    auto image_view = std::make_shared<tung::ImageView>(
+            50, 50, 100, 100, image);
 
-    auto group = std::make_shared<tung::DrawableGroup>();
-    group->attach_drawable(image_view.get_drawable());
+    auto window = std::make_shared<tung::ViewGroup>(
+            0, 0, 640, 480);
 
-    // group->rotate(3.14159 / 4, glm::vec3(0, 0, 1));
+    window->add_view(background_view);
+    window->add_view(image_view);
 
-    program.set_drawable(group);
+    program.set_drawable(window->get_drawable());
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -68,6 +72,8 @@ void draw(tung::GLFW &glfw) {
         if (!if_ran[1] && delta.count() > 3000) {
             despacito->resume();
             if_ran[1] = true;
+            image_view->set_top_left(100, 100);
+            image_view->set_size(200, 200);
         }
 
 		glClear(GL_COLOR_BUFFER_BIT |

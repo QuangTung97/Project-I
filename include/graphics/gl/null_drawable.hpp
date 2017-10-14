@@ -15,6 +15,8 @@ public:
     const glm::mat4& model_matrix() const override;
 
     void on_draw(IShaderProgram&) override {}
+    
+    void set_vertex_object(IVertexObjectPtr) override {}
 
     void translate(glm::vec3) override {}
 

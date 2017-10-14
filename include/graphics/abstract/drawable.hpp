@@ -9,6 +9,8 @@
 #include <glm/vec3.hpp>
 #include <memory>
 
+#include "object.hpp"
+
 namespace tung {
 
 struct IShaderProgram;
@@ -17,6 +19,8 @@ struct IDrawable {
     virtual const glm::mat4& model_matrix() const = 0;
 
     virtual void on_draw(IShaderProgram& program) = 0;
+
+    virtual void set_vertex_object(IVertexObjectPtr object) = 0;
 
     virtual void translate(glm::vec3 vec) = 0;
 

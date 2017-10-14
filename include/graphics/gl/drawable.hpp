@@ -22,6 +22,8 @@ public:
 
     void on_draw(IShaderProgram& program) override;
 
+    void set_vertex_object(IVertexObjectPtr object) override;
+
     void rotate(float angle, glm::vec3 orientation) override;
 
     void translate(glm::vec3 vec) override;

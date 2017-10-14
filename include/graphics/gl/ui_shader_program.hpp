@@ -11,6 +11,8 @@ public:
 
     void predraw(float width, float height) override;
 
+    void postdraw() override;
+
     const std::unordered_map<std::string, int>& locations() override;
 };
 

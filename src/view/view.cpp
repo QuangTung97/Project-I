@@ -40,7 +40,7 @@ void View::set_size(float width, float height) {
 void View::set_top_left(float x, float y) {
     x_ = x;
     y_ = y;
-    drawable_->translate({x + w_ / 2, y + h_ / 2, 0});
+    drawable_->translate({x, y, 0});
 }
 
 void View::set_mouse_listener(MouseListener listener) {

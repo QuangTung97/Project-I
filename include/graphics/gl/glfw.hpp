@@ -19,6 +19,21 @@ private:
     std::string what_;
 };
 
+enum class MouseEventType {
+    DOWN,
+    UP,
+    MOVE
+};
+
+enum class MouseButton {
+    LEFT,
+    RIGHT,
+    MIDDLE
+};
+
+typedef std::function<void(MouseButton, MouseEventType, float, float)>
+    MouseEventListener;
+
 class GLFW {
 public:
     // Contructor
@@ -26,7 +41,7 @@ public:
     // @height: height of window want to create
     // @name: String that appear on the window title bar
     // @is_fullscreen: true if window is fullscreen mode (not yet supported)
-    GLFW(int width, int height, const std::string& name, bool is_fullscreen = false);
+    GLFW(int width, int height, const std::string& name, bool resizable = false);
 
     // Set callback of function would be called inside main loop
     void set_run_callback(std::function<void()> func);
@@ -50,10 +65,17 @@ public:
 
 private:
     GLFWwindow *window_ = nullptr;
+
     std::function<void()> run_callback_ = nullptr;
+
+    // @width, @height
     std::function<void(int, int)> window_size_callback_ = nullptr;
+
     std::function<void(int, int, int, int)> key_callback_ = nullptr;
+
     std::function<void(unsigned int)> char_callback_ = nullptr;
+
+    MouseEventListener mouse_callback_ = nullptr;
 
     static GLFW *this_;
 
@@ -64,6 +86,7 @@ private:
     static void static_key_callback(GLFWwindow *,
             int key, int scancode, int action, int mods);
     static void static_char_callback(GLFWwindow *, unsigned int code);
+    static void static_mouse_callback(GLFWwindow *, int button, int action, int mods);
 
 
     void window_close_callback();
@@ -71,6 +94,7 @@ private:
     void window_refresh_callback();
     void key_callback(int key, int scancode, int action, int mods);
     void char_callback(unsigned int code);
+    void mouse_callback(int button, int action, int mods);
 };
 
 } // namespace tung

@@ -19,6 +19,12 @@ void UIShaderProgram::predraw(float width, float height) {
 
     glUniformMatrix4fv(locations_.at("projectionMatrix"), 1,
             GL_FALSE, glm::value_ptr(ortho));
+
+    glDisable(GL_DEPTH_TEST);
+}
+
+void UIShaderProgram::postdraw() {
+    glEnable(GL_DEPTH_TEST);
 }
 
 const std::unordered_map<std::string, int> &UIShaderProgram::locations() {

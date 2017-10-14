@@ -38,6 +38,10 @@ void Drawable::on_draw(IShaderProgram& program) {
     object_->draw();
 }
 
+void Drawable::set_vertex_object(IVertexObjectPtr object) {
+    object_ = std::move(object);
+}
+
 void Drawable::rotate(float angle, glm::vec3 orientation) {
     rotation_matrix_ 
         = glm::rotate(glm::mat4(1.0), angle, orientation);

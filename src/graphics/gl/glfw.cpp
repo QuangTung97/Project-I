@@ -14,35 +14,33 @@ const char *glfw_exception::what() const noexcept {
 GLFW *GLFW::this_ = nullptr;
 
 GLFW::GLFW(int width, int height, 
-        const std::string& name, bool is_fullscreen) {
+        const std::string& name, bool resizable) {
     this_ = this;
     if (!::glfwInit()) {
         this_ = nullptr;
         throw glfw_exception("Can't init");
     }
 
-    if (!is_fullscreen) 
-        window_ = ::glfwCreateWindow(width, height, 
-                        name.c_str(), nullptr, nullptr);
-    else 
+    if (!resizable) 
+        ::glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+
     window_ = ::glfwCreateWindow(width, height, 
-            name.c_str(), glfwGetPrimaryMonitor(), NULL);
+            name.c_str(), nullptr, NULL);
 
     if (!window_) {
         ::glfwTerminate();
         this_ = nullptr;
         throw glfw_exception("Can't create window");
     }
-	glfwMakeContextCurrent(window_);
 
-    // Set all callbacks
-    // ::glfwSetKeyCallback(window_, static_key_callback);
-    glfwSetWindowCloseCallback(window_, 
+	::glfwMakeContextCurrent(window_);
+
+    ::glfwSetWindowCloseCallback(window_, 
             static_window_close_callback);
-    glfwSetWindowSizeCallback(window_,
+    ::glfwSetWindowSizeCallback(window_,
             static_window_size_callback);
-    glfwSetKeyCallback(window_, static_key_callback);
-    glfwSetCharCallback(window_, static_char_callback);
+    ::glfwSetKeyCallback(window_, static_key_callback);
+    ::glfwSetCharCallback(window_, static_char_callback);
 
 	::glewExperimental = GL_TRUE;
 	::glewInit();
@@ -107,6 +105,28 @@ void GLFW::char_callback(unsigned int code) {
         char_callback_(code);
 }
 
+void GLFW::mouse_callback(int button, int action, int mods) {
+    if (mouse_callback_ == nullptr)
+        return;
+
+    MouseEventType event_type;
+    switch (action) {
+    case GLFW_PRESS:
+        event_type = MouseEventType::DOWN;
+        break;
+
+    case GLFW_RELEASE:
+        event_type = MouseEventType::UP;
+        break;
+
+    default:
+        break;
+    }
+
+    double xpos, ypos;
+    ::glfwGetCursorPos(window_, &xpos, &ypos);
+}
+
 // All static event handlers
 void GLFW::static_window_close_callback(GLFWwindow *) {
     this_->window_close_callback();
@@ -125,6 +145,11 @@ void GLFW::static_key_callback(GLFWwindow *,
 void GLFW::static_char_callback(GLFWwindow *,
         unsigned int code) {
     this_->char_callback(code);
+}
+
+void GLFW::static_mouse_callback(GLFWwindow *,
+        int button, int action, int mods) {
+    this_->mouse_callback(button, action, mods);
 }
 
 } // namespace tung

@@ -2,7 +2,6 @@
 #define VIEW_IMAGE_VIEW_HPP
 
 #include <view/view.hpp>
-#include <graphics/abstract/image.hpp>
 #include <graphics/abstract/object.hpp>
 #include <graphics/gl/drawable.hpp>
 #include <graphics/abstract/texture.hpp>
@@ -13,6 +12,7 @@ class ImageView: public View {
 protected:
     static IVertexObjectBuilder *builder_;
     static ITextureFactory *texture_factory_;
+    ITexturePtr texture_;
 
 public:
     ImageView(float x, float y, float width, float height, 
@@ -26,9 +26,7 @@ public:
         texture_factory_ = &texture_factory;
     }
 
-    void set_size(float, float) override {
-        throw std::runtime_error("set_size Not supported");
-    }
+    void set_size(float, float) override;
 
     virtual ~ImageView() {}
 
