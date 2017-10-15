@@ -26,6 +26,7 @@ enum class MouseEventType {
 };
 
 enum class MouseButton {
+    NONE,
     LEFT,
     RIGHT,
     MIDDLE
@@ -55,6 +56,9 @@ public:
     // Set callback of function would be called if a printable key is pressed
     void set_char_callback(std::function<void(unsigned int)> func);
 
+    // Set callback of function would be called if a mouse move or click
+    void set_mouse_listener(MouseEventListener listener);
+
     // Begin main loop
     void run();
 
@@ -64,6 +68,11 @@ public:
     GLFWwindow *window() const noexcept;
 
 private:
+    float x_ = 0, y_ = 0;
+    bool left_pressed_ = false;
+    bool right_pressed_ = false;
+    bool middle_pressed_ = false;
+
     GLFWwindow *window_ = nullptr;
 
     std::function<void()> run_callback_ = nullptr;
@@ -75,7 +84,7 @@ private:
 
     std::function<void(unsigned int)> char_callback_ = nullptr;
 
-    MouseEventListener mouse_callback_ = nullptr;
+    MouseEventListener mouse_listener_ = nullptr;
 
     static GLFW *this_;
 
@@ -87,6 +96,7 @@ private:
             int key, int scancode, int action, int mods);
     static void static_char_callback(GLFWwindow *, unsigned int code);
     static void static_mouse_callback(GLFWwindow *, int button, int action, int mods);
+    static void static_mouse_pos_callback(GLFWwindow *, double xpos, double ypos);
 
 
     void window_close_callback();
@@ -95,6 +105,7 @@ private:
     void key_callback(int key, int scancode, int action, int mods);
     void char_callback(unsigned int code);
     void mouse_callback(int button, int action, int mods);
+    void mouse_pos_callback(double xpos, double ypos);
 };
 
 } // namespace tung

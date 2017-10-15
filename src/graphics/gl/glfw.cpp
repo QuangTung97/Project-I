@@ -41,6 +41,8 @@ GLFW::GLFW(int width, int height,
             static_window_size_callback);
     ::glfwSetKeyCallback(window_, static_key_callback);
     ::glfwSetCharCallback(window_, static_char_callback);
+    ::glfwSetMouseButtonCallback(window_, static_mouse_callback);
+    ::glfwSetCursorPosCallback(window_, static_mouse_pos_callback);
 
 	::glewExperimental = GL_TRUE;
 	::glewInit();
@@ -63,6 +65,10 @@ void GLFW::set_key_callback(
 void GLFW::set_char_callback(
         std::function<void(unsigned int)> func) {
     char_callback_ = std::move(func);
+}
+
+void GLFW::set_mouse_listener(MouseEventListener listener) {
+    mouse_listener_ = listener;
 }
 
 void GLFW::run() {
@@ -105,9 +111,64 @@ void GLFW::char_callback(unsigned int code) {
         char_callback_(code);
 }
 
-void GLFW::mouse_callback(int button, int action, int mods) {
-    if (mouse_callback_ == nullptr)
+void GLFW::mouse_pos_callback(double xpos, double ypos) {
+    x_ = xpos;
+    y_ = ypos;
+
+    if (mouse_listener_ == nullptr)
         return;
+
+    MouseEventType event_type = MouseEventType::MOVE;
+    MouseButton event_button = MouseButton::NONE;
+
+    mouse_listener_(event_button, event_type, x_, y_);
+
+    if (left_pressed_) {
+        event_button = MouseButton::LEFT;   
+        mouse_listener_(event_button, event_type, x_, y_);
+    }
+    
+    if (right_pressed_) {
+        event_button = MouseButton::RIGHT;
+        mouse_listener_(event_button, event_type, x_, y_);
+    }
+
+    if (middle_pressed_) {
+        event_button = MouseButton::MIDDLE;
+        mouse_listener_(event_button, event_type, x_, y_);
+    }
+}
+
+void GLFW::mouse_callback(int button, int action, int) {
+    if (mouse_listener_ == nullptr)
+        return;
+
+    MouseButton event_button;
+    switch (button) {
+    case GLFW_MOUSE_BUTTON_LEFT:
+        event_button = MouseButton::LEFT;
+        if (action == GLFW_PRESS)
+            left_pressed_ = true;
+        else
+            left_pressed_ = false;
+        break;
+
+    case GLFW_MOUSE_BUTTON_RIGHT:
+        event_button = MouseButton::RIGHT;
+        if (action == GLFW_PRESS)
+            right_pressed_ = true;
+        else
+            right_pressed_ = false;
+        break;
+
+    case GLFW_MOUSE_BUTTON_MIDDLE:
+        event_button = MouseButton::MIDDLE;
+        if (action == GLFW_PRESS)
+            middle_pressed_ = true;
+        else
+            middle_pressed_ = false;
+        break;
+    }
 
     MouseEventType event_type;
     switch (action) {
@@ -118,13 +179,9 @@ void GLFW::mouse_callback(int button, int action, int mods) {
     case GLFW_RELEASE:
         event_type = MouseEventType::UP;
         break;
-
-    default:
-        break;
     }
 
-    double xpos, ypos;
-    ::glfwGetCursorPos(window_, &xpos, &ypos);
+    mouse_listener_(event_button, event_type, x_, y_);
 }
 
 // All static event handlers
@@ -150,6 +207,11 @@ void GLFW::static_char_callback(GLFWwindow *,
 void GLFW::static_mouse_callback(GLFWwindow *,
         int button, int action, int mods) {
     this_->mouse_callback(button, action, mods);
+}
+
+void GLFW::static_mouse_pos_callback(GLFWwindow *,
+        double xpos, double ypos) {
+    this_->mouse_pos_callback(xpos, ypos);
 }
 
 } // namespace tung

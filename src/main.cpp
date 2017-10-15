@@ -89,6 +89,7 @@ void draw(tung::GLFW &glfw) {
 }
 
 int main() {
+    using namespace tung;
     tung::GLFW glfw(640, 480, "Tung");
 
     // tung::OpenGLInfo info;
@@ -100,6 +101,50 @@ int main() {
         std::cout << code << std::endl;
     }; 
     glfw.set_char_callback(func);
+
+    auto mouse_listener = [](MouseButton button, MouseEventType type, 
+            float x, float y) {
+        using namespace std;
+        string button_name;
+        string type_name;
+
+        switch (button) {
+        case MouseButton::NONE:
+            button_name = "none";
+            break;
+
+        case MouseButton::LEFT: 
+            button_name = "left";
+            break;
+
+        case MouseButton::RIGHT:
+            button_name = "right";
+            break;
+
+        case MouseButton::MIDDLE:
+            button_name = "middle";
+            break;
+        }
+
+        switch (type) {
+        case MouseEventType::DOWN:
+            type_name = "down";
+            break;
+
+        case MouseEventType::UP:
+            type_name = "up";
+            break;
+
+        case MouseEventType::MOVE:
+            type_name = "move";
+            break;
+        }
+
+        cout << button_name << " - " << type_name << 
+            ": " <<  x << " " << y << endl;
+    };
+
+    glfw.set_mouse_listener(mouse_listener);
 
 	draw(glfw);
 	return 0;
