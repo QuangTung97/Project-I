@@ -9,7 +9,7 @@ include_directories(include)
 link_directories(lib)
 
 add_subdirectory(src)
-add_executable(main src/main.cpp)
+add_executable(main src/root.cpp)
 target_link_libraries(main src)
 
 # For testing
