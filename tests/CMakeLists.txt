@@ -4,6 +4,7 @@ add_executable(test_main
     main.cpp
     logic/event.cpp
     logic/process.cpp
+    logic/actor.cpp
 )
 
 target_link_libraries(test_main 

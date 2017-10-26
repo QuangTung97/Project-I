@@ -21,19 +21,20 @@ private:
     friend class ActorFactory;
 
 public:
+    Actor(ActorId id): id_{id} {}
+
     ActorId get_id() const {
         return id_;
     }
 
     template<typename Component>
     std::weak_ptr<Component> get_component(ActorComponentId id) {
+        std::shared_ptr<Component> ptr = nullptr;
         auto find_it = components_.find(id);
         if (find_it != components_.end()) {
-            std::shared_ptr<Component> ptr =
-                std::dynamic_pointer_cast<Component>(find_it->second);
-            return ptr;
+            ptr = std::dynamic_pointer_cast<Component>(find_it->second);
         }
-        return nullptr;
+        return ptr;
     }
 
     void shutdown() {
@@ -43,7 +44,7 @@ public:
         }
     }
 
-private:
+public:
     void add_component(StrongActorComponentPtr component) {
         ActorComponentId id = component->get_id();
         components_[id] = std::move(component);

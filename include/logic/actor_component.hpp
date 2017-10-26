@@ -5,6 +5,9 @@ namespace tung {
 
 enum class ActorComponentId {
     // TODO: Add here
+    TEST1,
+    TEST2,
+    TEST3
 };
 
 class ActorComponent;
@@ -25,7 +28,7 @@ public:
 
     virtual ~ActorComponent() {}
 
-private:
+public:
     void set_owner(StrongActorPtr owner) {
         this->owner_ = std::move(owner);
     }
