@@ -1,13 +1,17 @@
 #ifndef GAME_LOGIC_ACTOR_COMPONENT_HPP
 #define GAME_LOGIC_ACTOR_COMPONENT_HPP
 
+#include <memory>
+
 namespace tung {
 
 enum class ActorComponentId {
     // TODO: Add here
     TEST1,
     TEST2,
-    TEST3
+    TEST3,
+    POSITION,
+    COLLISION
 };
 
 class ActorComponent;
