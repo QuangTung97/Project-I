@@ -5,5 +5,6 @@ add_library(logic
     event_manager.cpp
     timer.cpp
     actor.cpp
+    game_logic.cpp
     position_component.cpp
 )

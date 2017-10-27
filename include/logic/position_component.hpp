@@ -7,15 +7,18 @@
 
 namespace tung {
 
+typedef int ActorId;
 extern EventType<2010> ACTOR_MOVE;
 
 class ActorMoveEvent: public EventData {
 private:
+    ActorId id_;
     float x_, y_;
 
 public:
-    ActorMoveEvent(TimePoint time_point, float x, float y)
-        : EventData{time_point, ACTOR_MOVE}, x_{x}, y_{y} {}
+    ActorMoveEvent(TimePoint time_point, ActorId id,
+        float x, float y)
+    : EventData{time_point, ACTOR_MOVE}, id_{id}, x_{x}, y_{y} {}
 
     float get_x() const { return x_; }
 

@@ -25,14 +25,13 @@ class ActorComponent {
 private:
     StrongActorPtr owner_;
     friend class Actor;
-    friend class ActorFactory;
+    friend class ActorBuilder;
 
 public:
     virtual ActorComponentId get_id() const = 0;
 
     virtual ~ActorComponent() {}
 
-public:
     void set_owner(StrongActorPtr owner) {
         this->owner_ = std::move(owner);
     }

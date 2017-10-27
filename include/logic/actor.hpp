@@ -5,6 +5,7 @@
 #include <map>
 
 #include "actor_component.hpp"
+#include <logic/event.hpp>
 
 namespace tung {
 
@@ -12,6 +13,21 @@ class Actor;
 typedef std::shared_ptr<Actor> StrongActorPtr;
 typedef std::weak_ptr<Actor> WeakActorPtr;
 typedef int ActorId;
+
+extern EventType<9000> ACTOR_DESTROY;
+
+class ActorDestroyEvent: public EventData {
+private:
+    ActorId id_;
+
+public:
+    ActorDestroyEvent(TimePoint time_point, ActorId id)
+    : EventData(time_point, ACTOR_DESTROY), id_{id} {}
+
+    ActorId get_id() const { return id_; }
+
+    virtual ~ActorDestroyEvent() {}
+};
 
 class Actor {
 private:
