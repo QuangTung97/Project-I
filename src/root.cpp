@@ -53,8 +53,9 @@ Root::Root() {
 
     // Game Logic
     event_manager_ = std::make_unique<EventManager>();
+    timer_ = std::make_unique<Timer>(*event_manager_);
     sound_system_ = std::make_unique<SoundSystem>(*event_manager_);
-    collision_system_ = std::make_unique<CollisionSystem>(*event_manager_);
+    collision_system_ = std::make_unique<CollisionSystem>(*event_manager_, *timer_);
     game_logic_ = std::make_unique<GameLogic>(*event_manager_);
 }
 

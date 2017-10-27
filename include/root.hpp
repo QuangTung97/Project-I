@@ -9,6 +9,7 @@
 #include <graphics/abstract/texture.hpp>
 #include <sound/abstract/sound.hpp>
 #include <logic/event_manager.hpp>
+#include <logic/timer.hpp>
 #include <logic/sound_system.hpp>
 #include <logic/collision_system.hpp>
 #include <logic/game_logic.hpp>
@@ -28,6 +29,7 @@ private:
 
     // Logic
     std::unique_ptr<EventManager> event_manager_;
+    std::unique_ptr<Timer> timer_;
     std::unique_ptr<SoundSystem> sound_system_;
     std::unique_ptr<CollisionSystem> collision_system_;
     std::unique_ptr<GameLogic> game_logic_;

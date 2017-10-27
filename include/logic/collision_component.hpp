@@ -16,6 +16,10 @@ private:
 public:
     ActorsCollideEvent(TimePoint time_point, ActorId id1, ActorId id2)
     : EventData{time_point, ACTORS_COLLIDE}, id1_{id1}, id2_{id2} {}
+
+    ActorId get_id1() const { return id1_; }
+
+    ActorId get_id2() const { return id2_; }
 };
 
 class CollisionComponent: public ActorComponent {

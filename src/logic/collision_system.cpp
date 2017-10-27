@@ -5,8 +5,8 @@
 
 namespace tung {
 
-CollisionSystem::CollisionSystem(IEventManager& manager)
-: manager_{manager} {
+CollisionSystem::CollisionSystem(IEventManager& manager, ITimer& timer)
+: manager_{manager}, timer_{timer} {
     auto actor_created = [this](const IEventData& event) {
         const auto& data = dynamic_cast<const ActorCreatedEvent&>(event);
         auto actor = GameLogic::get().get_actor(data.get_id()).lock();
@@ -21,8 +21,11 @@ CollisionSystem::CollisionSystem(IEventManager& manager)
     auto actor_destroy = [this](const IEventData& event) {
         const auto& data = dynamic_cast<const ActorCreatedEvent&>(event);
         auto find_it = actor_components_.find(data.get_id());
-        if (find_it != actor_components_.end())
+        if (find_it != actor_components_.end()) {
+            auto comp = find_it->second.lock();
+            comp->set_owner(nullptr);
             actor_components_.erase(find_it);
+        }
     };
     actor_destroy_listener_ = actor_destroy;
     manager_.add_listener(ACTOR_DESTROY, actor_destroy_listener_);
