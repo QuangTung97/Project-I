@@ -37,6 +37,7 @@ Root::Root() {
         program_->draw();
         program_->postdraw();
 
+        collision_system_->update();
         event_manager_->update();
     };
 
@@ -52,6 +53,8 @@ Root::Root() {
 
     // Game Logic
     event_manager_ = std::make_unique<EventManager>();
+    sound_system_ = std::make_unique<SoundSystem>(*event_manager_);
+    collision_system_ = std::make_unique<CollisionSystem>(*event_manager_);
     game_logic_ = std::make_unique<GameLogic>(*event_manager_);
 }
 

@@ -7,4 +7,7 @@ add_library(logic
     actor.cpp
     game_logic.cpp
     position_component.cpp
+    collision_component.cpp
+    sound_system.cpp
+    collision_system.cpp
 )
