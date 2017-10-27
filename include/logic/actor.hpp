@@ -15,6 +15,7 @@ typedef std::weak_ptr<Actor> WeakActorPtr;
 typedef int ActorId;
 
 extern EventType<9000> ACTOR_DESTROY;
+extern EventType<9000> ACTOR_CREATED;
 
 class ActorDestroyEvent: public EventData {
 private:
@@ -27,6 +28,19 @@ public:
     ActorId get_id() const { return id_; }
 
     virtual ~ActorDestroyEvent() {}
+};
+
+class ActorCreatedEvent: public EventData {
+private:
+    ActorId id_;
+
+public:
+    ActorCreatedEvent(TimePoint time_point, ActorId id)
+    : EventData(time_point, ACTOR_CREATED), id_{id} {}
+
+    ActorId get_id() const { return id_; }
+
+    virtual ~ActorCreatedEvent() {}
 };
 
 class Actor {

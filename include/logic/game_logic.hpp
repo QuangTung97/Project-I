@@ -14,11 +14,21 @@ private:
     IEventManager& manager_;
     EventListener actor_destroy_listener_;
 
+    static GameLogic *this_;
+
 public:
     GameLogic(IEventManager& manager);
 
+    static GameLogic& get() {
+        return *this_;
+    }
+
     WeakActorPtr get_actor(ActorId id) {
         return actors_[id];
+    }
+
+    void add_actor(StrongActorPtr actor) {
+        actors_[actor->get_id()] = std::move(actor);
     }
 
     ~GameLogic();

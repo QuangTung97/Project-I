@@ -31,10 +31,13 @@ Root::Root() {
 
     auto run_function = [this]() {
 		glClear(GL_COLOR_BUFFER_BIT |
-			GL_DEPTH_BUFFER_BIT);
+            GL_DEPTH_BUFFER_BIT);
+
         program_->predraw(640, 480);
         program_->draw();
         program_->postdraw();
+
+        event_manager_->update();
     };
 
     glfw_->set_run_callback(run_function);
@@ -46,6 +49,10 @@ Root::Root() {
     auto image_view = std::make_shared<tung::ImageView>(
             50, 50, 100, 100, image);
     program_->set_drawable(image_view->get_drawable());
+
+    // Game Logic
+    event_manager_ = std::make_unique<EventManager>();
+    game_logic_ = std::make_unique<GameLogic>(*event_manager_);
 }
 
 void Root::run() {

@@ -8,6 +8,8 @@
 #include <graphics/abstract/image.hpp>
 #include <graphics/abstract/texture.hpp>
 #include <sound/abstract/sound.hpp>
+#include <logic/event_manager.hpp>
+#include <logic/game_logic.hpp>
 
 namespace tung {
 
@@ -21,6 +23,8 @@ private:
 
     // Sound
     std::unique_ptr<ISoundManager> sound_manager_;
+    std::unique_ptr<EventManager> event_manager_;
+    std::unique_ptr<GameLogic> game_logic_;
 
 public:
     Root();

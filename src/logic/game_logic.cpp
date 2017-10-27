@@ -3,12 +3,17 @@
 
 namespace tung {
 
+GameLogic *GameLogic::this_ = nullptr;
+
 GameLogic::GameLogic(IEventManager& manager) 
 : manager_{manager} {
+    this_ = this;
+
     auto listener = [this](const IEventData& event) {
         const auto& data = dynamic_cast<const ActorDestroyEvent&>(event);
         auto it = actors_.find(data.get_id());
-        actors_.erase(it);
+        if (it != actors_.end())
+            actors_.erase(it);
     };
     actor_destroy_listener_ = listener;
 
