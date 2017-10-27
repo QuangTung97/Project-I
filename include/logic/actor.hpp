@@ -14,6 +14,15 @@ typedef std::shared_ptr<Actor> StrongActorPtr;
 typedef std::weak_ptr<Actor> WeakActorPtr;
 typedef int ActorId;
 
+class ActorIdGenerator {
+private:
+    static ActorId last_;
+
+public:
+    static ActorId new_id();
+};
+
+// Actor Events
 extern EventType<9000> ACTOR_DESTROY;
 extern EventType<9000> ACTOR_CREATED;
 

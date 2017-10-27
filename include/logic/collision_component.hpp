@@ -7,31 +7,55 @@
 
 namespace tung {
 
-extern EventType<7000> ACTORS_COLLIDE;
+extern EventType<7001> ACTOR_COLLIDE;
 
-class ActorsCollideEvent: public EventData {
+class ActorCollideEvent: public EventData {
 private:
-    ActorId id1_, id2_;
+    ActorId id_;
 
 public:
-    ActorsCollideEvent(TimePoint time_point, ActorId id1, ActorId id2)
-    : EventData{time_point, ACTORS_COLLIDE}, id1_{id1}, id2_{id2} {}
+    ActorCollideEvent(TimePoint time_point, ActorId id)
+    : EventData{time_point, ACTOR_COLLIDE}, id_{id} {}
 
-    ActorId get_id1() const { return id1_; }
-
-    ActorId get_id2() const { return id2_; }
+    ActorId get_id() const { return id_; }
 };
 
 class CollisionComponent: public ActorComponent {
-private:
+protected:
     float x_, y_;
-    float radius_;
-    friend class CollisionSystem;
+    enum class Type {
+        CIRCLE,
+        RECTANGLE
+    };
 
 public:
-    CollisionComponent(float x, float y, float radius);
+    CollisionComponent(float x, float y)
+    : x_{x}, y_{y} {}
 
-    ~CollisionComponent();
+    ActorComponentId get_id() const override {
+        return ActorComponentId::COLLISION;
+    }
+
+    virtual Type get_type() const = 0;
+
+    virtual bool is_collided(const CollisionComponent& other) = 0;
+
+    virtual ~CollisionComponent() {}
+};
+
+class CircleCollisionComponent: public CollisionComponent {
+protected:
+    float radius_;
+
+public:
+    CircleCollisionComponent(float x, float y, float radius)
+    : CollisionComponent(x, y), radius_{radius} {}
+
+    Type get_type() const override {
+        return Type::CIRCLE;
+    }
+
+    bool is_collided(const CollisionComponent& other) override;
 };
 
 } // namespace tung

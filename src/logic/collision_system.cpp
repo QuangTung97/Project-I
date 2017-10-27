@@ -19,7 +19,7 @@ CollisionSystem::CollisionSystem(IEventManager& manager, ITimer& timer)
     manager_.add_listener(ACTOR_CREATED, actor_created_listener_);
 
     auto actor_destroy = [this](const IEventData& event) {
-        const auto& data = dynamic_cast<const ActorCreatedEvent&>(event);
+        const auto& data = dynamic_cast<const ActorDestroyEvent&>(event);
         auto find_it = actor_components_.find(data.get_id());
         if (find_it != actor_components_.end()) {
             auto comp = find_it->second.lock();
@@ -32,7 +32,21 @@ CollisionSystem::CollisionSystem(IEventManager& manager, ITimer& timer)
 }
 
 void CollisionSystem::update() {
+    for (auto i = actor_components_.begin(); 
+              i != actor_components_.end(); ++i) {
+        auto j = i; ++j;
+        for (; j != actor_components_.end(); ++j) {
+            auto comp1 = i->second.lock();
+            auto comp2 = j->second.lock();
+            if (comp1->is_collided(*comp2)) {
+                ActorCollideEvent event1{timer_.current_time(), i->first};
+                ActorCollideEvent event2{timer_.current_time(), j->first};
 
+                manager_.queue(event1);
+                manager_.queue(event2);
+            }
+        }
+    }
 }
 
 CollisionSystem::~CollisionSystem() {

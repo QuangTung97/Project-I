@@ -3,6 +3,7 @@
 
 #include <logic/abstract/event_manager.hpp>
 #include <logic/abstract/timer.hpp>
+#include "collision_component.hpp"
 #include <logic/actor_component.hpp>
 #include <logic/actor.hpp>
 #include <unordered_map>
@@ -15,10 +16,11 @@ private:
     ITimer& timer_;
     EventListener actor_created_listener_;
     EventListener actor_destroy_listener_;
-    typedef std::unordered_map<ActorId, WeakActorComponentPtr> 
-        ActorComponents;
+    typedef std::weak_ptr<CollisionComponent> WeakPtr;
+    typedef std::unordered_map<ActorId, WeakPtr> 
+        ActorComponentMap;
 
-    ActorComponents actor_components_;
+    ActorComponentMap actor_components_;
 
 public:
     CollisionSystem(IEventManager& manager, ITimer& timer);
