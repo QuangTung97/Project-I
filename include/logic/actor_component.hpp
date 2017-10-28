@@ -11,7 +11,10 @@ enum class ActorComponentId {
     TEST2,
     TEST3,
     POSITION,
-    COLLISION
+    COLLISION,
+    PLANE,
+    CANNON,
+    BULLET
 };
 
 class ActorComponent;
@@ -25,7 +28,6 @@ class ActorComponent {
 private:
     StrongActorPtr owner_;
     friend class Actor;
-    friend class ActorBuilder;
 
 public:
     virtual ActorComponentId get_id() const = 0;

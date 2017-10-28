@@ -24,11 +24,12 @@ public:
 
 // Actor Events
 extern EventType<9000> ACTOR_DESTROY;
-extern EventType<9000> ACTOR_CREATED;
+extern EventType<9001> ACTOR_CREATED;
+extern EventType<9002> ACTOR_MOVE;
 
 class ActorDestroyEvent: public EventData {
 private:
-    ActorId id_;
+    const ActorId id_;
 
 public:
     ActorDestroyEvent(TimePoint time_point, ActorId id)
@@ -36,12 +37,16 @@ public:
 
     ActorId get_id() const { return id_; }
 
+    IEventDataPtr clone() const override {
+        return std::make_unique<ActorDestroyEvent>(time_point_, id_);
+    }
+
     virtual ~ActorDestroyEvent() {}
 };
 
 class ActorCreatedEvent: public EventData {
 private:
-    ActorId id_;
+    const ActorId id_;
 
 public:
     ActorCreatedEvent(TimePoint time_point, ActorId id)
@@ -49,8 +54,36 @@ public:
 
     ActorId get_id() const { return id_; }
 
+    IEventDataPtr clone() const override {
+        return std::make_unique<ActorCreatedEvent>(time_point_, id_);
+    }
+
     virtual ~ActorCreatedEvent() {}
 };
+
+class ActorMoveEvent: public EventData {
+private:
+    const ActorId id_;
+    const float x_, y_;
+
+public:
+    ActorMoveEvent(TimePoint time_point, ActorId id,
+        float x, float y)
+    : EventData{time_point, ACTOR_MOVE}, id_{id}, x_{x}, y_{y} {}
+
+    ActorId get_id() const {
+        return id_;
+    }
+
+    float get_x() const { return x_; }
+
+    float get_y() const { return y_; }
+
+    IEventDataPtr clone() const override {
+        return std::make_unique<ActorMoveEvent>(time_point_, id_, x_, y_);
+    }
+};
+
 
 class Actor {
 private:

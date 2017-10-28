@@ -29,6 +29,15 @@ CollisionSystem::CollisionSystem(IEventManager& manager, ITimer& timer)
     };
     actor_destroy_listener_ = actor_destroy;
     manager_.add_listener(ACTOR_DESTROY, actor_destroy_listener_);
+
+    auto actor_move = [this](const IEventData& event) {
+        const auto& data = dynamic_cast<const ActorMoveEvent&>(event);
+        auto comp = actor_components_[data.get_id()].lock();
+        comp->x_ = data.get_x();
+        comp->y_ = data.get_y();
+    };
+    actor_move_listener_ = actor_move;
+    manager_.add_listener(ACTOR_MOVE, actor_move_listener_);
 }
 
 void CollisionSystem::update() {
@@ -52,6 +61,7 @@ void CollisionSystem::update() {
 CollisionSystem::~CollisionSystem() {
     manager_.remove_listener(ACTOR_CREATED, actor_created_listener_);
     manager_.remove_listener(ACTOR_DESTROY, actor_destroy_listener_);
+    manager_.remove_listener(ACTOR_MOVE, actor_move_listener_);
 }
 
 } // namespace tung

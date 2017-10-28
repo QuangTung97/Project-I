@@ -2,6 +2,7 @@
 #define LOGIC_EVENT_HPP
 
 #include "abstract/event.hpp"
+#include <cassert>
 
 namespace tung {
 
@@ -15,7 +16,7 @@ public:
 
 
 class EventData: public IEventData {
-private:
+protected:
     const TimePoint time_point_;
     IEventType& event_type_;
 
@@ -32,9 +33,7 @@ public:
     }
 
     IEventDataPtr clone() const override {
-        return std::make_unique<EventData>(
-                time_point_,
-                event_type_);
+        assert(false);
     }
 
     virtual ~EventData() {}

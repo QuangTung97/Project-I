@@ -6,8 +6,10 @@ add_library(logic
     timer.cpp
     actor.cpp
     game_logic.cpp
-    position_component.cpp
     collision_component.cpp
     sound_system.cpp
     collision_system.cpp
+
+    plane_component.cpp
+    plane_factory.cpp
 )

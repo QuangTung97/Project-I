@@ -16,6 +16,8 @@ private:
     ITimer& timer_;
     EventListener actor_created_listener_;
     EventListener actor_destroy_listener_;
+    EventListener actor_move_listener_;
+
     typedef std::weak_ptr<CollisionComponent> WeakPtr;
     typedef std::unordered_map<ActorId, WeakPtr> 
         ActorComponentMap;

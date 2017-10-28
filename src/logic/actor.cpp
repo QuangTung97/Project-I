@@ -3,7 +3,8 @@
 namespace tung {
 
 EventType<9000> ACTOR_DESTROY;
-EventType<9000> ACTOR_CREATED;
+EventType<9001> ACTOR_CREATED;
+EventType<9002> ACTOR_MOVE;
 
 ActorId ActorIdGenerator::last_ = 0;
 

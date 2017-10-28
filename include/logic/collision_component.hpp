@@ -17,6 +17,13 @@ public:
     ActorCollideEvent(TimePoint time_point, ActorId id)
     : EventData{time_point, ACTOR_COLLIDE}, id_{id} {}
 
+    IEventDataPtr clone() const override {
+        return std::make_unique<ActorCollideEvent>(
+            time_point_,
+            id_
+        );
+    }
+
     ActorId get_id() const { return id_; }
 };
 
@@ -27,6 +34,7 @@ protected:
         CIRCLE,
         RECTANGLE
     };
+    friend class CollisionSystem;
 
 public:
     CollisionComponent(float x, float y)
