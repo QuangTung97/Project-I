@@ -105,7 +105,8 @@ void ShaderProgram::predraw(float width, float height) {
 }
 
 void ShaderProgram::draw() {
-    drawable_->on_draw(*this);
+    if (drawable_)
+        drawable_->on_draw(*this);
 }
 
 void ShaderProgram::postdraw() {

@@ -1,6 +1,7 @@
 #include <root.hpp>
 #include <graphics/image/png.hpp>
 #include <graphics/gl/ui_shader_program.hpp>
+#include <graphics/gl/simple_2d_shader.hpp>
 #include <graphics/gl/texture.hpp>
 #include <graphics/gl/vertex_object.hpp>
 #include <view/image_view.hpp>
@@ -20,12 +21,22 @@ Root::Root() {
 
     texture_factory_ = std::make_unique<TextureFactory>();
 
-    program_ = std::make_unique<UIShaderProgram>("asset/ui.vs", "asset/ui.fs");
+    ui_program_ = std::make_unique<UIShaderProgram>("asset/ui.vs", "asset/ui.fs");
+    // _2d_program_ = std::make_unique<Simple2DShader>("assset/ui.vs", "asset/ui.fs");
 
-    object_builder_ = std::make_unique<VertexObjectBuilder>(*program_);
+    ui_object_builder_ = std::make_unique<VertexObjectBuilder>(*ui_program_);
+    // _2d_object_builder_ = std::make_unique<VertexObjectBuilder>(*_2d_program_);
 
     ImageView::set_texture_factory(*texture_factory_);
-    ImageView::set_vertex_object_builder(*object_builder_);
+    ImageView::set_vertex_object_builder(*ui_object_builder_);
+
+    /*
+    sprite_factory_ = std::make_unique<SpriteFactory>(
+        *image_loader_, *texture_factory_, *_2d_object_builder_);
+
+    image_drawable_factory_ = std::make_unique<ImageDrawableFactory>(
+        *image_loader_, *texture_factory_, *_2d_object_builder_);
+    */
 
     sound_manager_ = std::make_unique<SoundManager>();
 
@@ -33,9 +44,13 @@ Root::Root() {
 		glClear(GL_COLOR_BUFFER_BIT |
             GL_DEPTH_BUFFER_BIT);
 
-        program_->predraw(640, 480);
-        program_->draw();
-        program_->postdraw();
+        // _2d_program_->predraw(640, 480);
+        // _2d_program_->draw();
+        // _2d_program_->postdraw();
+
+        ui_program_->predraw(640, 480);
+        ui_program_->draw();
+        ui_program_->postdraw();
 
         collision_system_->update();
         event_manager_->update();
@@ -46,10 +61,12 @@ Root::Root() {
     // set_char_callback
     // set_mouse_listener
 
+    /*
     auto image = image_loader_->load("asset/cute.png");
     auto image_view = std::make_shared<tung::ImageView>(
             50, 50, 100, 100, image);
-    program_->set_drawable(image_view->get_drawable());
+    ui_program_->set_drawable(image_view->get_drawable());
+    */
 
     // Game Logic
     event_manager_ = std::make_unique<EventManager>();

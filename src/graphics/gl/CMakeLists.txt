@@ -11,6 +11,7 @@ add_library(graphics-gl
     simple_2d_shader.cpp
     vertex_object.cpp
     texture.cpp
+    drawable_factory.cpp
 )
 
 target_link_libraries(graphics-gl
