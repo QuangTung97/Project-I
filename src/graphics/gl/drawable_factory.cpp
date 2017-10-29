@@ -16,7 +16,7 @@ std::shared_ptr<SpriteDrawable> SpriteFactory::new_sprite(
     auto image = loader_.load(image_file);
     auto texture = texture_factory_.create(image);
 
-    float width = height * image->width() / image->height();
+    float width = height * image->width() / image->height() * rows / (float)cols;
 
     float points[] = {
         -width / 2, height / 2,

@@ -22,21 +22,19 @@ Root::Root() {
     texture_factory_ = std::make_unique<TextureFactory>();
 
     ui_program_ = std::make_unique<UIShaderProgram>("asset/ui.vs", "asset/ui.fs");
-    // _2d_program_ = std::make_unique<Simple2DShader>("assset/ui.vs", "asset/ui.fs");
+    _2d_program_ = std::make_unique<Simple2DShader>("asset/ui.vs", "asset/ui.fs");
 
     ui_object_builder_ = std::make_unique<VertexObjectBuilder>(*ui_program_);
-    // _2d_object_builder_ = std::make_unique<VertexObjectBuilder>(*_2d_program_);
+    _2d_object_builder_ = std::make_unique<VertexObjectBuilder>(*_2d_program_);
 
     ImageView::set_texture_factory(*texture_factory_);
     ImageView::set_vertex_object_builder(*ui_object_builder_);
 
-    /*
     sprite_factory_ = std::make_unique<SpriteFactory>(
         *image_loader_, *texture_factory_, *_2d_object_builder_);
 
     image_drawable_factory_ = std::make_unique<ImageDrawableFactory>(
         *image_loader_, *texture_factory_, *_2d_object_builder_);
-    */
 
     sound_manager_ = std::make_unique<SoundManager>();
 
@@ -44,9 +42,9 @@ Root::Root() {
 		glClear(GL_COLOR_BUFFER_BIT |
             GL_DEPTH_BUFFER_BIT);
 
-        // _2d_program_->predraw(640, 480);
-        // _2d_program_->draw();
-        // _2d_program_->postdraw();
+        _2d_program_->predraw(640, 480);
+        _2d_program_->draw();
+        _2d_program_->postdraw();
 
         ui_program_->predraw(640, 480);
         ui_program_->draw();
@@ -67,6 +65,10 @@ Root::Root() {
             50, 50, 100, 100, image);
     ui_program_->set_drawable(image_view->get_drawable());
     */
+
+    auto sprite = sprite_factory_->new_sprite("asset/explosion1.png", 6, 8, 0.4);
+    sprite->use_sprite(8);
+    _2d_program_->set_drawable(sprite);
 
     // Game Logic
     event_manager_ = std::make_unique<EventManager>();
