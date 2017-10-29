@@ -8,6 +8,7 @@ add_library(graphics-gl
     opengl_info.cpp
     shader_program.cpp
     ui_shader_program.cpp
+    simple_2d_shader.cpp
     vertex_object.cpp
     texture.cpp
 )
