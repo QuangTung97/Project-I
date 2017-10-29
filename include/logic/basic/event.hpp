@@ -1,8 +1,7 @@
 #ifndef LOGIC_EVENT_HPP
 #define LOGIC_EVENT_HPP
 
-#include "abstract/event.hpp"
-#include <cassert>
+#include <logic/abstract/event.hpp>
 
 namespace tung {
 
@@ -33,7 +32,7 @@ public:
     }
 
     IEventDataPtr clone() const override {
-        assert(false);
+        return std::make_unique<EventData>(time_point_, event_type_);
     }
 
     virtual ~EventData() {}

@@ -1,11 +1,15 @@
 #ifndef GAME_LOGIC_HPP
 #define GAME_LOGIC_HPP
 
-#include "actor.hpp"
 #include <unordered_map>
+#include "actor/actor.hpp"
 #include <logic/abstract/event_manager.hpp>
 
 namespace tung {
+
+using actor::ActorId;
+using actor::StrongActorPtr;
+using actor::WeakActorPtr;
 
 class GameLogic {
 private:

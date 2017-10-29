@@ -1,6 +1,6 @@
 #include <gmock/gmock.h>
-#include <logic/event_manager.hpp>
-#include <logic/event.hpp>
+#include <logic/basic/event_manager.hpp>
+#include <logic/basic/event.hpp>
 
 using namespace tung;
 

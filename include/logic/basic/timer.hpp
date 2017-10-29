@@ -1,9 +1,9 @@
 #ifndef LOGIC_TIMER_HPP
 #define LOGIC_TIMER_HPP
 
-#include "abstract/timer.hpp"
+#include <logic/abstract/timer.hpp>
+#include <logic/abstract/event_manager.hpp>
 #include "event.hpp"
-#include "abstract/event_manager.hpp"
 
 namespace tung {
 

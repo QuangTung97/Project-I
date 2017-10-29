@@ -1,16 +1,15 @@
-#ifndef LOGIC_COLLISION_SYSTEM_HPP
-#define LOGIC_COLLISION_SYSTEM_HPP
+#ifndef LOGIC_SYSTEM_COLLISION_HPP
+#define LOGIC_SYSTEM_COLLISION_HPP
 
 #include <logic/abstract/event_manager.hpp>
 #include <logic/abstract/timer.hpp>
-#include "collision_component.hpp"
-#include <logic/actor_component.hpp>
-#include <logic/actor.hpp>
+#include <logic/actor/collision.hpp>
 #include <unordered_map>
 
 namespace tung {
+namespace system {
 
-class CollisionSystem {
+class Collision {
 private:
     IEventManager& manager_;
     ITimer& timer_;
@@ -18,20 +17,21 @@ private:
     EventListener actor_destroy_listener_;
     EventListener actor_move_listener_;
 
-    typedef std::weak_ptr<CollisionComponent> WeakPtr;
-    typedef std::unordered_map<ActorId, WeakPtr> 
+    typedef std::weak_ptr<actor::Collision> WeakPtr;
+    typedef std::unordered_map<actor::ActorId, WeakPtr> 
         ActorComponentMap;
 
     ActorComponentMap actor_components_;
 
 public:
-    CollisionSystem(IEventManager& manager, ITimer& timer);
+    Collision(IEventManager& manager, ITimer& timer);
 
     void update();
 
-    ~CollisionSystem();
+    ~Collision();
 };
 
+} // namespace system
 } // namespace tung
 
 #endif

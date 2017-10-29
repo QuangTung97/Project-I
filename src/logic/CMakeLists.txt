@@ -1,15 +1,17 @@
 project(logic)
 
-add_library(logic
-    process_manager.cpp
-    event_manager.cpp
-    timer.cpp
-    actor.cpp
-    game_logic.cpp
-    collision_component.cpp
-    sound_system.cpp
-    collision_system.cpp
+add_subdirectory(basic)
+add_subdirectory(actor)
+add_subdirectory(system)
+add_subdirectory(factory)
 
-    plane_component.cpp
-    plane_factory.cpp
+add_library(logic
+    game_logic.cpp
+)
+
+target_link_libraries(logic 
+    logic-basic
+    logic-actor
+    logic-system
+    logic-factory
 )

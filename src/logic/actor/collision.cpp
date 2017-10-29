@@ -1,12 +1,13 @@
-#include <logic/collision_component.hpp>
+#include <logic/actor/collision.hpp>
 
 namespace tung {
+namespace actor {
 
-EventType<7001> ACTOR_COLLIDE;
+EventType<7001> EVENT_COLLIDE;
 
-bool CircleCollisionComponent::is_collided(const CollisionComponent& other) {
+bool CircleCollision::is_collided(const Collision& other) {
     if (other.get_type() == Type::CIRCLE) {
-        const auto& circle = dynamic_cast<const CircleCollisionComponent&>(other);
+        const auto& circle = dynamic_cast<const CircleCollision&>(other);
         float dx = circle.x_ - this->x_;
         float dy = circle.y_ - this->y_;
         float d2 = dx * dx + dy * dy;
@@ -20,4 +21,5 @@ bool CircleCollisionComponent::is_collided(const CollisionComponent& other) {
     return false;
 }
 
+} // namespace actor
 } // namespace tung

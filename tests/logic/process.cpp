@@ -1,7 +1,7 @@
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 #include <logic/abstract/process.hpp>
-#include <logic/process_manager.hpp>
+#include <logic/basic/process_manager.hpp>
 
 using namespace tung;
 

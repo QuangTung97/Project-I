@@ -8,11 +8,11 @@
 #include <graphics/abstract/image.hpp>
 #include <graphics/abstract/texture.hpp>
 #include <sound/abstract/sound.hpp>
-#include <logic/event_manager.hpp>
-#include <logic/process_manager.hpp>
-#include <logic/timer.hpp>
-#include <logic/sound_system.hpp>
-#include <logic/collision_system.hpp>
+#include <logic/basic/event_manager.hpp>
+#include <logic/basic/process_manager.hpp>
+#include <logic/basic/timer.hpp>
+#include <logic/system/sound.hpp>
+#include <logic/system/collision.hpp>
 #include <logic/game_logic.hpp>
 
 namespace tung {
@@ -32,8 +32,8 @@ private:
     std::unique_ptr<EventManager> event_manager_;
     std::unique_ptr<ProcessManager> process_manager_;
     std::unique_ptr<Timer> timer_;
-    std::unique_ptr<SoundSystem> sound_system_;
-    std::unique_ptr<CollisionSystem> collision_system_;
+    std::unique_ptr<system::Sound> sound_system_;
+    std::unique_ptr<system::Collision> collision_system_;
     std::unique_ptr<GameLogic> game_logic_;
 
 public:

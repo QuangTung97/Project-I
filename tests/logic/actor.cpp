@@ -1,21 +1,26 @@
 #include <gmock/gmock.h>
-#include <logic/actor.hpp>
+#include <logic/actor/actor.hpp>
+#include <logic/actor/component.hpp>
 
 using namespace tung;
 
-class ActorComponent1: public ActorComponent {
+using tung::actor::ComponentId;
+using tung::actor::Component;
+using tung::actor::Actor;
+
+class ActorComponent1: public Component {
 public:
-    ActorComponentId get_id() const override {
-        return ActorComponentId::TEST1;
+    ComponentId get_id() const override {
+        return ComponentId::TEST1;
     }
 
     float x, y;
 };
 
-class ActorComponent2: public ActorComponent {
+class ActorComponent2: public Component {
 public:
-    ActorComponentId get_id() const override {
-        return ActorComponentId::TEST2;
+    ComponentId get_id() const override {
+        return ComponentId::TEST2;
     }
 
     double width, height;
@@ -34,16 +39,14 @@ TEST(Actor, get_component) {
     actor->add_component(com2);
 
     auto comp1 = actor->get_component<ActorComponent1>(
-        ActorComponentId::TEST1
+        ComponentId::TEST1
     ).lock();
 
     ASSERT_EQ(comp1->x, 100);
     ASSERT_EQ(comp1->y, 20);
 
-    auto null = actor->get_component<ActorComponent>(
-        ActorComponentId::TEST3
+    auto null = actor->get_component<Component>(
+        ComponentId::TEST3
     ).lock();
     ASSERT_EQ(null, nullptr);
-
-    actor->shutdown();
 }

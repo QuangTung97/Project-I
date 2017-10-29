@@ -55,8 +55,8 @@ Root::Root() {
     event_manager_ = std::make_unique<EventManager>();
     process_manager_ = std::make_unique<ProcessManager>();
     timer_ = std::make_unique<Timer>(*event_manager_);
-    sound_system_ = std::make_unique<SoundSystem>(*event_manager_);
-    collision_system_ = std::make_unique<CollisionSystem>(*event_manager_, *timer_);
+    sound_system_ = std::make_unique<system::Sound>(*event_manager_);
+    collision_system_ = std::make_unique<system::Collision>(*event_manager_, *timer_);
     game_logic_ = std::make_unique<GameLogic>(*event_manager_);
 }
 

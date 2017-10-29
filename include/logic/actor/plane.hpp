@@ -1,13 +1,15 @@
 #ifndef LOGIC_PLANE_COMPONENT_HPP
 #define LOGIC_PLANE_COMPONENT_HPP
 
-#include "actor_component.hpp"
 #include <logic/abstract/process.hpp>
 #include <sound/abstract/sound.hpp>
+#include "base.hpp"
+#include "component.hpp"
 
 namespace tung {
+namespace actor {
 
-class PlaneComponent: public ActorComponent {
+class Plane: public Component {
 protected:
     float x_, y_;
     bool is_fighter = true;
@@ -15,8 +17,8 @@ protected:
     ISoundPtr fly_sound_;
 
 public:
-    ActorComponentId get_id() const override {
-        return ActorComponentId::PLANE;
+    ComponentId get_id() const override {
+        return ComponentId::PLANE;
     }
 
     void start_flying();
@@ -24,6 +26,7 @@ public:
     void stop_flying();
 };
 
+} // namespace actor
 } // namespace tung
 
 #endif

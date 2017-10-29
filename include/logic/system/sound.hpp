@@ -4,17 +4,19 @@
 #include <logic/abstract/event_manager.hpp>
 
 namespace tung {
+namespace system {
 
-class SoundSystem {
+class Sound {
 private:
     IEventManager& manager_;
 
 public:
-    SoundSystem(IEventManager& manager);
+    Sound(IEventManager& manager);
 
-    ~SoundSystem();
+    ~Sound();
 };
 
+} // namespace system
 } // namespace tung
 
 #endif

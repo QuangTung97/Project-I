@@ -1,7 +1,7 @@
 #ifndef LOGIC_EVENT_MANAGER_HPP
 #define LOGIC_EVENT_MANAGER_HPP
 
-#include "abstract/event_manager.hpp"
+#include <logic/abstract/event_manager.hpp>
 #include <unordered_map>
 #include <vector>
 #include <list>
