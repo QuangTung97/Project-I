@@ -20,10 +20,12 @@ extern EventType<11001> EVENT_SPRITE_ENDED;
 
 class SpriteStartedEvent: public EventData {
 
-
 };
 
 class SpriteElement {
+private:
+    std::shared_ptr<SpriteDrawable> drawable_;
+    
 public:
     void start();
     void end();
@@ -34,7 +36,13 @@ private:
     std::vector<SpriteElement> elements_;
 
 public:
+    ComponentId get_id() const override {
+        return ComponentId::SPRITE;
+    }
 
+    void start(int index);
+
+    void end(int index);
 };
 
 } // namespace actor

@@ -66,8 +66,12 @@ Root::Root() {
     ui_program_->set_drawable(image_view->get_drawable());
     */
 
-    auto sprite = sprite_factory_->new_sprite("asset/explosion1.png", 6, 8, 0.4);
+    auto image = image_loader_->load("asset/explosion1.png");
+    auto texture = texture_factory_->create(image);
+    auto sprite = sprite_factory_->new_sprite(
+        texture, image->width(), image->height(), 6, 8, 0.4);
     sprite->use_sprite(8);
+    sprite->translate({0.5, 0, 0});
     _2d_program_->set_drawable(sprite);
 
     // Game Logic

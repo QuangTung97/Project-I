@@ -9,14 +9,13 @@ SpriteFactory::SpriteFactory(IImageLoader& loader,
     : loader_{loader}, texture_factory_{texture_factory}, builder_{builder}
 {}
 
-std::shared_ptr<SpriteDrawable> SpriteFactory::new_sprite(
-    std::string image_file, int rows, int cols, float height) {
+std::shared_ptr<SpriteDrawable> SpriteFactory::create_sprite(
+    ITexturePtr texture, int image_width, int image_height, 
+    int rows, int cols, float height) 
+{
     auto sprite = std::make_shared<SpriteDrawable>();
 
-    auto image = loader_.load(image_file);
-    auto texture = texture_factory_.create(image);
-
-    float width = height * image->width() / image->height() * rows / (float)cols;
+    float width = height * image_width / (float)image_height * rows / (float)cols;
 
     float points[] = {
         -width / 2, height / 2,
@@ -53,7 +52,29 @@ std::shared_ptr<SpriteDrawable> SpriteFactory::new_sprite(
         }
     }
 
-    return sprite;
+    return std::move(sprite);
+}
+
+std::shared_ptr<SpriteDrawable> SpriteFactory::new_sprite(
+    std::string image_file, int rows, int cols, float height) {
+
+    auto image = loader_.load(image_file);
+    auto texture = texture_factory_.create(image);
+
+    return std::move(this->create_sprite(std::move(texture),
+        image->width(), image->height(),
+        rows, cols, height
+    ));
+}
+
+std::shared_ptr<SpriteDrawable> SpriteFactory::new_sprite(
+    ITexturePtr texture, int image_width, int image_height, 
+    int rows, int cols, float height)
+{
+    return std::move(this->create_sprite(std::move(texture),
+        image_width, image_height,
+        rows, cols, height
+    ));
 }
 
 
