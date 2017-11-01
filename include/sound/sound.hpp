@@ -1,5 +1,5 @@
-#ifndef TUNG_SOUND_H
-#define TUNG_SOUND_H
+#ifndef TUNG_SOUND_HPP
+#define TUNG_SOUND_HPP
 
 #include "abstract/sound.hpp"
 #include <fmod/fmod.hpp>
@@ -16,8 +16,8 @@ private:
 
     std::shared_ptr<SoundRefCount> sound_ref_count_;
 
-    FMOD::Channel *channel_;
-    FMOD::System *system_;
+    FMOD::Channel *channel_ = nullptr;
+    FMOD::System *system_ = nullptr;
     bool paused_ = false;
     bool is_stream_;
 
@@ -58,8 +58,7 @@ public:
 
     ISoundPtr stream(const std::string& filename) override;
 
-    // update inside game loop
-    void update();
+    void update() override;
 
     virtual ~SoundManager();
 };

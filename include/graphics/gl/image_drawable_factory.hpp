@@ -2,21 +2,21 @@
 #define GRAPHICS_GL_IMAGE_DRAWABLE_FACTORY_HPP
 
 #include "drawable.hpp"
+#include <graphics/abstract/graphics_asset_manager.hpp>
 
 namespace tung {
 
 class ImageDrawableFactory {
 private:
-    IImageLoader& loader_;
-    ITextureFactory& texture_factory_;
+    IGraphicsAssetManager& asset_manager_;
     IVertexObjectBuilder& builder_;
 
 public:
-    ImageDrawableFactory(IImageLoader& loader, 
-        ITextureFactory& texture_factory,
+    ImageDrawableFactory(
+        IGraphicsAssetManager& asset_manager,
         IVertexObjectBuilder& builder);
 
-    IDrawablePtr new_drawable(std::string image, float height);
+    IDrawablePtr new_drawable(const std::string& image, float height);
 };
 
 } // namespace tung

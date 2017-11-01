@@ -3,10 +3,9 @@
 
 namespace tung {
 
-SpriteFactory::SpriteFactory(IImageLoader& loader, 
-        ITextureFactory& texture_factory,
+SpriteFactory::SpriteFactory(IGraphicsAssetManager& asset_manager,
         IVertexObjectBuilder& builder)
-    : loader_{loader}, texture_factory_{texture_factory}, builder_{builder}
+    : asset_manager_{asset_manager}, builder_{builder}
 {}
 
 std::shared_ptr<SpriteDrawable> SpriteFactory::create_sprite(
@@ -56,39 +55,28 @@ std::shared_ptr<SpriteDrawable> SpriteFactory::create_sprite(
 }
 
 std::shared_ptr<SpriteDrawable> SpriteFactory::new_sprite(
-    std::string image_file, int rows, int cols, float height) {
+    const std::string& filename, int rows, int cols, float height) {
+    auto image = asset_manager_.get_image(filename);
+    auto texture = asset_manager_.get_texture(filename);
 
-    auto image = loader_.load(image_file);
-    auto texture = texture_factory_.create(image);
-
-    return std::move(this->create_sprite(std::move(texture),
+    return this->create_sprite(std::move(texture),
         image->width(), image->height(),
         rows, cols, height
-    ));
-}
-
-std::shared_ptr<SpriteDrawable> SpriteFactory::new_sprite(
-    ITexturePtr texture, int image_width, int image_height, 
-    int rows, int cols, float height)
-{
-    return std::move(this->create_sprite(std::move(texture),
-        image_width, image_height,
-        rows, cols, height
-    ));
+    );
 }
 
 
-ImageDrawableFactory::ImageDrawableFactory(IImageLoader& loader, 
-        ITextureFactory& texture_factory,
+ImageDrawableFactory::ImageDrawableFactory(
+        IGraphicsAssetManager& asset_manager,
         IVertexObjectBuilder& builder)
-    : loader_{loader}, texture_factory_{texture_factory}, builder_{builder}
+    : asset_manager_{asset_manager}, builder_{builder}
 {}
 
-IDrawablePtr ImageDrawableFactory::new_drawable(std::string image_file, 
+IDrawablePtr ImageDrawableFactory::new_drawable(const std::string& filename, 
         float height) 
 {
-    auto image = loader_.load(image_file);
-    auto texture = texture_factory_.create(image);
+    auto image = asset_manager_.get_image(filename);
+    auto texture = asset_manager_.get_texture(filename);
 
     float width = height * image->width() / image->height();
 
@@ -114,7 +102,7 @@ IDrawablePtr ImageDrawableFactory::new_drawable(std::string image_file,
 
     auto object = builder_.build();
     auto result = std::make_shared<Drawable>(std::move(object));
-    return result;
+    return std::move(result);
 }
 
 } // namespace tung

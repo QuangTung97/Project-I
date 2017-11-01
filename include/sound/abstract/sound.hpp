@@ -1,5 +1,5 @@
-#ifndef SOUND_ABSTRACT_H
-#define SOUND_ABSTRACT_H
+#ifndef SOUND_ABSTRACT_HPP
+#define SOUND_ABSTRACT_HPP
 
 #include <memory>
 #include <string>
@@ -18,6 +18,10 @@ public:
     }
 };
 
+struct ISound;
+
+typedef std::shared_ptr<ISound> ISoundPtr;
+
 struct ISound {
     virtual void play() = 0;
 
@@ -35,17 +39,17 @@ struct ISound {
 
     virtual bool loop() = 0;
 
-    virtual std::unique_ptr<ISound> clone() = 0;
+    virtual ISoundPtr clone() = 0;
 
     virtual ~ISound() {}
 };
-
-typedef std::unique_ptr<ISound> ISoundPtr;
 
 struct ISoundManager {
     virtual ISoundPtr load(const std::string& filename) = 0;
 
     virtual ISoundPtr stream(const std::string& filename) = 0;
+
+    virtual void update() = 0;
 
     virtual ~ISoundManager() {}
 };

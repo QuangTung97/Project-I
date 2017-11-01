@@ -2,7 +2,6 @@
 #define LOGIC_PLANE_COMPONENT_HPP
 
 #include <logic/abstract/process.hpp>
-#include <sound/abstract/sound.hpp>
 #include "base.hpp"
 #include "component.hpp"
 
@@ -14,7 +13,6 @@ protected:
     float x_, y_;
     bool is_fighter = true;
     StrongProcessPtr fly_process_;
-    ISoundPtr fly_sound_;
 
 public:
     ComponentId get_id() const override {

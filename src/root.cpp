@@ -18,11 +18,17 @@ Root::Root() {
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     image_loader_ = std::make_unique<PngImageLoader>();
-
     texture_factory_ = std::make_unique<TextureFactory>();
+    sound_manager_ = std::make_unique<SoundManager>();
 
-    ui_program_ = std::make_unique<UIShaderProgram>("asset/ui.vs", "asset/ui.fs");
-    _2d_program_ = std::make_unique<Simple2DShader>("asset/ui.vs", "asset/ui.fs");
+    asset_manager_ = std::make_unique<AssetManager>(
+        *image_loader_,
+        *texture_factory_,
+        *sound_manager_
+    );
+
+    ui_program_ = std::make_unique<UIShaderProgram>("assets/ui.vs", "assets/ui.fs");
+    _2d_program_ = std::make_unique<Simple2DShader>("assets/ui.vs", "assets/ui.fs");
 
     ui_object_builder_ = std::make_unique<VertexObjectBuilder>(*ui_program_);
     _2d_object_builder_ = std::make_unique<VertexObjectBuilder>(*_2d_program_);
@@ -31,14 +37,16 @@ Root::Root() {
     ImageView::set_vertex_object_builder(*ui_object_builder_);
 
     sprite_factory_ = std::make_unique<SpriteFactory>(
-        *image_loader_, *texture_factory_, *_2d_object_builder_);
+        *asset_manager_, *_2d_object_builder_);
 
     image_drawable_factory_ = std::make_unique<ImageDrawableFactory>(
-        *image_loader_, *texture_factory_, *_2d_object_builder_);
-
-    sound_manager_ = std::make_unique<SoundManager>();
+        *asset_manager_, *_2d_object_builder_);
 
     auto run_function = [this]() {
+        sound_manager_->update();
+        collision_system_->update();
+        event_manager_->update();
+
 		glClear(GL_COLOR_BUFFER_BIT |
             GL_DEPTH_BUFFER_BIT);
 
@@ -49,9 +57,6 @@ Root::Root() {
         ui_program_->predraw(640, 480);
         ui_program_->draw();
         ui_program_->postdraw();
-
-        collision_system_->update();
-        event_manager_->update();
     };
 
     glfw_->set_run_callback(run_function);
@@ -59,17 +64,8 @@ Root::Root() {
     // set_char_callback
     // set_mouse_listener
 
-    /*
-    auto image = image_loader_->load("asset/cute.png");
-    auto image_view = std::make_shared<tung::ImageView>(
-            50, 50, 100, 100, image);
-    ui_program_->set_drawable(image_view->get_drawable());
-    */
-
-    auto image = image_loader_->load("asset/explosion1.png");
-    auto texture = texture_factory_->create(image);
     auto sprite = sprite_factory_->new_sprite(
-        texture, image->width(), image->height(), 6, 8, 0.4);
+        "assets/explosion1.png", 6, 8, 0.4);
     sprite->use_sprite(8);
     sprite->translate({0.5, 0, 0});
     _2d_program_->set_drawable(sprite);

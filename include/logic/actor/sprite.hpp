@@ -6,6 +6,7 @@
 #include "actor.hpp"
 #include "component.hpp"
 #include <graphics/gl/sprite_drawable.hpp>
+#include <graphics/gl/sprite_factory.hpp>
 
 namespace tung {
 
@@ -36,6 +37,8 @@ private:
     std::vector<SpriteElement> elements_;
 
 public:
+    Sprite(std::string filename, int rows, int cols, float height);
+
     ComponentId get_id() const override {
         return ComponentId::SPRITE;
     }
