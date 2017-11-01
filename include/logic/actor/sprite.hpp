@@ -1,0 +1,43 @@
+#ifndef LOGIC_ACTOR_SPRITE_HPP
+#define LOGIC_ACTOR_SPRITE_HPP
+
+#include <logic/basic/event.hpp>
+#include <vector>
+#include "actor.hpp"
+#include "component.hpp"
+#include <graphics/gl/sprite_drawable.hpp>
+
+namespace tung {
+
+namespace system {
+class Sprite;
+}
+
+namespace actor {
+
+extern EventType<11000> EVENT_SPRITE_STARTED;
+extern EventType<11001> EVENT_SPRITE_ENDED;
+
+class SpriteStartedEvent: public EventData {
+
+
+};
+
+class SpriteElement {
+public:
+    void start();
+    void end();
+};
+
+class Sprite: public Component {
+private:
+    std::vector<SpriteElement> elements_;
+
+public:
+
+};
+
+} // namespace actor
+} // namespace tung
+
+#endif

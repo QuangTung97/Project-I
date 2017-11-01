@@ -11,6 +11,7 @@ using actor::ActorId;
 using actor::StrongActorPtr;
 using actor::WeakActorPtr;
 
+// Control all actors for the game
 class GameLogic {
 private:
     typedef std::unordered_map<ActorId, StrongActorPtr> Actors;
