@@ -29,6 +29,7 @@ private:
 
     State state_ = UNINITIALIZED;
     StrongProcessPtr child_;
+    bool is_attached_ = false;
 
     void set_state(State state) { state_ = state; }
 
@@ -36,6 +37,16 @@ public:
     Process() = default;
 
     virtual ~Process() {}
+
+    void set_attached(bool value) {
+        is_attached_ = value;
+    }
+
+    bool is_attached() {
+        return is_attached_;
+    }
+
+    void reset() { set_state(UNINITIALIZED); }
 
     void succeed() { set_state(SUCCEEDED); }
 

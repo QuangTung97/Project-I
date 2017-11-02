@@ -39,6 +39,8 @@ struct IDrawableManager {
     virtual ~IDrawableManager() {}
 };
 
+typedef std::shared_ptr<IDrawableManager> IDrawableManagerPtr;
+
 } // namespace tung
 
 #endif

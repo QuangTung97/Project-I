@@ -27,6 +27,7 @@ void ProcessManager::update_processes(milliseconds dt) {
             else if (state == Process::ABORTED) {
                 current->on_abort();
             }
+            current->set_attached(false);
             it = process_list_.erase(it);
             continue; // no need for ++it
         }
@@ -35,6 +36,9 @@ void ProcessManager::update_processes(milliseconds dt) {
 }
 
 void ProcessManager::attach_process(StrongProcessPtr process) {
+    if (process->is_attached())
+        return;
+    process->set_attached(true);
     process_list_.push_back(std::move(process));
 }
 

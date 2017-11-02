@@ -9,6 +9,7 @@
 #include <graphics/abstract/texture.hpp>
 
 #include <sound/abstract/sound.hpp>
+#include <asset_manager.hpp>
 
 #include <logic/basic/event_manager.hpp>
 #include <logic/basic/process_manager.hpp>
@@ -20,7 +21,7 @@
 #include <graphics/gl/sprite_factory.hpp>
 #include <graphics/gl/image_drawable_factory.hpp>
 
-#include <asset_manager.hpp>
+#include <logic/actor/sprite.hpp>
 
 namespace tung {
 
@@ -49,6 +50,13 @@ private:
     std::unique_ptr<system::Sound> sound_system_;
     std::unique_ptr<system::Collision> collision_system_;
     std::unique_ptr<GameLogic> game_logic_;
+    TimePoint prev_timestamp_;
+
+    // Control Time
+    steady_clock::time_point prev_run_timestamp_;
+    const long fps_ = 60;
+
+    std::unique_ptr<actor::Sprite> sprite_component_;
 
 public:
     Root();

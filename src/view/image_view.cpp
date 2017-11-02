@@ -3,14 +3,14 @@
 namespace tung {
 
 IVertexObjectBuilder *ImageView::builder_ = nullptr;
-ITextureFactory *ImageView::texture_factory_ = nullptr;
+IGraphicsAssetManager *ImageView::asset_manager_ = nullptr;
 
 ImageView::ImageView(float x, float y, float width, float height, 
-        const IImagePtr& image) 
+        const std::string& filename) 
     : View(x, y, width, height)
 {
-    IVertexObjectBuilder& builder = *builder_;
-    ITextureFactory& texture_factory = *texture_factory_;
+    auto& builder = *builder_;
+    auto& asset_manager = *asset_manager_;
 
     float points[] = {
         0, 0,
@@ -26,7 +26,7 @@ ImageView::ImageView(float x, float y, float width, float height,
         1.0f, 1.0f
     };
 
-    texture_ = texture_factory.create(image);
+    texture_ = asset_manager.get_texture(filename);
 
     builder.clear();
     builder.add_attribute("position", points, 2, 4);

@@ -3,8 +3,21 @@
 
 #include <memory>
 #include <string>
+#include <exception>
 
 namespace tung {
+
+class ImageException: public std::exception {
+private:
+    std::string what_;
+
+public:
+    ImageException(std::string what): what_{what} {}
+
+    const char *what() const noexcept override {
+        return what_.c_str();
+    }
+};
 
 struct IImage {
     enum Format {

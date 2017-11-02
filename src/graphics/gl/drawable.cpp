@@ -74,7 +74,10 @@ void DrawableGroup::on_draw(IShaderProgram& program) {
 
 void DrawableGroup::attach_drawable(const IDrawablePtr& drawable)
 {
-    drawables_.push_back(drawable);
+    auto find_it = std::find(drawables_.begin(), drawables_.end(), drawable);
+    if (find_it == drawables_.end()) {
+        drawables_.push_back(drawable);
+    }
 }
 
 void DrawableGroup::detach_drawable(const IDrawablePtr& drawable)

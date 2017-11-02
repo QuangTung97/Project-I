@@ -4,32 +4,31 @@
 #include <view/view.hpp>
 #include <graphics/abstract/object.hpp>
 #include <graphics/gl/drawable.hpp>
-#include <graphics/abstract/texture.hpp>
+#include <graphics/abstract/graphics_asset_manager.hpp>
 
 namespace tung {
 
 class ImageView: public View {
 protected:
     static IVertexObjectBuilder *builder_;
-    static ITextureFactory *texture_factory_;
+    static IGraphicsAssetManager *asset_manager_;
     ITexturePtr texture_;
 
 public:
     ImageView(float x, float y, float width, float height, 
-            const IImagePtr& image);
+            const std::string& image_file);
 
     static void set_vertex_object_builder(IVertexObjectBuilder& builder) {
         builder_ = &builder;
     }
 
-    static void set_texture_factory(ITextureFactory& texture_factory) {
-        texture_factory_ = &texture_factory;
+    static void set_asset_manager(IGraphicsAssetManager& manager) {
+        asset_manager_ = &manager;
     }
 
     void set_size(float, float) override;
 
     virtual ~ImageView() {}
-
 };
 
 } // namespace tung

@@ -6,6 +6,7 @@
 #include <graphics/gl/vertex_object.hpp>
 #include <view/image_view.hpp>
 #include <sound/sound.hpp>
+#include <thread>
 
 namespace tung {
 
@@ -33,7 +34,7 @@ Root::Root() {
     ui_object_builder_ = std::make_unique<VertexObjectBuilder>(*ui_program_);
     _2d_object_builder_ = std::make_unique<VertexObjectBuilder>(*_2d_program_);
 
-    ImageView::set_texture_factory(*texture_factory_);
+    ImageView::set_asset_manager(*asset_manager_);
     ImageView::set_vertex_object_builder(*ui_object_builder_);
 
     sprite_factory_ = std::make_unique<SpriteFactory>(
@@ -43,9 +44,28 @@ Root::Root() {
         *asset_manager_, *_2d_object_builder_);
 
     auto run_function = [this]() {
+        // Control Time
+        if (prev_run_timestamp_ == steady_clock::time_point{}) {
+            prev_run_timestamp_ = steady_clock::now();
+        }
+        else {
+            auto dt = steady_clock::now() - prev_run_timestamp_;
+            const nanoseconds frame_time{1'000'000'000 / fps_};
+            std::this_thread::sleep_for(frame_time - dt);
+            prev_run_timestamp_ = steady_clock::now();
+        }
+
         sound_manager_->update();
         collision_system_->update();
         event_manager_->update();
+
+        if (prev_timestamp_ == TimePoint{}) {
+            prev_timestamp_ = timer_->current_time();
+        }
+        milliseconds dt = duration_cast<milliseconds>(
+            timer_->current_time() - prev_timestamp_);
+        prev_timestamp_ += dt;
+        process_manager_->update_processes(dt);
 
 		glClear(GL_COLOR_BUFFER_BIT |
             GL_DEPTH_BUFFER_BIT);
@@ -64,11 +84,19 @@ Root::Root() {
     // set_char_callback
     // set_mouse_listener
 
+    auto background = std::make_shared<ImageView>(0, 0, 
+        640, 480, "assets/llvm.png");
+
+    // ui_program_->set_drawable(background->get_drawable());
+
+    auto root = std::make_shared<DrawableGroup>();
     auto sprite = sprite_factory_->new_sprite(
         "assets/explosion1.png", 6, 8, 0.4);
     sprite->use_sprite(8);
     sprite->translate({0.5, 0, 0});
-    _2d_program_->set_drawable(sprite);
+
+    root->attach_drawable(sprite);
+    _2d_program_->set_drawable(root);
 
     // Game Logic
     event_manager_ = std::make_unique<EventManager>();
@@ -77,6 +105,12 @@ Root::Root() {
     sound_system_ = std::make_unique<system::Sound>(*event_manager_);
     collision_system_ = std::make_unique<system::Collision>(*event_manager_, *timer_);
     game_logic_ = std::make_unique<GameLogic>(*event_manager_);
+
+    sprite_component_ = std::make_unique<actor::Sprite>(
+        root, *sprite_factory_, *process_manager_);
+
+    sprite_component_->add_sprite(0, "assets/explosion1.png", 6, 8, 0.6);
+    sprite_component_->start(0);
 }
 
 void Root::run() {

@@ -2,11 +2,11 @@
 #define LOGIC_ACTOR_SPRITE_HPP
 
 #include <logic/basic/event.hpp>
-#include <vector>
 #include "actor.hpp"
 #include "component.hpp"
 #include <graphics/gl/sprite_drawable.hpp>
 #include <graphics/gl/sprite_factory.hpp>
+#include <logic/basic/process_manager.hpp>
 
 namespace tung {
 
@@ -20,28 +20,76 @@ extern EventType<11000> EVENT_SPRITE_STARTED;
 extern EventType<11001> EVENT_SPRITE_ENDED;
 
 class SpriteStartedEvent: public EventData {
+private:
+    int index_;
+public:
+    SpriteStartedEvent(int index)
+    : EventData(TimePoint{}, EVENT_SPRITE_STARTED), index_{index} {}
 
+    IEventDataPtr clone() const override {
+        return std::make_unique<SpriteStartedEvent>(index_);
+    }
 };
 
-class SpriteElement {
+class SpriteEndedEvent: public EventData {
 private:
-    std::shared_ptr<SpriteDrawable> drawable_;
-    
+    int index_;
+
 public:
-    void start();
-    void end();
+    SpriteEndedEvent(int index)
+    : EventData(TimePoint{}, EVENT_SPRITE_ENDED), index_{index} {}
+
+    IEventDataPtr clone() const override {
+        return std::make_unique<SpriteEndedEvent>(index_);
+    }
+};
+
+class Sprite;
+
+class SpriteProcess: public Process {
+private:
+    milliseconds current_time_;
+    const std::shared_ptr<SpriteDrawable> drawable_;
+    Sprite& owner_;
+    const int fps_ = 24;
+    float x_, y_;
+    friend class Sprite;
+
+public:
+    SpriteProcess(Sprite& owner, std::shared_ptr<SpriteDrawable> drawable);
+
+    void move_to(float x, float y) { x_ = x; y_ = y; }
+
+protected:
+    void on_init() override;
+
+    void on_update(milliseconds dt) override;
+
+    void on_success() override;
+
+    void on_fail() override;
 };
 
 class Sprite: public Component {
 private:
-    std::vector<SpriteElement> elements_;
+    friend class SpriteProcess;
+    std::unordered_map<int, std::shared_ptr<SpriteProcess>> processes_;
+    IDrawableManagerPtr root_;
+    SpriteFactory& factory_;
+    ProcessManager& manager_;
 
 public:
-    Sprite(std::string filename, int rows, int cols, float height);
+    Sprite(IDrawableManagerPtr root, SpriteFactory& factory, ProcessManager& manager)
+    : root_{std::move(root)}, factory_{factory}, manager_{manager} {}
 
     ComponentId get_id() const override {
         return ComponentId::SPRITE;
     }
+
+    void add_sprite(int index, const std::string& image, 
+        int rows, int cols, float height);
+
+    void move_to(float x, float y);
 
     void start(int index);
 

@@ -44,14 +44,14 @@ IImagePtr PngImageLoader::load(const std::string& filename) {
     FILE *fp;
  
     if ((fp = fopen(filename.c_str(), "rb")) == NULL)
-        return nullptr;
+        throw ImageException("Can't read file");
  
     png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING,
                                      nullptr, nullptr, nullptr);
  
     if (png_ptr == nullptr) {
         fclose(fp);
-        return nullptr;
+        throw ImageException("Can't load file");
     }
  
     /* Allocate/initialize the memory
@@ -60,7 +60,7 @@ IImagePtr PngImageLoader::load(const std::string& filename) {
     if (info_ptr == NULL) {
         fclose(fp);
         png_destroy_read_struct(&png_ptr, NULL, NULL);
-        return nullptr;
+        throw ImageException("Can't load file");
     }
  
     /* Set error handling if you are
@@ -79,7 +79,7 @@ IImagePtr PngImageLoader::load(const std::string& filename) {
         fclose(fp);
         /* If we get here, we had a
          * problem reading the file */
-        return nullptr;
+        throw ImageException("Can't load file");
     }
  
     /* Set up the output control if
@@ -110,14 +110,14 @@ IImagePtr PngImageLoader::load(const std::string& filename) {
     else if (bit_depth == 16)
         result->bit_depth_ = IImage::BIT_DEPTH_16;
     else
-        return nullptr;
+        throw ImageException("Wrong bit depth");
 
     if (color_type == PNG_COLOR_TYPE_RGB)
         result->format_ = IImage::FORMAT_RGBA;
     else if (color_type == PNG_COLOR_TYPE_RGB_ALPHA)
         result->format_ = IImage::FORMAT_RGBA;
     else
-        return nullptr;
+        throw ImageException("Wrong color type");
  
     unsigned int row_bytes = png_get_rowbytes(png_ptr, info_ptr);
     result->data_ = malloc(row_bytes * result->height_);
