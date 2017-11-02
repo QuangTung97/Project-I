@@ -6,8 +6,8 @@
 namespace tung {
 namespace system {
 
-Sprite::Sprite(IEventManager& manager, ITimer& timer) 
-: manager_{manager}, timer_{timer} 
+Sprite::Sprite(IEventManager& manager) 
+: manager_{manager}
 {
     auto actor_created = [this](const IEventData& event_) {
         auto& event = dynamic_cast<const actor::CreatedEvent&>(event_);

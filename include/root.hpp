@@ -14,9 +14,11 @@
 #include <logic/basic/event_manager.hpp>
 #include <logic/basic/process_manager.hpp>
 #include <logic/basic/timer.hpp>
+#include <logic/game_logic.hpp>
+
 #include <logic/system/sound.hpp>
 #include <logic/system/collision.hpp>
-#include <logic/game_logic.hpp>
+#include <logic/system/sprite.hpp>
 
 #include <graphics/gl/sprite_factory.hpp>
 #include <graphics/gl/image_drawable_factory.hpp>
@@ -43,14 +45,17 @@ private:
     std::unique_ptr<SpriteFactory> sprite_factory_;
     std::unique_ptr<ImageDrawableFactory> image_drawable_factory_;
 
-    // Logic
+    // Game Logic
     std::unique_ptr<EventManager> event_manager_;
     std::unique_ptr<ProcessManager> process_manager_;
+    TimePoint prev_timestamp_; // Use for Process Manager
     std::unique_ptr<Timer> timer_;
+    std::unique_ptr<GameLogic> game_logic_;
+
+    // Game Logic - Systems
     std::unique_ptr<system::Sound> sound_system_;
     std::unique_ptr<system::Collision> collision_system_;
-    std::unique_ptr<GameLogic> game_logic_;
-    TimePoint prev_timestamp_;
+    std::unique_ptr<system::Sprite> sprite_system_;
 
     // Control Time
     steady_clock::time_point prev_run_timestamp_;
