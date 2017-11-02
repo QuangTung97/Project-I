@@ -13,26 +13,6 @@ class Collision;
 
 namespace actor {
 
-extern EventType<7001> EVENT_COLLIDE;
-
-class CollideEvent: public EventData {
-private:
-    ActorId id_;
-
-public:
-    CollideEvent(TimePoint time_point, ActorId id)
-    : EventData{time_point, EVENT_COLLIDE}, id_{id} {}
-
-    IEventDataPtr clone() const override {
-        return std::make_unique<CollideEvent>(
-            time_point_,
-            id_
-        );
-    }
-
-    ActorId get_id() const { return id_; }
-};
-
 class Collision: public Component {
 protected:
     float x_, y_;

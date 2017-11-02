@@ -1,5 +1,6 @@
 #include <logic/system/collision.hpp>
 #include <logic/game_logic.hpp>
+#include <logic/actor/events.hpp>
 
 namespace tung {
 namespace system {

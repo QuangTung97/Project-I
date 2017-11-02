@@ -14,12 +14,13 @@ enum class ComponentId {
     POSITION,
     COLLISION,
     SPRITE,
+    SOUND,
     PLANE,
     CANNON,
     BULLET
 };
 
-}
-}
+} // namespace actor
+} // namespace tung
 
 #endif

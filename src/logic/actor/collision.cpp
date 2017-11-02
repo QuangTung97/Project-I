@@ -3,8 +3,6 @@
 namespace tung {
 namespace actor {
 
-EventType<7001> EVENT_COLLIDE;
-
 const ComponentId Collision::COMPONENT_ID = ComponentId::COLLISION;
 
 bool CircleCollision::is_collided(const Collision& other) {

@@ -1,5 +1,6 @@
 #include <logic/game_logic.hpp>
 #include <logic/actor/actor.hpp>
+#include <logic/actor/events.hpp>
 
 namespace tung {
 

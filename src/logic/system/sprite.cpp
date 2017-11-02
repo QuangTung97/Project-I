@@ -1,6 +1,7 @@
 #include <logic/system/sprite.hpp>
 #include <logic/actor/actor.hpp>
 #include <logic/game_logic.hpp>
+#include <logic/actor/events.hpp>
 
 namespace tung {
 namespace system {
@@ -12,26 +13,46 @@ Sprite::Sprite(IEventManager& manager, ITimer& timer)
         auto& event = dynamic_cast<const actor::CreatedEvent&>(event_);
 
         auto tmp_actor = GameLogic::get().get_actor(event.get_id()).lock();
-        if (tmp_actor == nullptr) 
-            return;
-
-        components_[event.get_id()] = tmp_actor->get_component<actor::Sprite>();
+        if (tmp_actor) {
+            components_[event.get_id()] = tmp_actor->get_component<actor::Sprite>();
+        }
     };
 
-    auto actor_destroy = [this](const IEventData& event) {
-
+    auto actor_destroy = [this](const IEventData& event_) {
+        auto& event = dynamic_cast<const actor::DestroyEvent&>(event_);
+        auto find_it = components_.find(event.get_id());
+        if (find_it != components_.end()) {
+            auto comp = find_it->second.lock();
+            comp->set_owner(nullptr);
+            components_.erase(find_it);
+        }
     };
 
-    auto actor_move = [this](const IEventData& event) {
-
+    auto actor_move = [this](const IEventData& event_) {
+        auto& event = dynamic_cast<const actor::MoveEvent&>(event_);
+        auto find_it = components_.find(event.get_id());
+        if (find_it != components_.end()) {
+            auto comp = find_it->second.lock();
+            comp->move_to(event.get_x(), event.get_y());
+        }
     };
 
-    auto sprite_started = [this](const IEventData& event) {
-
+    auto sprite_started = [this](const IEventData& event_) {
+        auto& event = dynamic_cast<const actor::SpriteStartedEvent&>(event_);
+        auto find_it = components_.find(event.get_id());
+        if (find_it != components_.end()) {
+            auto comp = find_it->second.lock();
+            comp->start(event.get_index());
+        }
     };
 
-    auto sprite_ended = [this](const IEventData& event) {
-        
+    auto sprite_ended = [this](const IEventData& event_) {
+        auto& event = dynamic_cast<const actor::SpriteEndedEvent&>(event_);
+        auto find_it = components_.find(event.get_id());
+        if (find_it != components_.end()) {
+            auto comp = find_it->second.lock();
+            comp->end(event.get_index());
+        }
     };
 
     actor_created_listener_ = actor_created;

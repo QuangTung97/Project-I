@@ -1,4 +1,5 @@
 #include <logic/system/sound.hpp>
+#include <logic/actor/events.hpp>
 
 namespace tung {
 namespace system {

@@ -19,68 +19,6 @@ public:
     static ActorId new_id();
 };
 
-// Actor Events
-extern EventType<9000> EVENT_DESTROY;
-extern EventType<9001> EVENT_CREATED;
-extern EventType<9002> EVENT_MOVE;
-
-class DestroyEvent: public EventData {
-private:
-    const ActorId id_;
-
-public:
-    DestroyEvent(TimePoint time_point, ActorId id)
-    : EventData(time_point, EVENT_DESTROY), id_{id} {}
-
-    ActorId get_id() const { return id_; }
-
-    IEventDataPtr clone() const override {
-        return std::make_unique<DestroyEvent>(time_point_, id_);
-    }
-
-    virtual ~DestroyEvent() {}
-};
-
-class CreatedEvent: public EventData {
-private:
-    const ActorId id_;
-
-public:
-    CreatedEvent(TimePoint time_point, ActorId id)
-    : EventData(time_point, EVENT_CREATED), id_{id} {}
-
-    ActorId get_id() const { return id_; }
-
-    IEventDataPtr clone() const override {
-        return std::make_unique<CreatedEvent>(time_point_, id_);
-    }
-
-    virtual ~CreatedEvent() {}
-};
-
-class MoveEvent: public EventData {
-private:
-    const ActorId id_;
-    const float x_, y_;
-
-public:
-    MoveEvent(TimePoint time_point, ActorId id,
-        float x, float y)
-    : EventData{time_point, EVENT_MOVE}, id_{id}, x_{x}, y_{y} {}
-
-    ActorId get_id() const {
-        return id_;
-    }
-
-    float get_x() const { return x_; }
-
-    float get_y() const { return y_; }
-
-    IEventDataPtr clone() const override {
-        return std::make_unique<MoveEvent>(time_point_, id_, x_, y_);
-    }
-};
-
 class Actor {
 private:
     typedef std::map<ComponentId, StrongComponentPtr> ActorComponents;

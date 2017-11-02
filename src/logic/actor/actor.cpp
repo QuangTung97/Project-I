@@ -4,10 +4,6 @@
 namespace tung {
 namespace actor {
 
-EventType<9000> EVENT_DESTROY;
-EventType<9001> EVENT_CREATED;
-EventType<9002> EVENT_MOVE;
-
 ActorId IdGenerator::last_ = 0;
 
 ActorId IdGenerator::new_id() {

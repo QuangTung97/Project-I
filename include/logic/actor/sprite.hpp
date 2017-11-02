@@ -16,34 +16,6 @@ class Sprite;
 
 namespace actor {
 
-extern EventType<11000> EVENT_SPRITE_STARTED;
-extern EventType<11001> EVENT_SPRITE_ENDED;
-
-class SpriteStartedEvent: public EventData {
-private:
-    int index_;
-public:
-    SpriteStartedEvent(int index)
-    : EventData(TimePoint{}, EVENT_SPRITE_STARTED), index_{index} {}
-
-    IEventDataPtr clone() const override {
-        return std::make_unique<SpriteStartedEvent>(index_);
-    }
-};
-
-class SpriteEndedEvent: public EventData {
-private:
-    int index_;
-
-public:
-    SpriteEndedEvent(int index)
-    : EventData(TimePoint{}, EVENT_SPRITE_ENDED), index_{index} {}
-
-    IEventDataPtr clone() const override {
-        return std::make_unique<SpriteEndedEvent>(index_);
-    }
-};
-
 class Sprite;
 
 class SpriteProcess: public Process {
