@@ -105,6 +105,16 @@ public:
         return ptr;
     }
 
+    template<typename Component_>
+    std::weak_ptr<Component_> get_component() {
+        std::shared_ptr<Component_> ptr = nullptr;
+        auto find_it = components_.find(Component_::COMPONENT_ID);
+        if (find_it != components_.end()) {
+            ptr = std::dynamic_pointer_cast<Component_>(find_it->second);
+        }
+        return ptr;
+    }
+
 public:
     void add_component(StrongComponentPtr component);
 };

@@ -11,7 +11,7 @@ Collision::Collision(IEventManager& manager, ITimer& timer)
         auto actor = GameLogic::get().get_actor(data.get_id()).lock();
         if (actor) {
             actor_components_[data.get_id()] = 
-                actor->get_component<actor::Collision>(actor::ComponentId::COLLISION);
+                actor->get_component<actor::Collision>();
         }
     };
     actor_created_listener_ = actor_created;

@@ -15,6 +15,7 @@ private:
     ITimer& timer_;
     EventListener actor_created_listener_;
     EventListener actor_destroy_listener_;
+    EventListener actor_move_listener_;
     EventListener sprite_started_listener_;
     EventListener sprite_ended_listener_;
 
@@ -22,12 +23,10 @@ private:
     typedef std::unordered_map<actor::ActorId, WeakPtr> 
         ActorComponentMap;
 
-    ActorComponentMap actor_components_;
+    ActorComponentMap components_;
 
 public:
     Sprite(IEventManager& manager, ITimer& timer);
-
-    void update();
 
     ~Sprite();
 };

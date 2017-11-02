@@ -82,6 +82,8 @@ public:
     Sprite(IDrawableManagerPtr root, SpriteFactory& factory, ProcessManager& manager)
     : root_{std::move(root)}, factory_{factory}, manager_{manager} {}
 
+    static const ComponentId COMPONENT_ID;
+
     ComponentId get_id() const override {
         return ComponentId::SPRITE;
     }

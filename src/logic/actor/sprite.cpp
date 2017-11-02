@@ -35,6 +35,8 @@ void SpriteProcess::on_fail() {
 // *************
 // Sprite
 // *************
+const ComponentId Sprite::COMPONENT_ID = ComponentId::SPRITE;
+
 void Sprite::add_sprite(int index, const std::string& filename, 
         int rows, int cols, float height)
 {

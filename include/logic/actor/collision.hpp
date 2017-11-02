@@ -43,6 +43,8 @@ protected:
     friend class tung::system::Collision;
 
 public:
+    static const ComponentId COMPONENT_ID;
+
     Collision(float x, float y)
     : x_{x}, y_{y} {}
 

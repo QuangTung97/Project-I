@@ -5,6 +5,8 @@ namespace actor {
 
 EventType<7001> EVENT_COLLIDE;
 
+const ComponentId Collision::COMPONENT_ID = ComponentId::COLLISION;
+
 bool CircleCollision::is_collided(const Collision& other) {
     if (other.get_type() == Type::CIRCLE) {
         const auto& circle = dynamic_cast<const CircleCollision&>(other);
