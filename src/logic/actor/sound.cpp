@@ -11,11 +11,17 @@ void Sound::add_sound(int index, const std::string& filename) {
 }
 
 void Sound::start(int index) {
-    sounds_[index]->play();
+    auto find_it = sounds_.find(index);
+    if (find_it != sounds_.end()) {
+        find_it->second->play();
+    }
 }
 
 void Sound::end(int index) {
-    sounds_[index]->stop();
+    auto find_it = sounds_.find(index);
+    if (find_it != sounds_.end()) {
+        find_it->second->stop();
+    }
 }
 
 } // namespace actor

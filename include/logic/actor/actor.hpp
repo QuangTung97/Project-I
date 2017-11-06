@@ -19,7 +19,7 @@ public:
     static ActorId new_id();
 };
 
-class Actor {
+class Actor: public std::enable_shared_from_this<Actor> {
 private:
     typedef std::map<ComponentId, StrongComponentPtr> ActorComponents;
     ActorId id_;

@@ -8,6 +8,9 @@
 #include <sound/sound.hpp>
 #include <thread>
 
+#include <logic/actor/plane.hpp>
+#include <iostream>
+
 namespace tung {
 
 Root::Root() {
@@ -114,6 +117,19 @@ Root::Root() {
 
     sprite_component_->add_sprite(0, "assets/explosion1.png", 6, 8, 0.6);
     sprite_component_->start(0);
+
+    plane_factory_ = std::make_unique<factory::Plane>(
+        *event_manager_,
+        *sound_manager_,
+        *process_manager_,
+        *sprite_factory_,
+        root
+    );
+
+    auto id = plane_factory_->new_plane(false);
+    auto plane = GameLogic::get().get_actor(id).lock();
+    auto comp = plane->get_component<actor::Plane>().lock();
+    comp->start_fly();
 }
 
 void Root::run() {

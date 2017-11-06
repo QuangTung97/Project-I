@@ -24,6 +24,7 @@
 #include <graphics/gl/image_drawable_factory.hpp>
 
 #include <logic/actor/sprite.hpp>
+#include <logic/factory/plane.hpp>
 
 namespace tung {
 
@@ -62,6 +63,8 @@ private:
     const long fps_ = 60;
 
     std::unique_ptr<actor::Sprite> sprite_component_;
+
+    std::unique_ptr<factory::Plane> plane_factory_;
 
 public:
     Root();

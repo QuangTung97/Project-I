@@ -2,6 +2,8 @@
 #include <logic/actor/events.hpp>
 #include <logic/game_logic.hpp>
 
+#include <iostream>
+
 namespace tung {
 namespace system {
 
@@ -31,6 +33,7 @@ Sound::Sound(IEventManager& manager)
         auto find_it = components_.find(event.get_id());
         if (find_it != components_.end()) {
             auto comp = find_it->second.lock();
+            std::cout << event.get_index() << std::endl;
             comp->start(event.get_index());
         }
     };

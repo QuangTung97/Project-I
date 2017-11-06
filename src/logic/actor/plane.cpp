@@ -2,6 +2,8 @@
 #include <logic/actor/plane.hpp>
 #include <logic/actor/events.hpp>
 
+#include <iostream>
+
 namespace tung {
 namespace actor {
 
@@ -13,7 +15,9 @@ void FlyProcess::on_init() {
 
     // Plane's Sound
     SoundStartedEvent event{owner_.get_actor_id(), 0};
-    owner_.event_manager_.queue(event);
+    std::cout << &owner_.event_manager_ << std::endl;
+
+    owner_.event_manager_.trigger(event);
 }
 
 void FlyProcess::on_update(milliseconds dt) {
@@ -27,6 +31,7 @@ void FlyProcess::on_update(milliseconds dt) {
 
     MoveEvent event{owner_.get_actor_id(), owner_.x_, owner_.y_};
     owner_.event_manager_.trigger(event);
+    std::cout << &owner_ << std::endl;
 }
 
 void FlyProcess::on_success() {
@@ -64,9 +69,9 @@ void WaitToDestroyPlaneProcess::on_success() {
     owner_.event_manager_.queue(destroy_actor);
 }
 
-//-----------------
+//-------------------------------
 // Plane
-//-----------------
+//-------------------------------
 const ComponentId Plane::COMPONENT_ID = ComponentId::PLANE;
 
 Plane::Plane(IEventManager& event_manager, ProcessManager& process_manager, 
@@ -75,7 +80,7 @@ Plane::Plane(IEventManager& event_manager, ProcessManager& process_manager,
     x_{x}, y_{y}, velocity_{velocity}, is_fighter_{is_fighter} 
 {
     fly_process_ = std::make_shared<FlyProcess>(*this);
-    destroy_plane_ = std::make_shared<WaitToDestroyPlaneProcess>(*this, 3s);
+    destroy_plane_ = std::make_shared<WaitToDestroyPlaneProcess>(*this, 2s);
 }
 
 void Plane::start_fly() {
@@ -92,6 +97,9 @@ void Plane::explode() {
     // Explosion's Sound
     actor::SoundStartedEvent sound_started{get_actor_id(), 1};
     event_manager_.queue(sound_started);
+
+    actor::SpriteStartedEvent sprite_started{get_actor_id(), 0};
+    event_manager_.queue(sprite_started);
 
     process_manager_.attach_process(destroy_plane_);
 }
