@@ -18,9 +18,9 @@ public:
 
     virtual ~Component() {}
 
-    void set_owner(StrongActorPtr owner) {
-        this->owner_ = std::move(owner);
-    }
+    void set_owner(StrongActorPtr owner);
+
+    ActorId get_actor_id() const;
 };
 
 } // namespace actor

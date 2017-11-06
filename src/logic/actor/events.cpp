@@ -26,9 +26,5 @@ EventType<11001> EVENT_SPRITE_ENDED;
 EventType<1300> EVENT_SOUND_STARTED;
 EventType<1300> EVENT_SOUND_ENDED;
 
-//----------------------
-// Sound Handling
-//----------------------
-
 } // namespace actor
 } // namespace tung

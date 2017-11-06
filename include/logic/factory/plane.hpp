@@ -10,7 +10,7 @@ class Plane {
 private:
 
 public:
-    actor::WeakActorPtr new_plane(bool is_fighter = true);
+    actor::ActorId new_plane(bool is_fighter = true);
 };
 
 } // namespace factory

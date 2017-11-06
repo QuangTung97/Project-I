@@ -179,10 +179,6 @@ public:
     int get_index() const { return index_; }
 };
 
-//----------------------
-// Plane Handling
-//----------------------
-
 } // namespace actor
 } // namespace tung
 
