@@ -30,9 +30,6 @@ void FlyProcess::on_update(milliseconds dt) {
 }
 
 void FlyProcess::on_success() {
-    // PlaneSelfEndEvent event{owner_.get_actor_id()};
-    // owner_.event_manager_.queue(event);
-
     // Plane's Sound
     SoundEndedEvent event{owner_.get_actor_id(), 0};
     owner_.event_manager_.queue(event);
