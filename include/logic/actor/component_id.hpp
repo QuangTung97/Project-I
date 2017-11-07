@@ -13,6 +13,7 @@ enum class ComponentId {
     TEST3,
     POSITION,
     COLLISION,
+    GRAPHICS_IMAGE,
     SPRITE,
     SOUND,
     PLANE,

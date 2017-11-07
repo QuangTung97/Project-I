@@ -18,6 +18,10 @@ public:
     
     void set_vertex_object(IVertexObjectPtr) override {}
 
+    void show() override {}
+
+    void hide() override {}
+
     void translate(glm::vec3) override {}
 
     void rotate(float, glm::vec3) override {}

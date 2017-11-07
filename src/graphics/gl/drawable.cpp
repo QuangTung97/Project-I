@@ -28,6 +28,8 @@ const glm::mat4& Drawable::model_matrix() const {
 void Drawable::on_draw(IShaderProgram& program) {
     if (object_ == nullptr)
         return;
+    if (hidden_)
+        return;
 
     int model_location = program.locations().at("modelMatrix");
     auto& stack = program.model_matrix_stack();

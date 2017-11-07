@@ -2,6 +2,8 @@
 #include <logic/game_logic.hpp>
 #include <logic/actor/events.hpp>
 
+#include <iostream>
+
 namespace tung {
 namespace system {
 
@@ -11,8 +13,9 @@ Collision::Collision(IEventManager& manager, ITimer& timer)
         const auto& data = dynamic_cast<const actor::CreatedEvent&>(event);
         auto actor = GameLogic::get().get_actor(data.get_id()).lock();
         if (actor) {
-            actor_components_[data.get_id()] = 
-                actor->get_component<actor::Collision>();
+            auto comp = actor->get_component<actor::Collision>().lock();
+            if (comp)
+                actor_components_[data.get_id()] = comp;
         }
     };
     actor_created_listener_ = actor_created;
@@ -32,9 +35,12 @@ Collision::Collision(IEventManager& manager, ITimer& timer)
 
     auto actor_move = [this](const IEventData& event) {
         const auto& data = dynamic_cast<const actor::MoveEvent&>(event);
-        auto comp = actor_components_[data.get_id()].lock();
-        comp->x_ = data.get_x();
-        comp->y_ = data.get_y();
+        auto find_it = actor_components_.find(data.get_id());
+        if (find_it != actor_components_.end()) {
+            auto comp = find_it->second.lock();
+            comp->x_ = data.get_x();
+            comp->y_ = data.get_y();
+        }
     };
     actor_move_listener_ = actor_move;
     manager_.add_listener(actor::EVENT_MOVE, actor_move_listener_);

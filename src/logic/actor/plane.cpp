@@ -15,8 +15,6 @@ void FlyProcess::on_init() {
 
     // Plane's Sound
     SoundStartedEvent event{owner_.get_actor_id(), 0};
-    std::cout << &owner_.event_manager_ << std::endl;
-
     owner_.event_manager_.trigger(event);
 }
 
@@ -31,7 +29,6 @@ void FlyProcess::on_update(milliseconds dt) {
 
     MoveEvent event{owner_.get_actor_id(), owner_.x_, owner_.y_};
     owner_.event_manager_.trigger(event);
-    std::cout << &owner_ << std::endl;
 }
 
 void FlyProcess::on_success() {

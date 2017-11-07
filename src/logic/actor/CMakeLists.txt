@@ -6,6 +6,7 @@ add_library(logic-actor
     events.cpp
     collision.cpp
     plane.cpp
+    graphics_image.cpp
     sprite.cpp
     sound.cpp
 )

@@ -57,7 +57,7 @@ public:
     static const ComponentId COMPONENT_ID;
 
     ComponentId get_id() const override {
-        return ComponentId::SPRITE;
+        return COMPONENT_ID;
     }
 
     void add_sprite(int index, const std::string& image, 

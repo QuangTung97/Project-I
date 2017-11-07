@@ -2,8 +2,6 @@
 #include <logic/actor/events.hpp>
 #include <logic/game_logic.hpp>
 
-#include <iostream>
-
 namespace tung {
 namespace system {
 
@@ -14,7 +12,9 @@ Sound::Sound(IEventManager& manager)
         auto& event = dynamic_cast<const actor::CreatedEvent&>(event_);
         auto tmp_actor = GameLogic::get().get_actor(event.get_id()).lock();
         if (tmp_actor) {
-            components_[event.get_id()] = tmp_actor->get_component<actor::Sound>();
+            auto comp = tmp_actor->get_component<actor::Sound>().lock();
+            if (comp)
+                components_[event.get_id()] = comp;
         }
     };
 
@@ -33,7 +33,6 @@ Sound::Sound(IEventManager& manager)
         auto find_it = components_.find(event.get_id());
         if (find_it != components_.end()) {
             auto comp = find_it->second.lock();
-            std::cout << event.get_index() << std::endl;
             comp->start(event.get_index());
         }
     };

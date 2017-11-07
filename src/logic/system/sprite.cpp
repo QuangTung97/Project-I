@@ -3,6 +3,8 @@
 #include <logic/game_logic.hpp>
 #include <logic/actor/events.hpp>
 
+#include <iostream>
+
 namespace tung {
 namespace system {
 
@@ -14,7 +16,9 @@ Sprite::Sprite(IEventManager& manager)
 
         auto tmp_actor = GameLogic::get().get_actor(event.get_id()).lock();
         if (tmp_actor) {
-            components_[event.get_id()] = tmp_actor->get_component<actor::Sprite>();
+            auto comp = tmp_actor->get_component<actor::Sprite>().lock();
+            if (comp != nullptr)
+                components_[event.get_id()] = comp;
         }
     };
 

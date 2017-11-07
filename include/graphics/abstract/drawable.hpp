@@ -22,6 +22,10 @@ struct IDrawable {
 
     virtual void set_vertex_object(IVertexObjectPtr object) = 0;
 
+    virtual void show() = 0;
+    
+    virtual void hide() = 0;
+
     virtual void translate(glm::vec3 vec) = 0;
 
     virtual void rotate(float angle, glm::vec3 orientation) = 0;

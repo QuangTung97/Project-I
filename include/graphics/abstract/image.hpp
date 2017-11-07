@@ -1,5 +1,5 @@
-#ifndef GRAPHICS_IMAGE
-#define GRAPHICS_IMAGE
+#ifndef GRAPHICS_ABSTRACT_IMAGE_HPP
+#define GRAPHICS_ABSTRACT_IMAGE_HPP
 
 #include <memory>
 #include <string>

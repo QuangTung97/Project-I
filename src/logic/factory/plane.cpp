@@ -6,8 +6,6 @@
 #include <logic/actor/plane.hpp>
 #include <logic/actor/sprite.hpp>
 
-#include <iostream>
-
 namespace tung {
 namespace factory {
 

@@ -12,6 +12,7 @@ protected:
     glm::mat4 translation_matrix_;
     glm::mat4 rotation_matrix_;
     IVertexObjectPtr object_;
+    bool hidden_ = false;
 
 public:
     Drawable(IVertexObjectPtr object);
@@ -23,6 +24,10 @@ public:
     void on_draw(IShaderProgram& program) override;
 
     void set_vertex_object(IVertexObjectPtr object) override;
+
+    void show() override { hidden_ = false; }
+
+    void hide() override { hidden_ = true; }
 
     void rotate(float angle, glm::vec3 orientation) override;
 
