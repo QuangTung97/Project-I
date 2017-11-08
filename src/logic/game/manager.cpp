@@ -1,5 +1,5 @@
-#include <logic/state/manager.hpp>
-#include <logic/state/start_state.hpp>
+#include <logic/game/manager.hpp>
+#include <logic/game/start_state.hpp>
 
 namespace tung {
 namespace state {

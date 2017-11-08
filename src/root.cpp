@@ -110,6 +110,8 @@ Root::Root() {
         *event_manager_,
         *process_manager_,
         *image_drawable_factory_,
+        *sprite_factory_,
+        *sound_manager_,
         root
     );
 
@@ -121,24 +123,11 @@ Root::Root() {
     };
     glfw_->set_mouse_listener(mouse_listener);
 
-
     sprite_component_ = std::make_unique<actor::Sprite>(
         root, *sprite_factory_, *process_manager_);
 
     sprite_component_->add_sprite(0, "assets/explosion1.png", 6, 8, 0.6);
     sprite_component_->start(0);
-
-    plane_factory_ = std::make_unique<factory::Plane>(
-        *event_manager_,
-        *sound_manager_,
-        *process_manager_,
-        *sprite_factory_,
-        *image_drawable_factory_,
-        root
-    );
-
-    auto plane = plane_factory_->new_plane(false).lock();
-    plane->start_fly();
 }
 
 void Root::run() {

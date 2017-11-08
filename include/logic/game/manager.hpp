@@ -4,8 +4,10 @@
 #include "game_state.hpp"
 #include <graphics/abstract/drawable.hpp>
 #include <graphics/gl/image_drawable_factory.hpp>
+#include <graphics/gl/sprite_factory.hpp>
 #include <logic/abstract/event_manager.hpp>
 #include <logic/basic/process_manager.hpp>
+#include <sound/abstract/sound.hpp>
 
 namespace tung {
 namespace state {
@@ -23,16 +25,22 @@ private:
     IEventManager& event_manager_;
     ProcessManager& process_manager_;
     ImageDrawableFactory& image_drawable_factory_;
+    SpriteFactory& sprite_factory_;
+    ISoundManager& sound_manager_;
     IDrawableManagerPtr root_drawable_;
 
 public:
     Manager(IEventManager& manager, 
         ProcessManager& process_manager,
         ImageDrawableFactory& image_drawable_factory,
+        SpriteFactory& sprite_factory,
+        ISoundManager& sound_manager,
         IDrawableManagerPtr root_drawable
     ): event_manager_{manager},
         process_manager_{process_manager},
         image_drawable_factory_{image_drawable_factory},
+        sprite_factory_{sprite_factory},
+        sound_manager_{sound_manager},
         root_drawable_{std::move(root_drawable)}
     { init(); }
 
@@ -51,12 +59,24 @@ public:
         return *root_drawable_;
     }
 
+    IDrawableManagerPtr get_root() const {
+        return root_drawable_;
+    }
+
     ProcessManager& get_process_manager() const {
         return process_manager_;
     }
 
     ImageDrawableFactory& get_image_factory() const {
         return image_drawable_factory_;
+    }
+
+    SpriteFactory& get_sprite_factory() const {
+        return sprite_factory_;
+    }
+
+    ISoundManager& get_sound_manager() const {
+        return sound_manager_;
     }
 };
 
