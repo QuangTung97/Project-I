@@ -19,12 +19,14 @@
 #include <logic/system/sound.hpp>
 #include <logic/system/collision.hpp>
 #include <logic/system/sprite.hpp>
+#include <logic/system/graphics.hpp>
 
 #include <graphics/gl/sprite_factory.hpp>
 #include <graphics/gl/image_drawable_factory.hpp>
 
 #include <logic/actor/sprite.hpp>
 #include <logic/factory/plane.hpp>
+#include <logic/actor/graphics_image.hpp>
 
 namespace tung {
 
@@ -57,6 +59,7 @@ private:
     std::unique_ptr<system::Sound> sound_system_;
     std::unique_ptr<system::Collision> collision_system_;
     std::unique_ptr<system::Sprite> sprite_system_;
+    std::unique_ptr<system::Graphics> graphics_system_;
 
     // Control Time
     steady_clock::time_point prev_run_timestamp_;
@@ -65,6 +68,7 @@ private:
     std::unique_ptr<actor::Sprite> sprite_component_;
 
     std::unique_ptr<factory::Plane> plane_factory_;
+    std::unique_ptr<actor::GraphicsImage> graphics_image_;
 
 public:
     Root();

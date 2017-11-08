@@ -3,14 +3,16 @@
 namespace tung {
 namespace actor {
 
+const ComponentId GraphicsImage::COMPONENT_ID = ComponentId::GRAPHICS_IMAGE;
+
 GraphicsImage::GraphicsImage(float x, float y,
     ImageDrawableFactory& factory, 
     IDrawableManagerPtr root,
     float height, const std::string& filename)
-: x_{x}, y_{y}, root_{std::move(root)}
+: root_{std::move(root)}
 {
     drawable_ = factory.new_drawable(filename, height);
-    drawable_->translate({x_, y_, 0});
+    drawable_->translate({x, y, 0});
     root_->attach_drawable(drawable_);
 }
 
@@ -19,9 +21,7 @@ void GraphicsImage::show() {
 }
 
 void GraphicsImage::move_to(float x, float y) {
-    x_ = x;
-    y_ = y;
-    drawable_->translate({x_, y_, 0});
+    drawable_->translate({x, y, 0});
 }
 
 void GraphicsImage::hide() {

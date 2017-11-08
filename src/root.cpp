@@ -9,7 +9,6 @@
 #include <thread>
 
 #include <logic/actor/plane.hpp>
-#include <iostream>
 
 namespace tung {
 
@@ -93,12 +92,6 @@ Root::Root() {
     // ui_program_->set_drawable(background->get_drawable());
 
     auto root = std::make_shared<DrawableGroup>();
-    auto sprite = sprite_factory_->new_sprite(
-        "assets/explosion1.png", 6, 8, 0.4);
-    sprite->use_sprite(8);
-    sprite->translate({0.5, 0, 0});
-
-    root->attach_drawable(sprite);
     _2d_program_->set_drawable(root);
 
     // Game Logic
@@ -111,6 +104,7 @@ Root::Root() {
     sound_system_ = std::make_unique<system::Sound>(*event_manager_);
     collision_system_ = std::make_unique<system::Collision>(*event_manager_, *timer_);
     sprite_system_ = std::make_unique<system::Sprite>(*event_manager_);
+    graphics_system_ = std::make_unique<system::Graphics>(*event_manager_);
 
     sprite_component_ = std::make_unique<actor::Sprite>(
         root, *sprite_factory_, *process_manager_);
@@ -123,13 +117,12 @@ Root::Root() {
         *sound_manager_,
         *process_manager_,
         *sprite_factory_,
+        *image_drawable_factory_,
         root
     );
 
-    auto id = plane_factory_->new_plane(false);
-    auto plane = GameLogic::get().get_actor(id).lock();
-    auto comp = plane->get_component<actor::Plane>().lock();
-    comp->start_fly();
+    auto plane = plane_factory_->new_plane(false).lock();
+    plane->start_fly();
 }
 
 void Root::run() {

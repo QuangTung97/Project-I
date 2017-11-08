@@ -26,5 +26,11 @@ EventType<11001> EVENT_SPRITE_ENDED;
 EventType<1300> EVENT_SOUND_STARTED;
 EventType<1300> EVENT_SOUND_ENDED;
 
+//----------------------
+// Graphics Image Handling
+//----------------------
+EventType<3300> EVENT_GRAPHICS_IMAGE_SHOW;
+EventType<3301> EVENT_GRAPHICS_IMAGE_HIDE;
+
 } // namespace actor
 } // namespace tung

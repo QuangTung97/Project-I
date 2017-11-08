@@ -11,14 +11,19 @@ namespace actor {
 class GraphicsImage: public Component {
 private:
     IDrawablePtr drawable_;
-    float x_, y_;
     IDrawableManagerPtr root_;
 
 public:
+    static const ComponentId COMPONENT_ID;
+
     GraphicsImage(float x, float y, 
         ImageDrawableFactory& factory, 
         IDrawableManagerPtr root,
         float height, const std::string& filename);
+
+    ComponentId get_id() const override {
+        return COMPONENT_ID;
+    }
 
     void show();
 

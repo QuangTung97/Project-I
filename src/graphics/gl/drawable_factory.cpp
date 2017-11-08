@@ -1,6 +1,8 @@
 #include <graphics/gl/image_drawable_factory.hpp>
 #include <graphics/gl/sprite_factory.hpp>
 
+#include <iostream>
+
 namespace tung {
 
 SpriteFactory::SpriteFactory(IGraphicsAssetManager& asset_manager,
@@ -90,7 +92,7 @@ IDrawablePtr ImageDrawableFactory::new_drawable(const std::string& filename,
     float tex_coord[] = {
         0.0f, 1.0f,
         0.0f, 0.0f,
-        0.0f, 1.0f,
+        1.0f, 0.0f,
         1.0f, 1.0f
     };
 

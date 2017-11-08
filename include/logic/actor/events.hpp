@@ -179,6 +179,12 @@ public:
     int get_index() const { return index_; }
 };
 
+//----------------------
+// Graphics Image Handling
+//----------------------
+extern EventType<3300> EVENT_GRAPHICS_IMAGE_SHOW;
+extern EventType<3301> EVENT_GRAPHICS_IMAGE_HIDE;
+
 } // namespace actor
 } // namespace tung
 
