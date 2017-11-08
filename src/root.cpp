@@ -106,6 +106,22 @@ Root::Root() {
     sprite_system_ = std::make_unique<system::Sprite>(*event_manager_);
     graphics_system_ = std::make_unique<system::Graphics>(*event_manager_);
 
+    state_manager_ = std::make_unique<state::Manager>(
+        *event_manager_,
+        *process_manager_,
+        *image_drawable_factory_,
+        root
+    );
+
+    // Mouse Event
+    MouseEventListener mouse_listener = 
+    [this](MouseButton button, 
+        MouseEventType type, float x, float y) {
+        state_manager_->on_mouse_event(button, type, x, y);
+    };
+    glfw_->set_mouse_listener(mouse_listener);
+
+
     sprite_component_ = std::make_unique<actor::Sprite>(
         root, *sprite_factory_, *process_manager_);
 

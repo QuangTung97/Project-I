@@ -1,10 +1,13 @@
 #include <logic/state/manager.hpp>
+#include <logic/state/start_state.hpp>
 
 namespace tung {
 namespace state {
 
-Manager::Manager(IEventManager& manager, IDrawableManager& root_drawable)
-: event_manager_{manager}, root_drawable_{root_drawable} {
+void Manager::init() {
+    start_ = std::make_unique<StartState>(*this);
+    current_ = start_.get();
+    current_->entry();
 }
 
 void Manager::make_transition_to(GameState& state) {

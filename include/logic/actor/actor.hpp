@@ -53,6 +53,8 @@ public:
         return ptr;
     }
 
+    virtual ~Actor() {}
+
 public:
     void add_component(StrongComponentPtr component);
 };

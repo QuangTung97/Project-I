@@ -28,6 +28,8 @@
 #include <logic/factory/plane.hpp>
 #include <logic/actor/graphics_image.hpp>
 
+#include <logic/state/manager.hpp>
+
 namespace tung {
 
 class Root {
@@ -65,10 +67,13 @@ private:
     steady_clock::time_point prev_run_timestamp_;
     const long fps_ = 60;
 
+    std::unique_ptr<state::Manager> state_manager_;
+
     std::unique_ptr<actor::Sprite> sprite_component_;
 
     std::unique_ptr<factory::Plane> plane_factory_;
     std::unique_ptr<actor::GraphicsImage> graphics_image_;
+
 
 public:
     Root();

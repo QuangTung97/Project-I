@@ -3,7 +3,9 @@
 
 #include "game_state.hpp"
 #include <graphics/abstract/drawable.hpp>
+#include <graphics/gl/image_drawable_factory.hpp>
 #include <logic/abstract/event_manager.hpp>
+#include <logic/basic/process_manager.hpp>
 
 namespace tung {
 namespace state {
@@ -19,10 +21,22 @@ private:
 
 private:
     IEventManager& event_manager_;
-    IDrawableManager& root_drawable_;
+    ProcessManager& process_manager_;
+    ImageDrawableFactory& image_drawable_factory_;
+    IDrawableManagerPtr root_drawable_;
 
 public:
-    Manager(IEventManager& manager, IDrawableManager& root_drawable);
+    Manager(IEventManager& manager, 
+        ProcessManager& process_manager,
+        ImageDrawableFactory& image_drawable_factory,
+        IDrawableManagerPtr root_drawable
+    ): event_manager_{manager},
+        process_manager_{process_manager},
+        image_drawable_factory_{image_drawable_factory},
+        root_drawable_{std::move(root_drawable)}
+    { init(); }
+
+    void init();
 
     void make_transition_to(GameState& state);
 
@@ -34,7 +48,15 @@ public:
     }
 
     IDrawableManager& root() const {
-        return root_drawable_;
+        return *root_drawable_;
+    }
+
+    ProcessManager& get_process_manager() const {
+        return process_manager_;
+    }
+
+    ImageDrawableFactory& get_image_factory() const {
+        return image_drawable_factory_;
     }
 };
 
