@@ -16,6 +16,8 @@ private:
     EventListener actor_created_listener_;
     EventListener actor_destroy_listener_;
     EventListener actor_move_listener_;
+    EventListener disable_listener_;
+    EventListener enable_listener_;
 
     typedef std::weak_ptr<actor::Collision> WeakPtr;
     typedef std::unordered_map<actor::ActorId, WeakPtr> 

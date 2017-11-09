@@ -7,8 +7,6 @@
 #include <logic/game_logic.hpp>
 #include <cmath>
 
-#include <iostream>
-
 namespace tung {
 namespace state {
 
@@ -78,8 +76,8 @@ PlayingState::PlayingState(Manager& manager)
     auto collide = [this](const IEventData& event_) {
         auto& event = dynamic_cast<const actor::CollideEvent&>(event_);
         auto find_it = planes_.find(event.get_id());
-        if (find_it != planes_.end()) {
-            std::cout << "Planes Size: " << planes_.size() << std::endl;
+        auto bullet_it = bullets_.find(event.get_collide_width_id());
+        if (find_it != planes_.end() && bullet_it != bullets_.end()) {
             auto ptr = GameLogic::get().get_actor(event.get_id()).lock();
             if (ptr) {
                 auto plane = std::dynamic_pointer_cast<game::Plane>(ptr);
@@ -89,7 +87,6 @@ PlayingState::PlayingState(Manager& manager)
 
         auto it = bullets_.find(event.get_id());
         if (it != bullets_.end()) {
-            std::cout << "Bullets Size: " << bullets_.size() << std::endl;
             auto ptr = GameLogic::get().get_actor(event.get_id()).lock();
             if (ptr) {
                 auto bullet = std::dynamic_pointer_cast<game::Bullet>(ptr);

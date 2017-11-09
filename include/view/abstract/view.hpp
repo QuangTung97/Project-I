@@ -44,6 +44,8 @@ struct IViewManager {
     virtual ~IViewManager() {}
 };
 
+typedef std::shared_ptr<IViewManager> IViewManagerPtr;
+
 } // namespace tung
 
 #endif

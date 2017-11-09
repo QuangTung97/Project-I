@@ -11,6 +11,8 @@
 #include <sound/abstract/sound.hpp>
 #include <asset_manager.hpp>
 
+#include <view/view.hpp>
+
 #include <logic/basic/event_manager.hpp>
 #include <logic/basic/process_manager.hpp>
 #include <logic/basic/timer.hpp>
@@ -65,6 +67,7 @@ private:
     const long fps_ = 60;
 
     std::unique_ptr<state::Manager> state_manager_;
+    std::shared_ptr<ViewGroup> view_root_;
 
 public:
     Root();

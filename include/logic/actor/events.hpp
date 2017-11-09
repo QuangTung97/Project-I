@@ -95,6 +95,8 @@ public:
 // Collision Handling
 //----------------------
 extern EventType<7001> EVENT_COLLIDE;
+extern EventType<7002> EVENT_DISABLE_COLLISION;
+extern EventType<7003> EVENT_ENABLE_COLLISION;
 
 class CollideEvent: public EventData {
 private:
@@ -116,6 +118,35 @@ public:
     ActorId get_collide_width_id() const { return collide_width_id_; }
 };
 
+class DisableCollisionEvent: public EventData {
+private:
+    const ActorId id_;
+
+public:
+    DisableCollisionEvent(ActorId id)
+    : EventData{TimePoint{}, EVENT_DISABLE_COLLISION}, id_{id} {}
+
+    IEventDataPtr clone() const override {
+        return std::make_unique<DisableCollisionEvent>(id_);
+    }
+
+    ActorId get_id() const { return id_; }
+};
+
+class EnableCollisionEvent: public EventData {
+private:
+    const ActorId id_;
+
+public:
+    EnableCollisionEvent(ActorId id)
+    : EventData{TimePoint{}, EVENT_ENABLE_COLLISION}, id_{id} {}
+
+    IEventDataPtr clone() const override {
+        return std::make_unique<EnableCollisionEvent>(id_);
+    }
+
+    ActorId get_id() const { return id_; }
+};
 
 //----------------------
 // Sprite Handling

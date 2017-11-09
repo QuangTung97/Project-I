@@ -21,6 +21,7 @@ protected:
         RECTANGLE
     };
     friend class tung::system::Collision;
+    bool enabled_ = true;
 
 public:
     static const ComponentId COMPONENT_ID;
@@ -35,6 +36,12 @@ public:
     virtual Type get_type() const = 0;
 
     virtual bool is_collided(const Collision& other) = 0;
+
+    bool is_enabled() const { return enabled_; }
+
+    void disable() { enabled_ = false; }
+
+    void enable() { enabled_ = true; }
 
     virtual ~Collision() {}
 };

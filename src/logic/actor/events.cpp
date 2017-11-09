@@ -14,6 +14,8 @@ EventType<9003> EVENT_ROTATE;
 // Collision Handling
 //----------------------
 EventType<7001> EVENT_COLLIDE;
+EventType<7002> EVENT_DISABLE_COLLISION;
+EventType<7003> EVENT_ENABLE_COLLISION;
 
 //----------------------
 // Sprite Handling

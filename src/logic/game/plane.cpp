@@ -123,6 +123,9 @@ void Plane::end_fly() {
 
 void Plane::explode() {
     fly_process_->fail();
+    actor::DisableCollisionEvent disable_collision{get_id()};
+    state_manager_.get_event_manager().trigger(disable_collision);
+
     // Explosion's Sound
     actor::SoundStartedEvent sound_started{get_id(), 1};
     state_manager_.get_event_manager().trigger(sound_started);
