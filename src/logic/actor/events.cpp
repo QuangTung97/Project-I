@@ -8,6 +8,7 @@ namespace actor {
 EventType<9000> EVENT_DESTROY;
 EventType<9001> EVENT_CREATED;
 EventType<9002> EVENT_MOVE;
+EventType<9003> EVENT_ROTATE;
 
 //----------------------
 // Collision Handling
@@ -31,6 +32,7 @@ EventType<1300> EVENT_SOUND_ENDED;
 //----------------------
 EventType<3300> EVENT_GRAPHICS_IMAGE_SHOW;
 EventType<3301> EVENT_GRAPHICS_IMAGE_HIDE;
+EventType<3301> EVENT_GRAPHICS_IMAGE_ROTATE;
 
 } // namespace actor
 } // namespace tung

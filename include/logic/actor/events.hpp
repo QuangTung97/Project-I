@@ -12,6 +12,7 @@ namespace actor {
 extern EventType<9000> EVENT_DESTROY;
 extern EventType<9001> EVENT_CREATED;
 extern EventType<9002> EVENT_MOVE;
+extern EventType<9003> EVENT_ROTATE;
 
 class DestroyEvent: public EventData {
 private:
@@ -69,6 +70,27 @@ public:
     }
 };
 
+class RotateEvent: public EventData {
+private:
+    const ActorId id_;
+    const float degree_;
+
+public:
+    RotateEvent(ActorId id, float degree)
+    : EventData{TimePoint{}, EVENT_ROTATE}, id_{id}, degree_{degree} 
+    {}
+
+    ActorId get_id() const {
+        return id_;
+    }
+
+    float get_angle() const { return degree_; }
+
+    IEventDataPtr clone() const override {
+        return std::make_unique<RotateEvent>(id_, degree_);
+    }
+};
+
 //----------------------
 // Collision Handling
 //----------------------
@@ -76,17 +98,22 @@ extern EventType<7001> EVENT_COLLIDE;
 
 class CollideEvent: public EventData {
 private:
-    ActorId id_;
+    const ActorId id_;
+    const ActorId collide_width_id_;
 
 public:
-    CollideEvent(TimePoint time_point, ActorId id)
-    : EventData{time_point, EVENT_COLLIDE}, id_{id} {}
+    CollideEvent(TimePoint time_point, 
+        ActorId id, ActorId collide_width_id)
+    : EventData{time_point, EVENT_COLLIDE}, 
+        id_{id}, collide_width_id_{collide_width_id} {}
 
     IEventDataPtr clone() const override {
-        return std::make_unique<CollideEvent>(time_point_, id_);
+        return std::make_unique<CollideEvent>(time_point_, id_, collide_width_id_);
     }
 
     ActorId get_id() const { return id_; }
+
+    ActorId get_collide_width_id() const { return collide_width_id_; }
 };
 
 
@@ -184,6 +211,39 @@ public:
 //----------------------
 extern EventType<3300> EVENT_GRAPHICS_IMAGE_SHOW;
 extern EventType<3301> EVENT_GRAPHICS_IMAGE_HIDE;
+extern EventType<3301> EVENT_GRAPHICS_IMAGE_ROTATE;
+
+class GraphicsImageShowEvent: public EventData {
+private:
+    ActorId id_;
+
+public:
+    GraphicsImageShowEvent(ActorId id)
+    : EventData{TimePoint{}, EVENT_GRAPHICS_IMAGE_SHOW},
+    id_{id} {}
+
+    IEventDataPtr clone() const override {
+        return std::make_unique<GraphicsImageShowEvent>(id_);
+    }
+
+    ActorId get_id() const { return id_; }
+};
+
+class GraphicsImageHideEvent: public EventData {
+private:
+    ActorId id_;
+
+public:
+    GraphicsImageHideEvent(ActorId id)
+    : EventData{TimePoint{}, EVENT_GRAPHICS_IMAGE_HIDE},
+    id_{id} {}
+
+    IEventDataPtr clone() const override {
+        return std::make_unique<GraphicsImageHideEvent>(id_);
+    }
+
+    ActorId get_id() const { return id_; }
+};
 
 } // namespace actor
 } // namespace tung

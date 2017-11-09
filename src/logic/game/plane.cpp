@@ -2,8 +2,10 @@
 #include <logic/actor/events.hpp>
 #include <logic/abstract/call_once_process.hpp>
 #include <logic/game_logic.hpp>
-
-#include <iostream>
+#include <logic/actor/sound.hpp>
+#include <logic/actor/collision.hpp>
+#include <logic/actor/sprite.hpp>
+#include <logic/actor/graphics_image.hpp>
 
 namespace tung {
 namespace game {
@@ -123,10 +125,13 @@ void Plane::explode() {
     fly_process_->fail();
     // Explosion's Sound
     actor::SoundStartedEvent sound_started{get_id(), 1};
-    state_manager_.get_event_manager().queue(sound_started);
+    state_manager_.get_event_manager().trigger(sound_started);
 
     actor::SpriteStartedEvent sprite_started{get_id(), 0};
-    state_manager_.get_event_manager().queue(sprite_started);
+    state_manager_.get_event_manager().trigger(sprite_started);
+
+    actor::GraphicsImageHideEvent hide_event{get_id()};
+    state_manager_.get_event_manager().trigger(hide_event);
 
     state_manager_.get_process_manager().attach_process(destroy_plane_);
 }

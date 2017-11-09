@@ -24,6 +24,11 @@ void GraphicsImage::move_to(float x, float y) {
     drawable_->translate({x, y, 0});
 }
 
+void GraphicsImage::rotate(float degree) {
+    float radian = degree / 180 * 3.141592654;
+    drawable_->rotate(radian, {0, 0, 1});
+}
+
 void GraphicsImage::hide() {
     drawable_->hide();
 }

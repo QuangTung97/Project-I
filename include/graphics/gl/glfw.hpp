@@ -67,7 +67,13 @@ public:
     // Get GLFWwindow of current window, if want to have access to more information
     GLFWwindow *window() const noexcept;
 
+    static float get_screen_width() { return this_->screen_width_; }
+
+    static float get_screen_height() { return this_->screen_height_; }
+
 private:
+    float screen_width_;
+    float screen_height_;
     float x_ = 0, y_ = 0;
     bool left_pressed_ = false;
     bool right_pressed_ = false;

@@ -10,7 +10,7 @@ namespace state {
 StartState::StartState(Manager& manager)
 : GameState(manager) {
     background_ = manager.get_image_factory().
-    new_drawable("assets/start_background.png", 2.0);
+        new_drawable("assets/start_background.png", 2.0);
 }
 
 void StartState::entry() {
@@ -19,7 +19,7 @@ void StartState::entry() {
     plane->init();
     plane->start_fly();
     manager_.get_process_manager().attach_process(
-        std::make_shared<CallOnceProcess>(1s, [plane]() {
+        std::make_shared<CallOnceProcess>(1600ms, [plane]() {
         plane->explode();
     }));
 }
@@ -31,6 +31,8 @@ void StartState::exit() {
 bool StartState::on_mouse_event(MouseButton button,
     MouseEventType type, float x, float y) 
 {
+    if (button == MouseButton::LEFT && type == MouseEventType::DOWN)
+        manager_.make_transition_to(*manager_.playing_);
     return true;
 }
 

@@ -14,6 +14,9 @@ private:
     EventListener actor_created_listener_;
     EventListener actor_destroy_listener_;
     EventListener actor_move_listener_;
+    EventListener actor_rotate_listener_;
+    EventListener graphics_image_show_listener_;
+    EventListener graphics_image_hide_listener_;
 
     typedef std::weak_ptr<actor::GraphicsImage> GraphicsImageWeakPtr;
     std::unordered_map<actor::ActorId, GraphicsImageWeakPtr> 

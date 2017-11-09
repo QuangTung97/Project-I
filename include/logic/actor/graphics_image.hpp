@@ -31,6 +31,8 @@ public:
 
     void move_to(float x, float y);
 
+    void rotate(float degree);
+
     ~GraphicsImage();
 };
 

@@ -4,10 +4,6 @@
 #include <logic/actor/actor.hpp>
 #include <logic/abstract/process.hpp>
 #include <logic/game/manager.hpp>
-#include <logic/actor/sound.hpp>
-#include <logic/actor/collision.hpp>
-#include <logic/actor/sprite.hpp>
-#include <logic/actor/graphics_image.hpp>
 #include <vector>
 #include <random>
 

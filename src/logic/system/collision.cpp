@@ -54,8 +54,8 @@ void Collision::update() {
             auto comp1 = i->second.lock();
             auto comp2 = j->second.lock();
             if (comp1->is_collided(*comp2)) {
-                actor::CollideEvent event1{timer_.current_time(), i->first};
-                actor::CollideEvent event2{timer_.current_time(), j->first};
+                actor::CollideEvent event1{timer_.current_time(), i->first, j->first};
+                actor::CollideEvent event2{timer_.current_time(), j->first, i->first};
 
                 manager_.queue(event1);
                 manager_.queue(event2);

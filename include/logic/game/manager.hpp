@@ -15,6 +15,10 @@ namespace state {
 class Manager {
 private:
     friend class GameState;
+    friend class StartState;
+    friend class PlayingState;
+    friend class EndState;
+
     GameState *current_;
 
     GameStatePtr start_;
@@ -28,6 +32,9 @@ private:
     SpriteFactory& sprite_factory_;
     ISoundManager& sound_manager_;
     IDrawableManagerPtr root_drawable_;
+    IDrawableManagerPtr lower_group_;
+    IDrawableManagerPtr middle_group_;
+    IDrawableManagerPtr upper_group_;
 
 public:
     Manager(IEventManager& manager, 
@@ -56,11 +63,19 @@ public:
     }
 
     IDrawableManager& root() const {
-        return *root_drawable_;
+        return *middle_group_;
     }
 
     IDrawableManagerPtr get_root() const {
-        return root_drawable_;
+        return middle_group_;
+    }
+
+    IDrawableManagerPtr get_lower_group() const {
+        return lower_group_;
+    }
+
+    IDrawableManagerPtr get_upper_group() const {
+        return upper_group_;
     }
 
     ProcessManager& get_process_manager() const {

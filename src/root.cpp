@@ -122,12 +122,6 @@ Root::Root() {
         state_manager_->on_mouse_event(button, type, x, y);
     };
     glfw_->set_mouse_listener(mouse_listener);
-
-    sprite_component_ = std::make_unique<actor::Sprite>(
-        root, *sprite_factory_, *process_manager_);
-
-    sprite_component_->add_sprite(0, "assets/explosion1.png", 6, 8, 0.6);
-    sprite_component_->start(0);
 }
 
 void Root::run() {

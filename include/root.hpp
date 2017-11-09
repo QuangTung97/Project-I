@@ -65,7 +65,6 @@ private:
     const long fps_ = 60;
 
     std::unique_ptr<state::Manager> state_manager_;
-    std::unique_ptr<actor::Sprite> sprite_component_;
 
 public:
     Root();

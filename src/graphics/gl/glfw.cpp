@@ -15,6 +15,8 @@ GLFW *GLFW::this_ = nullptr;
 
 GLFW::GLFW(int width, int height, 
         const std::string& name, bool resizable) {
+    screen_width_ = width;
+    screen_height_ = height;
     this_ = this;
     if (!::glfwInit()) {
         this_ = nullptr;

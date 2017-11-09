@@ -37,15 +37,56 @@ Graphics::Graphics(IEventManager& event_manager)
         }
     };
 
+    auto actor_rotate = [this](const IEventData& event_) {
+        auto& event = dynamic_cast<const actor::RotateEvent&>(event_);
+        auto find_it = graphics_image_components_.find(event.get_id());
+        if (find_it != graphics_image_components_.end()) {
+            auto comp = find_it->second.lock();
+            comp->rotate(event.get_angle());
+        }
+    };
+
+    auto graphics_image_show = [this](const IEventData& event_) {
+        auto& event = dynamic_cast<const actor::GraphicsImageShowEvent&>(event_);
+        auto find_it = graphics_image_components_.find(event.get_id());
+        if (find_it != graphics_image_components_.end()) {
+            auto comp = find_it->second.lock();
+            comp->show();
+        }
+    };
+
+    auto graphics_image_hide = [this](const IEventData& event_) {
+        auto& event = dynamic_cast<const actor::GraphicsImageHideEvent&>(event_);
+        auto find_it = graphics_image_components_.find(event.get_id());
+        if (find_it != graphics_image_components_.end()) {
+            auto comp = find_it->second.lock();
+            comp->hide();
+        }
+    };
+
     actor_created_listener_ = actor_created;
     actor_destroy_listener_ = actor_destroy;
     actor_move_listener_ = actor_move;
+    actor_rotate_listener_ = actor_rotate;
+    graphics_image_show_listener_ = graphics_image_show;
+    graphics_image_hide_listener_ = graphics_image_hide;
+
     event_manager_.add_listener(actor::EVENT_CREATED, actor_created_listener_);
     event_manager_.add_listener(actor::EVENT_DESTROY, actor_destroy_listener_);
     event_manager_.add_listener(actor::EVENT_MOVE, actor_move_listener_);
+    event_manager_.add_listener(actor::EVENT_ROTATE, actor_rotate_listener_);
+    event_manager_.add_listener(actor::EVENT_GRAPHICS_IMAGE_SHOW, 
+        graphics_image_show_listener_);
+    event_manager_.add_listener(actor::EVENT_GRAPHICS_IMAGE_HIDE, 
+        graphics_image_hide_listener_);
 }
 
 Graphics::~Graphics() {
+    event_manager_.remove_listener(actor::EVENT_GRAPHICS_IMAGE_HIDE, 
+        graphics_image_hide_listener_);
+    event_manager_.remove_listener(actor::EVENT_GRAPHICS_IMAGE_SHOW, 
+        graphics_image_show_listener_);
+    event_manager_.remove_listener(actor::EVENT_ROTATE, actor_rotate_listener_);
     event_manager_.remove_listener(actor::EVENT_MOVE, actor_move_listener_);
     event_manager_.remove_listener(actor::EVENT_DESTROY, actor_destroy_listener_);
     event_manager_.remove_listener(actor::EVENT_CREATED, actor_created_listener_);
