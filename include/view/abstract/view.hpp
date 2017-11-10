@@ -8,11 +8,20 @@ namespace tung {
 
 struct IView {
     struct IMouseEvent {
+        enum Button {
+            LEFT,
+            RIGHT, 
+            MIDDE,
+            NONE
+        };
+
         enum Type {
             MOUSE_DOWN,
             MOUSE_UP,
             MOUSE_MOVE,
         };
+
+        virtual Button button() const = 0;
 
         virtual Type type() const = 0;
         

@@ -1,5 +1,4 @@
 #include <graphics/gl/vertex_object.hpp>
-#include <iostream>
 #include <cassert>
 
 namespace tung {

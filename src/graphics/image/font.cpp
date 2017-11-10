@@ -3,8 +3,9 @@
 namespace tung {
 
 // Font Image
-FontImage::FontImage() {
-}
+FontImage::FontImage(int width, int height, std::vector<unsigned char> data)
+: width_{width}, height_{height}, data_{std::move(data)} 
+{}
 
 int FontImage::width() const {
     return width_;
@@ -15,7 +16,7 @@ int FontImage::height() const {
 }
 
 const void *FontImage::data() const {
-    return data_;
+    return data_.data();
 }
 
 int FontImage::color_component_count() const {
@@ -31,7 +32,6 @@ IImage::Format FontImage::format() const {
 }
 
 FontImage::~FontImage() {
-    ::free(data_);
 }
 
 } // namespace tung

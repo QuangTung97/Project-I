@@ -4,13 +4,61 @@
 #include <graphics/gl/simple_2d_shader.hpp>
 #include <graphics/gl/texture.hpp>
 #include <graphics/gl/vertex_object.hpp>
+#include <graphics/gl/text_factory.hpp>
 #include <view/image_view.hpp>
+#include <view/text_view.hpp>
 #include <sound/sound.hpp>
 #include <thread>
 
-#include <logic/actor/plane.hpp>
-
 namespace tung {
+
+MouseEvent get_view_mouse_event(
+    MouseButton button, MouseEventType type, 
+    float x, float y) 
+{
+    MouseEvent::Button view_button;
+    MouseEvent::Type view_type;
+
+    switch (button) {
+    case MouseButton::LEFT:
+        view_button = MouseEvent::Button::LEFT;
+        break;
+
+    case MouseButton::RIGHT:
+        view_button = MouseEvent::Button::RIGHT;
+        break;
+
+    case MouseButton::MIDDLE:
+        view_button = MouseEvent::Button::MIDDE;
+        break;
+    
+    case MouseButton::NONE:
+        view_button = MouseEvent::Button::NONE;
+        break;
+
+    default:
+        break;
+    }
+
+    switch (type) {
+    case MouseEventType::DOWN:
+        view_type = MouseEvent::Type::MOUSE_DOWN;
+        break;
+
+    case MouseEventType::UP:
+        view_type = MouseEvent::Type::MOUSE_UP;
+        break;
+        
+    case MouseEventType::MOVE:
+        view_type = MouseEvent::Type::MOUSE_MOVE;
+        break;
+
+    default:
+        break;
+    }
+
+    return MouseEvent{view_button, view_type, x, y};
+}
 
 Root::Root() {
     glfw_ = std::make_unique<GLFW>(640, 480, "Tung");
@@ -36,8 +84,12 @@ Root::Root() {
     ui_object_builder_ = std::make_unique<VertexObjectBuilder>(*ui_program_);
     _2d_object_builder_ = std::make_unique<VertexObjectBuilder>(*_2d_program_);
 
+    text_factory_ = std::make_unique<TextFactory>(
+        "assets/Arial.ttf", Color{255, 0, 0}, *texture_factory_, *_2d_object_builder_);
+
     ImageView::set_asset_manager(*asset_manager_);
     ImageView::set_vertex_object_builder(*ui_object_builder_);
+    TextView::set_text_factory(*text_factory_);
 
     sprite_factory_ = std::make_unique<SpriteFactory>(
         *asset_manager_, *_2d_object_builder_);
@@ -82,17 +134,19 @@ Root::Root() {
     };
 
     glfw_->set_run_callback(run_function);
-    // TODO
-    // set_char_callback
-    // set_mouse_listener
 
     auto background = std::make_shared<ImageView>(0, 0, 
         640, 480, "assets/llvm.png");
 
-    // ui_program_->set_drawable(background->get_drawable());
-
     auto root = std::make_shared<DrawableGroup>();
     _2d_program_->set_drawable(root);
+
+    view_root_ = std::make_shared<ViewGroup>(
+        0, 0,
+        GLFW::get_screen_width(),
+        GLFW::get_screen_height()
+    );
+    ui_program_->set_drawable(view_root_->get_drawable());
 
     // Game Logic
     event_manager_ = std::make_unique<EventManager>();
@@ -109,16 +163,21 @@ Root::Root() {
     state_manager_ = std::make_unique<state::Manager>(
         *event_manager_,
         *process_manager_,
+        *asset_manager_,
         *image_drawable_factory_,
         *sprite_factory_,
         *sound_manager_,
-        root
+        root,
+        view_root_,
+        *text_factory_
     );
 
     // Mouse Event
     MouseEventListener mouse_listener = 
     [this](MouseButton button, 
         MouseEventType type, float x, float y) {
+        MouseEvent view_event = get_view_mouse_event(button, type, x, y);
+        view_root_->on_mouse_event(view_event);
         state_manager_->on_mouse_event(button, type, x, y);
     };
     glfw_->set_mouse_listener(mouse_listener);
@@ -129,6 +188,8 @@ void Root::run() {
 }
 
 Root::~Root() {
+    process_manager_->abort_all_processes();
+    event_manager_->update();
 }
 
 } // namespace tung

@@ -1,5 +1,5 @@
-#ifndef TEXT_ABSTRACT_HPP
-#define TEXT_ABSTRACT_HPP
+#ifndef GRAPHICS_ABSTRACT_TEXT_FACTORY_HPP
+#define GRAPHICS_ABSTRACT_TEXT_FACTORY_HPP
 
 #include <memory>
 #include <graphics/abstract/shader_program.hpp>
@@ -18,14 +18,8 @@ public:
     }
 };
 
-struct IText {
-    virtual const IDrawablePtr& get_drawable() const = 0;
-};
-
-typedef std::unique_ptr<IText> ITextPtr;
-
 struct ITextFactory {
-    virtual ITextPtr create(int font_size, float height, const std::string& str) = 0;
+    virtual IDrawablePtr create(int font_size, float height, const std::string& str) = 0;
 };
 
 } // namespace tung

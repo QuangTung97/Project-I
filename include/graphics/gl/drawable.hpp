@@ -49,6 +49,8 @@ public:
 
     void detach_drawable(const IDrawablePtr& drawable) override;
 
+    void clear() override;
+
     virtual ~DrawableGroup();
 };
 

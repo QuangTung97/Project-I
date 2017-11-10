@@ -51,6 +51,16 @@ void FlyProcess::on_fail() {
     plane_.state_manager_.get_event_manager().queue(event);
 }
 
+void FlyProcess::on_abort() {
+    // Plane's Sound
+    actor::SoundEndedEvent event{plane_.get_id(), 0};
+    plane_.state_manager_.get_event_manager().queue(event);
+
+    // Destroy actor
+    actor::DestroyEvent destroy_event{plane_.get_id()};
+    plane_.state_manager_.get_event_manager().queue(destroy_event);
+}
+
 //------------------------------
 // Plane
 //------------------------------

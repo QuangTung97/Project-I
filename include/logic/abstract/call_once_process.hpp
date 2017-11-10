@@ -18,12 +18,19 @@ protected:
         elapsed_time_ = 0ms;
     }
 
-    void on_update(milliseconds dt) {
+    void on_update(milliseconds dt) override {
         elapsed_time_ += dt;
         if (elapsed_time_ >= duration_) {
-            function_();
             succeed();
         }
+    }
+
+    void on_success() override {
+        function_();
+    }
+
+    void on_fail() override {
+        function_();
     }
 
 public:

@@ -8,8 +8,12 @@ namespace tung {
 static const auto null_drawable = std::make_shared<NullDrawable>();
 
 // Mouse Event
-MouseEvent::MouseEvent(Type type, float x, float y):
-    type_{type}, x_{x}, y_{y} {}
+MouseEvent::MouseEvent(Button button, Type type, float x, float y)
+: button_{button}, type_{type}, x_{x}, y_{y} {}
+
+MouseEvent::Button MouseEvent::button() const {
+    return button_;
+}
 
 MouseEvent::Type MouseEvent::type() const {
     return type_;
@@ -71,21 +75,42 @@ ViewGroup::ViewGroup(float x, float y, float width, float height)
 }
 
 bool ViewGroup::on_mouse_event(const IMouseEvent& event) {
+    if (event.button() != IMouseEvent::Button::LEFT) {
+        for (const auto& view: view_list_) {
+            MouseEvent new_event(
+                event.button(),
+                event.type(),
+                event.x() - this->x_,
+                event.y() - this->y_
+            );
+
+            bool result = view->on_mouse_event(new_event);
+            if (result == true)
+                return true;
+        }
+
+        return false;
+    }
+
     if (event.type() == IMouseEvent::MOUSE_DOWN) {
         for (const auto& view: view_list_) {
-            MouseEvent new_event(event.type(), 
-                    event.x() - this->x_,
-                    event.y() - this->y_);
+            MouseEvent new_event(
+                event.button(),
+                event.type(), 
+                event.x() - this->x_,
+                event.y() - this->y_
+            );
 
             bool result = view->on_mouse_event(new_event);
             if (result == true) {
-                view_mouse_move_ = view.get();
+                view_left_drag_ = view.get();
                 return true;
             }
         }
+        view_left_drag_ = nullptr;
     }
-    else {
-        return view_mouse_move_->on_mouse_event(event);
+    else if (view_left_drag_) {
+        return view_left_drag_->on_mouse_event(event);
     }
 
     if (mouse_listener_ == nullptr)

@@ -27,26 +27,9 @@ protected:
     void on_success() override;
 
     void on_fail() override;
+
+    void on_abort() override;
 };
-
-class WaitToDestroyPlaneProcess: public Process {
-private:
-    Plane& plane_;
-    const milliseconds wait_time_;
-    milliseconds elapsed_time_;
-
-public:
-    WaitToDestroyPlaneProcess(Plane& plane, milliseconds wait_time)
-    : plane_{plane}, wait_time_{wait_time} {}
-
-protected:
-    void on_init() override;
-
-    void on_update(milliseconds dt) override;
-    
-    void on_success() override;
-};
-
 
 class Plane: public actor::Actor {
 private:

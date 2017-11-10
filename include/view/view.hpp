@@ -10,10 +10,13 @@ namespace tung {
 class MouseEvent: public IView::IMouseEvent {
 private:
     const Type type_;
+    const Button button_;
     const float x_, y_;
 
 public:
-    MouseEvent(Type type, float x, float y);
+    MouseEvent(Button button, Type type, float x, float y);
+
+    Button button() const override;
 
     Type type() const override;
     
@@ -51,7 +54,7 @@ private:
     typedef std::vector<IViewPtr> ViewList;
     ViewList view_list_;
 
-    IView *view_mouse_move_ = nullptr;
+    IView *view_left_drag_ = nullptr;
 
 public:
     ViewGroup(float x, float y, float width, float height);

@@ -1,6 +1,5 @@
 #include <graphics/gl/texture.hpp>
 #include <GL/glew.h>
-#include <iostream>
 
 namespace tung {
 

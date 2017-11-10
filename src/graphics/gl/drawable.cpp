@@ -91,6 +91,10 @@ void DrawableGroup::detach_drawable(const IDrawablePtr& drawable)
     );
 }
 
+void DrawableGroup::clear() {
+    drawables_.clear();
+}
+
 DrawableGroup::~DrawableGroup() {
 }
 

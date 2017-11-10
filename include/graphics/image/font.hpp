@@ -2,6 +2,7 @@
 #define GRAPHICS_FONT_H
 
 #include "../abstract/image.hpp"
+#include <vector>
 
 namespace tung {
 
@@ -10,10 +11,10 @@ private:
     int width_, height_;
     // Bit depth 8
     // Format RGBA
-    void *data_;
+    std::vector<unsigned char> data_;
 
 public:
-    FontImage();
+    FontImage(int width, int height, std::vector<unsigned char> data);
 
     int width() const override;
 
@@ -28,15 +29,6 @@ public:
     Format format() const override;
 
     virtual ~FontImage();
-};
-
-class FontImageFactory {
-public:
-    IImagePtr create(
-            float red, float green, float blue, 
-            const std::string& font,
-            const std::string& str);
-
 };
 
 } // namespace tung

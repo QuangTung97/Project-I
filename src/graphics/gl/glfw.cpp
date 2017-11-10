@@ -1,6 +1,5 @@
 #include <graphics/gl/glfw.hpp>
 #include <exception>
-#include <iostream>
 
 namespace tung {
 
