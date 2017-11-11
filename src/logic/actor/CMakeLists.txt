@@ -9,3 +9,7 @@ add_library(logic-actor
     sprite.cpp
     sound.cpp
 )
+
+target_link_libraries(logic-actor
+    graphics-color
+)

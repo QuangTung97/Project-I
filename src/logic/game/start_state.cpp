@@ -11,7 +11,7 @@ StartState::StartState(Manager& manager)
         new_drawable("assets/start_background.png", 2.0);
 
     auto text = std::make_shared<TextView>(
-        20, 20, 100, 50, 128, "Score: 100"
+        100, 100, 48, Color::RED, "Score: 100"
     );
     manager_.get_view_root()->add_view(text);
     

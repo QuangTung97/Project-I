@@ -13,6 +13,7 @@ add_library(graphics-gl
     texture.cpp
     drawable_factory.cpp
     text_factory.cpp
+    text_manager.cpp
 )
 
 target_link_libraries(graphics-gl

@@ -3,45 +3,62 @@
 
 namespace tung {
 
-ITextFactory *TextView::text_factory_ = nullptr;
+ITextManager *TextView::text_manager_ = nullptr;
 
-TextView::TextView(float x, float y, float width, float height, 
-        int font_size, const std::string& text) 
-: View(x, y, width, height),
+TextView::TextView(float x, float y,
+        int font_size, const std::string& str) 
+: TextView(x, y, font_size, Color{0, 0, 0}, str)
+{}
+
+TextView::TextView(float x, float y,
+        int font_size, Color color, const std::string& str) 
+: View(x, y, 1, 1),
     font_size_{font_size},
-    text_{text}
+    color_{color},
+    string_{str}
 {
-    drawable_ = std::make_shared<DrawableGroup>();
-    auto group = std::dynamic_pointer_cast<DrawableGroup>(drawable_);
+    auto group = std::make_shared<DrawableGroup>();
+    drawable_ = group;
 
-    auto& factory = *text_factory_;
-    text_drawable_ = factory.create(font_size, h_, text);
-    group->attach_drawable(text_drawable_);
-    group->translate({x, y, 0});
+    auto& manager = *text_manager_;
+    manager.set_default_font();
+    manager.set_font_size(font_size_);
+    manager.set_color(color_);
+    text_ = manager.get_text(string_);
+    group->attach_drawable(text_->get_drawable());
+    group->translate(glm::vec3{x, y, 0});
 }
 
-void TextView::set_text(const std::string& text) {
-    text_ = text;
-    auto& factory = *text_factory_;
+void TextView::validate() {
+    auto& manager = *text_manager_;
+    manager.set_default_font();
+    manager.set_font_size(font_size_);
+    manager.set_color(color_);
+    text_ = manager.get_text(string_);
+
     auto group = std::dynamic_pointer_cast<DrawableGroup>(drawable_);
-    text_drawable_ = factory.create(font_size_, h_, text_);
     group->clear();
-    group->attach_drawable(text_drawable_);
-    group->translate({x_, y_, 0});
+    group->attach_drawable(text_->get_drawable());
+    group->translate(glm::vec3{x_, y_, 0});
+}
+
+void TextView::set_text(const std::string& string) {
+    string_ = string;
+    validate();
+}
+
+void TextView::set_color(Color color) {
+    color_ = color;
+    validate();
 }
 
 void TextView::set_font_size(int size) {
     font_size_ = size;
-    auto& factory = *text_factory_;
-    auto group = std::dynamic_pointer_cast<DrawableGroup>(drawable_);
-    text_drawable_ = factory.create(font_size_, h_, text_);
-    group->clear();
-    group->attach_drawable(text_drawable_);
-    group->translate({x_, y_, 0});
+    validate();
 }
 
 void TextView::set_size(float width, float height) {
-    assert(false);
+    View::set_size(width, height);
 }
 
 } // namespace tung

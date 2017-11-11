@@ -5,7 +5,6 @@
 #include <graphics/abstract/drawable.hpp>
 #include <graphics/gl/image_drawable_factory.hpp>
 #include <graphics/gl/sprite_factory.hpp>
-#include <graphics/abstract/text_factory.hpp>
 
 #include <logic/abstract/event_manager.hpp>
 #include <logic/basic/process_manager.hpp>
@@ -36,7 +35,6 @@ private:
     ImageDrawableFactory& image_drawable_factory_;
     SpriteFactory& sprite_factory_;
     ISoundManager& sound_manager_;
-    ITextFactory& text_factory_;
 
     IDrawableManagerPtr root_drawable_;
     IDrawableManagerPtr lower_group_;
@@ -53,8 +51,7 @@ public:
         SpriteFactory& sprite_factory,
         ISoundManager& sound_manager,
         IDrawableManagerPtr root_drawable,
-        IViewManagerPtr view_root,
-        ITextFactory& text_factory
+        IViewManagerPtr view_root
     ): event_manager_{manager},
         process_manager_{process_manager},
         asset_manager_{asset_manager},
@@ -62,8 +59,7 @@ public:
         sprite_factory_{sprite_factory},
         sound_manager_{sound_manager},
         root_drawable_{std::move(root_drawable)},
-        view_root_{view_root},
-        text_factory_{text_factory}
+        view_root_{view_root}
     { init(); }
 
     void init();
@@ -72,6 +68,8 @@ public:
 
     bool on_mouse_event(MouseButton button, 
         MouseEventType type, float x, float y);
+
+    ~Manager();
 
     IEventManager& get_event_manager() const {
         return event_manager_;
@@ -115,10 +113,6 @@ public:
 
     ISoundManager& get_sound_manager() const {
         return sound_manager_;
-    }
-
-    ITextFactory& get_text_factory() const {
-        return text_factory_;
     }
 };
 

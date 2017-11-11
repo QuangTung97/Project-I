@@ -37,11 +37,9 @@ protected:
     }
 
     void on_success() override {
-
     }
 
     void on_fail() override {
-
     }
 
 public:
@@ -110,14 +108,29 @@ void PlayingState::entry() {
 }
 
 void PlayingState::exit() {
-    plane_generator_->succeed();
+    // Destroy cannon
+    cannon_ = nullptr;
+
+    // Destroy planes
+    auto planes = planes_;
+    for (auto& plane: planes) {
+        actor::DestroyEvent event{plane};
+        manager_.get_event_manager().trigger(event);
+    }
+
+    // Destroy bullets
+    auto bullets = bullets_;
+    for (auto& bullet: bullets) {
+        actor::DestroyEvent event{bullet};
+        manager_.get_event_manager().trigger(event);
+    }
+
     manager_.get_event_manager().remove_listener(actor::EVENT_DESTROY, 
         plane_destroy_listener_);
     manager_.get_event_manager().remove_listener(actor::EVENT_COLLIDE, 
         collide_listener_);
 
     manager_.get_root()->detach_drawable(background_);
-    cannon_ = nullptr;
 }
 
 bool PlayingState::on_mouse_event(MouseButton button,
@@ -137,7 +150,6 @@ bool PlayingState::on_mouse_event(MouseButton button,
             auto bullet_id = cannon_->shot();
             bullets_.insert(bullet_id);
         }
-
         return true;
     }
     return true;

@@ -38,5 +38,9 @@ bool Manager::on_mouse_event(MouseButton button,
     return current_->on_mouse_event(button, type, x, y);       
 }
 
+Manager::~Manager() {
+    current_->exit();
+}
+
 } // namespace state
 } // namespace tung

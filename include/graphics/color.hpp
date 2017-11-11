@@ -8,6 +8,8 @@ struct Color {
 
     uint8_t red, green, blue, alpha;
 
+    Color() = default;
+
     Color(uint8_t r, uint8_t g, uint8_t b) {
         red = r;
         green = g;
@@ -28,6 +30,12 @@ struct Color {
         blue = b * 255;
         alpha = a * 255;
     }
+
+    static const Color RED;
+    static const Color WHITE;
+    static const Color BLACK;
+    static const Color BLUE;
+    static const Color GREEN;
 };
 
 } // namespace tung

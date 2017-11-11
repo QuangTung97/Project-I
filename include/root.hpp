@@ -7,7 +7,7 @@
 #include <graphics/abstract/object.hpp>
 #include <graphics/abstract/image.hpp>
 #include <graphics/abstract/texture.hpp>
-#include <graphics/abstract/text_factory.hpp>
+#include <graphics/abstract/text_manager.hpp>
 
 #include <sound/abstract/sound.hpp>
 #include <asset_manager.hpp>
@@ -47,7 +47,7 @@ private:
     std::unique_ptr<IVertexObjectBuilder> ui_object_builder_;
     std::unique_ptr<IVertexObjectBuilder> _2d_object_builder_;
 
-    std::unique_ptr<ITextFactory> text_factory_;
+    std::unique_ptr<ITextManager> text_manager_;
 
     std::unique_ptr<SpriteFactory> sprite_factory_;
     std::unique_ptr<ImageDrawableFactory> image_drawable_factory_;

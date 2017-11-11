@@ -4,7 +4,7 @@
 #include <graphics/gl/simple_2d_shader.hpp>
 #include <graphics/gl/texture.hpp>
 #include <graphics/gl/vertex_object.hpp>
-#include <graphics/gl/text_factory.hpp>
+#include <graphics/gl/text_manager.hpp>
 #include <view/image_view.hpp>
 #include <view/text_view.hpp>
 #include <sound/sound.hpp>
@@ -84,12 +84,11 @@ Root::Root() {
     ui_object_builder_ = std::make_unique<VertexObjectBuilder>(*ui_program_);
     _2d_object_builder_ = std::make_unique<VertexObjectBuilder>(*_2d_program_);
 
-    text_factory_ = std::make_unique<TextFactory>(
-        "assets/Arial.ttf", Color{255, 0, 0}, *texture_factory_, *_2d_object_builder_);
+    text_manager_ = std::make_unique<TextManager>(*texture_factory_, *_2d_object_builder_);
 
     ImageView::set_asset_manager(*asset_manager_);
     ImageView::set_vertex_object_builder(*ui_object_builder_);
-    TextView::set_text_factory(*text_factory_);
+    TextView::set_text_manager(*text_manager_);
 
     sprite_factory_ = std::make_unique<SpriteFactory>(
         *asset_manager_, *_2d_object_builder_);
@@ -168,8 +167,7 @@ Root::Root() {
         *sprite_factory_,
         *sound_manager_,
         root,
-        view_root_,
-        *text_factory_
+        view_root_
     );
 
     // Mouse Event
