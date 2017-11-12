@@ -10,10 +10,12 @@ StartState::StartState(Manager& manager)
     background_ = manager.get_image_factory().
         new_drawable("assets/start_background.png", 2.0);
 
+    /*
     auto text = std::make_shared<TextView>(
         100, 100, 48, Color::RED, "Score: 100"
     );
     manager_.get_view_root()->add_view(text);
+    */
     
     manager_.get_asset_manager().get_image("assets/playing_background.png");
     manager_.get_asset_manager().get_image("assets/start_background.png");
@@ -23,9 +25,9 @@ StartState::StartState(Manager& manager)
     manager_.get_asset_manager().get_image("assets/end_background.png");
     manager_.get_asset_manager().get_image("assets/explosion1.png");
     manager_.get_asset_manager().get_sound("assets/plane_explode.mp3");
-    manager_.get_asset_manager().get_image("assets/jet1.png");
-    manager_.get_asset_manager().get_image("assets/jet2.png");
-    manager_.get_asset_manager().get_image("assets/jet3.png");
+    manager_.get_asset_manager().get_image("assets/fighter1.png");
+    manager_.get_asset_manager().get_image("assets/fighter2.png");
+    manager_.get_asset_manager().get_image("assets/fighter3.png");
         
 }
 

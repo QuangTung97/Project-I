@@ -6,9 +6,17 @@
 #include <logic/actor/collision.hpp>
 #include <logic/actor/sprite.hpp>
 #include <logic/actor/graphics_image.hpp>
+#include <random>
 
 namespace tung {
 namespace game {
+
+static std::random_device rd;
+static std::mt19937 generator{rd()};
+static std::uniform_real_distribution<float> uniform(0, 1);
+static std::uniform_real_distribution<float> y_uniform(-0.2, 0.8);
+static std::uniform_int_distribution<int> uniform_int02(0, 2);
+static std::uniform_int_distribution<int> uniform_int01(0, 1);
 
 //-----------------
 // FlyProcess
@@ -75,22 +83,29 @@ Plane::Plane(state::Manager& state_manager, bool is_fighter)
     });
 }
 
-const std::string& get_random_jet_image() {
-    static std::random_device device;
+const std::string& get_random_fighter_image() {
     static const std::vector<std::string> jet_images = {
-        "assets/jet1.png",
-        "assets/jet2.png",
-        "assets/jet3.png"
+        "assets/fighter1.png",
+        "assets/fighter2.png",
+        "assets/fighter3.png"
     };
-    std::uniform_int_distribution<int> dist(0, 2);
-    return jet_images[dist(device)];
+    return jet_images[uniform_int02(generator)];
+}
+
+const std::string& get_random_commercial_plane_image() {
+    static const std::vector<std::string> images = {
+        "assets/commercial_plane1.png",
+        "assets/commercial_plane2.png"
+    };
+
+    return images[uniform_int01(generator)];
 }
 
 void Plane::init() {
     x_ = -1.5f;
-    y_ = 0;
-    const float radius = 0.2;
-    const float velocity = 0.8;
+    y_ = y_uniform(generator);
+    const float radius = 0.15;
+    const float velocity = 1.2;
 
     auto sound = std::make_shared<actor::Sound>(
         state_manager_.get_sound_manager());
@@ -102,7 +117,7 @@ void Plane::init() {
         x_, y_,
         state_manager_.get_image_factory(), 
         state_manager_.get_root(),
-        2 * radius, get_random_jet_image()
+        2 * radius, get_random_fighter_image()
     );
     add_component(std::move(image));
 
@@ -114,7 +129,7 @@ void Plane::init() {
         state_manager_.get_sprite_factory(),
         state_manager_.get_process_manager()
     );
-    sprite->add_sprite(0, "assets/explosion1.png", 6, 8, 2 * radius);
+    sprite->add_sprite(0, "assets/explosion1.png", 6, 8, 2 * radius * 0.8);
     add_component(std::move(sprite));
 
     GameLogic::get().add_actor(shared_from_this());

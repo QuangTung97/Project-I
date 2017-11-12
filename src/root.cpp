@@ -134,9 +134,6 @@ Root::Root() {
 
     glfw_->set_run_callback(run_function);
 
-    auto background = std::make_shared<ImageView>(0, 0, 
-        640, 480, "assets/llvm.png");
-
     auto root = std::make_shared<DrawableGroup>();
     _2d_program_->set_drawable(root);
 

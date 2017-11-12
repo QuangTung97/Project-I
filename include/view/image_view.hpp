@@ -13,6 +13,9 @@ protected:
     static IVertexObjectBuilder *builder_;
     static IGraphicsAssetManager *asset_manager_;
     ITexturePtr texture_;
+    std::string filename_;
+
+    void validate();
 
 public:
     ImageView(float x, float y, float width, float height, 
@@ -27,6 +30,8 @@ public:
     }
 
     void set_size(float, float) override;
+
+    void set_image(const std::string& filename);
 
     virtual ~ImageView() {}
 };
