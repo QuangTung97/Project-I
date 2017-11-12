@@ -102,10 +102,14 @@ const std::string& get_random_commercial_plane_image() {
 }
 
 void Plane::init() {
-    x_ = -1.5f;
-    y_ = y_uniform(generator);
     const float radius = 0.15;
     const float velocity = 1.2;
+    const float commercial_plane_prob = 0.2;
+    const float width = radius * 1.6 * 2;
+    const float height = radius * 2;
+
+    x_ = -1.5f;
+    y_ = y_uniform(generator);
 
     auto sound = std::make_shared<actor::Sound>(
         state_manager_.get_sound_manager());
@@ -113,23 +117,39 @@ void Plane::init() {
     sound->add_sound(1, "assets/plane_explode.mp3");
     add_component(std::move(sound));
 
-    auto image = std::make_shared<actor::GraphicsImage>(
-        x_, y_,
-        state_manager_.get_image_factory(), 
-        state_manager_.get_root(),
-        2 * radius, get_random_fighter_image()
-    );
-    add_component(std::move(image));
+    float prob = uniform(generator);
+    if (prob <= commercial_plane_prob) {
+        auto image = std::make_shared<actor::GraphicsImage>(
+            x_, y_,
+            state_manager_.get_image_factory(), 
+            state_manager_.get_root(),
+            height, get_random_commercial_plane_image()
+        );
+        add_component(std::move(image));
 
-    auto collision = std::make_shared<actor::CircleCollision>(x_, y_, radius);
-    add_component(std::move(collision));
+        auto collision = std::make_shared<actor::RectangleCollision>(
+            x_, y_, width, height * 0.3);
+        add_component(std::move(collision));
+    }
+    else {
+        auto image = std::make_shared<actor::GraphicsImage>(
+            x_, y_,
+            state_manager_.get_image_factory(), 
+            state_manager_.get_root(),
+            height * 0.9, get_random_fighter_image()
+        );
+        add_component(std::move(image));
+
+        auto collision = std::make_shared<actor::CircleCollision>(x_, y_, radius);
+        add_component(std::move(collision));
+    }
 
     auto sprite = std::make_shared<actor::Sprite>(
         state_manager_.get_root(), 
         state_manager_.get_sprite_factory(),
         state_manager_.get_process_manager()
     );
-    sprite->add_sprite(0, "assets/explosion1.png", 6, 8, 2 * radius * 0.8);
+    sprite->add_sprite(0, "assets/explosion1.png", 6, 8, 2 * radius);
     add_component(std::move(sprite));
 
     GameLogic::get().add_actor(shared_from_this());

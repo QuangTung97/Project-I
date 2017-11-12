@@ -13,6 +13,14 @@ class Collision;
 
 namespace actor {
 
+bool is_rectangle_circle_collided(float rx, float ry, 
+    float width, float height, 
+    float cx, float cy, float radius);
+
+bool is_two_rectangle_collided(
+    float x1, float y1, float width1, float height1,
+    float x2, float y2, float width2, float height2);
+
 class Collision: public Component {
 protected:
     float x_, y_;

@@ -28,7 +28,8 @@ StartState::StartState(Manager& manager)
     manager_.get_asset_manager().get_image("assets/fighter1.png");
     manager_.get_asset_manager().get_image("assets/fighter2.png");
     manager_.get_asset_manager().get_image("assets/fighter3.png");
-        
+    manager_.get_asset_manager().get_image("assets/commercial_plane1.png");
+    manager_.get_asset_manager().get_image("assets/commercial_plane2.png");
 }
 
 void StartState::entry() {
