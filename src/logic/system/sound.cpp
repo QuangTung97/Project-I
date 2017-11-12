@@ -23,6 +23,7 @@ Sound::Sound(IEventManager& manager)
         auto find_it = components_.find(event.get_id());
         if (find_it != components_.end()) {
             auto comp = find_it->second.lock();
+            assert (comp != nullptr);
             comp->set_owner(nullptr);
             components_.erase(find_it);
         }
@@ -33,6 +34,7 @@ Sound::Sound(IEventManager& manager)
         auto find_it = components_.find(event.get_id());
         if (find_it != components_.end()) {
             auto comp = find_it->second.lock();
+            assert (comp != nullptr);
             comp->start(event.get_index());
         }
     };
@@ -42,6 +44,7 @@ Sound::Sound(IEventManager& manager)
         auto find_it = components_.find(event.get_id());
         if (find_it != components_.end()) {
             auto comp = find_it->second.lock();
+            assert (comp != nullptr);
             comp->end(event.get_index());
         }
     };

@@ -213,6 +213,8 @@ void PlayingState::entry() {
 }
 
 void PlayingState::exit() {
+    plane_generator_->fail();
+
     manager_.get_view_root()->remove_view(heart_view_group_);
     manager_.get_view_root()->remove_view(show_high_score_);
     manager_.get_view_root()->remove_view(show_score_);
@@ -223,6 +225,12 @@ void PlayingState::exit() {
     manager_.get_event_manager().trigger(destroy_cannon);
     cannon_ = nullptr;
 
+    manager_.get_root()->detach_drawable(background_);
+    manager_.get_event_manager().remove_listener(actor::EVENT_DESTROY, 
+        plane_destroy_listener_);
+    manager_.get_event_manager().remove_listener(actor::EVENT_COLLIDE, 
+        collide_listener_);
+
     // Destroy planes
     auto planes = planes_;
     for (auto& plane: planes) {
@@ -230,22 +238,19 @@ void PlayingState::exit() {
         manager_.get_event_manager().trigger(event);
     }
 
-    // Destroy bullets
     auto bullets = bullets_;
     for (auto bullet: bullets) {
-        auto bullet_ptr = std::dynamic_pointer_cast<game::Bullet>(
-            GameLogic::get().get_actor(bullet).lock()
-        );
-        bullet_ptr->end_fly();
+        actor::DestroyEvent event{bullet};
+        manager_.get_event_manager().trigger(event);
+        // auto bullet_ptr = std::dynamic_pointer_cast<game::Bullet>(
+            // GameLogic::get().get_actor(bullet).lock()
+        // );
+        // if (bullet_ptr)
+            // bullet_ptr->end_fly();
     }
 
-    manager_.get_root()->detach_drawable(background_);
-    manager_.get_event_manager().remove_listener(actor::EVENT_DESTROY, 
-        plane_destroy_listener_);
-    manager_.get_event_manager().remove_listener(actor::EVENT_COLLIDE, 
-        collide_listener_);
-
-    plane_generator_->fail();
+    planes_.clear();
+    bullets_.clear();
 }
 
 bool PlayingState::on_mouse_event(MouseButton button,

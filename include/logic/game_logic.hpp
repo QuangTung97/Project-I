@@ -4,6 +4,7 @@
 #include <unordered_map>
 #include "actor/actor.hpp"
 #include <logic/abstract/event_manager.hpp>
+#include <cassert>
 
 namespace tung {
 
@@ -29,11 +30,17 @@ public:
     }
 
     WeakActorPtr get_actor(ActorId id) {
-        return actors_[id];
+        auto it = actors_.find(id);
+        assert (it != actors_.end());
+        return it->second;
     }
 
     void add_actor(StrongActorPtr actor) {
         actors_[actor->get_id()] = std::move(actor);
+    }
+
+    int get_actor_count() {
+        return actors_.size();
     }
 
     ~GameLogic();

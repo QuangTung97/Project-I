@@ -2,7 +2,7 @@
 #include <logic/game_logic.hpp>
 #include <logic/actor/events.hpp>
 
-#include <iostream>
+#include <cassert>
 
 namespace tung {
 namespace system {
@@ -24,6 +24,7 @@ Collision::Collision(IEventManager& manager, ITimer& timer)
         auto find_it = actor_components_.find(data.get_id());
         if (find_it != actor_components_.end()) {
             auto comp = find_it->second.lock();
+            assert (comp != nullptr);
             comp->set_owner(nullptr);
             actor_components_.erase(find_it);
         }
@@ -34,6 +35,7 @@ Collision::Collision(IEventManager& manager, ITimer& timer)
         auto find_it = actor_components_.find(data.get_id());
         if (find_it != actor_components_.end()) {
             auto comp = find_it->second.lock();
+            assert (comp != nullptr);
             comp->x_ = data.get_x();
             comp->y_ = data.get_y();
         }
@@ -44,6 +46,7 @@ Collision::Collision(IEventManager& manager, ITimer& timer)
         auto find_it = actor_components_.find(event.get_id());
         if (find_it != actor_components_.end()) {
             auto comp = find_it->second.lock();
+            assert (comp != nullptr);
             comp->disable();
         }
     };
@@ -53,6 +56,7 @@ Collision::Collision(IEventManager& manager, ITimer& timer)
         auto find_it = actor_components_.find(event.get_id());
         if (find_it != actor_components_.end()) {
             auto comp = find_it->second.lock();
+            assert (comp != nullptr);
             comp->enable();
         }
     };

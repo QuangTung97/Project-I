@@ -60,11 +60,11 @@ void FlyProcess::on_success() {
         auto& plane = *plane_ptr;
         // Plane's Sound
         actor::SoundEndedEvent event{plane.get_id(), 0};
-        plane.state_manager_.get_event_manager().queue(event);
+        plane.state_manager_.get_event_manager().trigger(event);
 
         // Destroy actor
         actor::DestroyEvent destroy_event{plane.get_id()};
-        plane.state_manager_.get_event_manager().queue(destroy_event);
+        plane.state_manager_.get_event_manager().trigger(destroy_event);
     }
 }
 
@@ -74,7 +74,7 @@ void FlyProcess::on_fail() {
         auto& plane = *plane_ptr;
         // Plane's Sound
         actor::SoundEndedEvent event{plane.get_id(), 0};
-        plane.state_manager_.get_event_manager().queue(event);
+        plane.state_manager_.get_event_manager().trigger(event);
     }
 }
 
@@ -88,12 +88,7 @@ void FlyProcess::on_abort() {
 Plane::Plane(state::Manager& state_manager, bool is_fighter) 
 : state_manager_{state_manager}, is_fighter_{is_fighter},
     actor::Actor{actor::IdGenerator::new_id()}
-{
-    destroy_plane_ = std::make_shared<CallOnceProcess>(2500ms, [this]() {
-        actor::DestroyEvent destroy_actor{get_id()};
-        state_manager_.get_event_manager().queue(destroy_actor);
-    });
-}
+{}
 
 const std::string& get_random_fighter_image() {
     static const std::vector<std::string> jet_images = {
@@ -114,11 +109,23 @@ const std::string& get_random_commercial_plane_image() {
 }
 
 void Plane::init() {
+    std::weak_ptr<Plane> self = 
+        std::dynamic_pointer_cast<Plane>(shared_from_this());
+
+    destroy_plane_ = std::make_shared<CallOnceProcess>(2500ms, 
+        [self=std::move(self)] {
+        auto this_ = self.lock();
+        if (this_) {
+            actor::DestroyEvent destroy_actor{this_->get_id()};
+            this_->state_manager_.get_event_manager().trigger(destroy_actor);
+        }
+    });
+
     auto this_ = std::dynamic_pointer_cast<Plane>(shared_from_this());
     fly_process_ = std::make_shared<FlyProcess>(this_);
     const float radius = 0.15;
     const float velocity = 1.2;
-    const float commercial_plane_prob = 0.2;
+    const float commercial_plane_prob = 0.3;
     const float width = radius * 1.6 * 2;
     const float height = radius * 2;
 

@@ -2,6 +2,8 @@
 #include <logic/actor/events.hpp>
 #include <logic/game_logic.hpp>
 
+#include <cassert>
+
 namespace tung {
 namespace system {
 
@@ -23,6 +25,7 @@ Graphics::Graphics(IEventManager& event_manager)
         auto find_it = graphics_image_components_.find(event.get_id());
         if (find_it != graphics_image_components_.end()) {
             auto comp = find_it->second.lock();
+            assert (comp != nullptr);
             comp->set_owner(nullptr);
             graphics_image_components_.erase(find_it);
         }
@@ -33,6 +36,7 @@ Graphics::Graphics(IEventManager& event_manager)
         auto find_it = graphics_image_components_.find(event.get_id());
         if (find_it != graphics_image_components_.end()) {
             auto comp = find_it->second.lock();
+            assert (comp != nullptr);
             comp->move_to(event.get_x(), event.get_y());
         }
     };
@@ -42,6 +46,7 @@ Graphics::Graphics(IEventManager& event_manager)
         auto find_it = graphics_image_components_.find(event.get_id());
         if (find_it != graphics_image_components_.end()) {
             auto comp = find_it->second.lock();
+            assert (comp != nullptr);
             comp->rotate(event.get_angle());
         }
     };
@@ -51,6 +56,7 @@ Graphics::Graphics(IEventManager& event_manager)
         auto find_it = graphics_image_components_.find(event.get_id());
         if (find_it != graphics_image_components_.end()) {
             auto comp = find_it->second.lock();
+            assert (comp != nullptr);
             comp->show();
         }
     };
@@ -60,6 +66,7 @@ Graphics::Graphics(IEventManager& event_manager)
         auto find_it = graphics_image_components_.find(event.get_id());
         if (find_it != graphics_image_components_.end()) {
             auto comp = find_it->second.lock();
+            assert (comp != nullptr);
             comp->hide();
         }
     };

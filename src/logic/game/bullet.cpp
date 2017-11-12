@@ -4,6 +4,7 @@
 #include <logic/actor/graphics_image.hpp>
 #include <logic/game_logic.hpp>
 #include <cmath>
+#include <graphics/gl/glfw.hpp>
 
 namespace tung {
 namespace game {
@@ -28,8 +29,10 @@ protected:
         bullet.x_ += bullet.vx_ * dt.count() / 1000.0f;
         bullet.y_ += bullet.vy_ * dt.count() / 1000.0f;
 
-        if (std::abs(bullet.x_) >= 2.0f ||
-            std::abs(bullet.y_) >= 3.0f) {
+        const float ratio = (float)GLFW::get_screen_width() / GLFW::get_screen_height();
+
+        if (std::abs(bullet.x_) > ratio ||
+            std::abs(bullet.y_) > 1.0f) {
             succeed();
             return;
         }
@@ -43,7 +46,7 @@ protected:
         if (bullet_ptr) {
             auto& bullet = *bullet_ptr;
             actor::DestroyEvent destroy_event{bullet.get_id()};
-            bullet.state_manager_.get_event_manager().queue(destroy_event);
+            bullet.state_manager_.get_event_manager().trigger(destroy_event);
         }
     }
 
