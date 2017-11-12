@@ -18,6 +18,21 @@ bool CircleCollision::is_collided(const Collision& other) {
         else
             return true;
     }
+    else if (other.get_type() == Type::RECTANGLE) {
+        const auto& rec = dynamic_cast<const RectangleCollision&>(other);
+    }
+    return false;
+}
+
+bool RectangleCollision::is_collided(const Collision& other) {
+    if (other.get_type() == Type::CIRCLE) {
+        const auto& circle = dynamic_cast<const CircleCollision&>(other);
+        float dx = circle.x_ - this->x_;
+        float dy = circle.y_ - this->y_;
+    }
+    else if (other.get_type() == Type::RECTANGLE) {
+        const auto& rec = dynamic_cast<const RectangleCollision&>(other);
+    }
     return false;
 }
 

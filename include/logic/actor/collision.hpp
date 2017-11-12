@@ -49,6 +49,7 @@ public:
 class CircleCollision: public Collision {
 protected:
     float radius_;
+    friend class RectangleCollision;
 
 public:
     CircleCollision(float x, float y, float radius)
@@ -56,6 +57,22 @@ public:
 
     Type get_type() const override {
         return Type::CIRCLE;
+    }
+
+    bool is_collided(const Collision& other) override;
+};
+
+class RectangleCollision: public Collision {
+protected:
+    float width_, height_;
+    friend class CircleCollision;
+
+public:
+    RectangleCollision(float x, float y, float width, float height)
+    : Collision(x, y), width_{width}, height_{height} {}
+
+    Type get_type() const override {
+        return Type::RECTANGLE;
     }
 
     bool is_collided(const Collision& other) override;
