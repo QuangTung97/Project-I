@@ -29,11 +29,11 @@ float MouseEvent::y() const {
 
 // View
 View::View(float x, float y, float width, float height) {
+    drawable_ = null_drawable;
     x_ = x;
     y_ = y;
     w_ = width;
     h_ = height;
-    drawable_ = null_drawable;
 }
 
 void View::set_size(float width, float height) {
@@ -44,7 +44,7 @@ void View::set_size(float width, float height) {
 void View::set_top_left(float x, float y) {
     x_ = x;
     y_ = y;
-    drawable_->translate({x, y, 0});
+    drawable_->translate(glm::vec3{x, y, 0});
 }
 
 void View::set_mouse_listener(MouseListener listener) {
@@ -72,6 +72,7 @@ ViewGroup::ViewGroup(float x, float y, float width, float height)
     : View(x, y, width, height) 
 {
     drawable_ = std::make_shared<DrawableGroup>();
+    drawable_->translate(glm::vec3{x, y, 0});
 }
 
 bool ViewGroup::on_mouse_event(const IMouseEvent& event) {

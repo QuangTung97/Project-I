@@ -9,6 +9,8 @@ ImageView::ImageView(float x, float y, float width, float height,
         const std::string& filename) 
 : View(x, y, width, height), filename_{filename}
 {
+    drawable_ = std::make_shared<Drawable>();
+    drawable_->translate(glm::vec3{x, y, 0});
     validate();
 }
 
@@ -39,7 +41,7 @@ void ImageView::validate() {
     builder.set_indices({0, 1, 2, 0, 2, 3});
 
     auto object = builder.build();
-    drawable_ = std::make_shared<Drawable>(std::move(object));
+    drawable_->set_vertex_object(std::move(object));
     drawable_->translate(glm::vec3{x_, y_, 0});
 }
 

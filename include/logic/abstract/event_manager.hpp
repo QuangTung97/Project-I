@@ -16,6 +16,8 @@ struct IEventManager {
 
     virtual void queue(IEventData& event) = 0;
 
+    virtual void update() = 0;
+
     virtual ~IEventManager() {}
 };
 

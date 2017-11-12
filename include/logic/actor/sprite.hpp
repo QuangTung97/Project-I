@@ -22,13 +22,15 @@ class SpriteProcess: public Process {
 private:
     milliseconds current_time_;
     const std::shared_ptr<SpriteDrawable> drawable_;
-    Sprite& owner_;
+    const std::weak_ptr<Sprite> owner_;
+    IDrawableManagerPtr root_;
     const int fps_ = 24;
     float x_, y_;
     friend class Sprite;
 
 public:
-    SpriteProcess(Sprite& owner, std::shared_ptr<SpriteDrawable> drawable);
+    SpriteProcess(const std::shared_ptr<Sprite>& owner, 
+    std::shared_ptr<SpriteDrawable> drawable);
 
     void move_to(float x, float y) { x_ = x; y_ = y; }
 

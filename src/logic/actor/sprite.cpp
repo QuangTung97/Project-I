@@ -3,17 +3,31 @@
 namespace tung {
 namespace actor {
 
-SpriteProcess::SpriteProcess(Sprite& owner, std::shared_ptr<SpriteDrawable> drawable)
+SpriteProcess::SpriteProcess(const std::shared_ptr<Sprite>& owner, 
+    std::shared_ptr<SpriteDrawable> drawable)
 : owner_{owner}, drawable_{std::move(drawable)} {}
 
 void SpriteProcess::on_init() {
     Process::on_init();
     current_time_ = seconds{0};
     drawable_->translate({x_, y_, 0});
-    owner_.root_->attach_drawable(drawable_);
+    auto owner = owner_.lock();
+    if (owner) {
+        root_ = owner->root_;
+        root_->attach_drawable(drawable_);
+    }
+    else {
+        root_ = nullptr;
+        fail();
+    }
 }
 
 void SpriteProcess::on_update(milliseconds dt) {
+    if (owner_.expired()) {
+        fail();
+        return;
+    }
+
     current_time_ += dt;
     int index = current_time_.count() * fps_ / 1000;
     if (index >= drawable_->get_sprite_count()) {
@@ -25,11 +39,13 @@ void SpriteProcess::on_update(milliseconds dt) {
 }
 
 void SpriteProcess::on_success() {
-    owner_.root_->detach_drawable(drawable_);
+    if (root_)
+        root_->detach_drawable(drawable_);
 }
 
 void SpriteProcess::on_fail() {
-    owner_.root_->detach_drawable(drawable_);
+    if (root_)
+        root_->detach_drawable(drawable_);
 }
 
 // *************
@@ -41,7 +57,8 @@ void Sprite::add_sprite(int index, const std::string& filename,
         int rows, int cols, float height)
 {
     auto sprite = factory_.new_sprite(filename, rows, cols, height);
-    auto process = std::make_shared<SpriteProcess>(*this, std::move(sprite));
+    auto this_ = std::dynamic_pointer_cast<Sprite>(shared_from_this());
+    auto process = std::make_shared<SpriteProcess>(this_, std::move(sprite));
     processes_[index] = std::move(process);
 }
 

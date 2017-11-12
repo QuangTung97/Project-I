@@ -7,7 +7,16 @@
 namespace tung {
 namespace state {
 
+EventType<2322> STATE_MAKE_TRANSITION;
+
 void Manager::init() {
+    auto make_transition = [this](const IEventData& event_) {
+        auto& event = dynamic_cast<const MakeTransition&>(event_);
+        make_transition_to(event.get_state());
+    };
+    transition_listener_ = make_transition;
+    event_manager_.add_listener(STATE_MAKE_TRANSITION, transition_listener_);
+
     auto lower_group = std::make_shared<DrawableGroup>();
     auto middle_group = std::make_shared<DrawableGroup>();
     auto upper_group = std::make_shared<DrawableGroup>();
@@ -40,6 +49,7 @@ bool Manager::on_mouse_event(MouseButton button,
 
 Manager::~Manager() {
     current_->exit();
+    event_manager_.remove_listener(STATE_MAKE_TRANSITION, transition_listener_);
 }
 
 } // namespace state

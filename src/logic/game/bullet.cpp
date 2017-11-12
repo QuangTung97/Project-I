@@ -10,7 +10,7 @@ namespace game {
 
 class BulletFlyProcess: public Process {
 private:
-    Bullet& bullet_;
+    std::weak_ptr<Bullet> bullet_;
 
 protected:
     void on_init() override {
@@ -18,22 +18,33 @@ protected:
     }
 
     void on_update(milliseconds dt) override {
-        bullet_.x_ += bullet_.vx_ * dt.count() / 1000.0f;
-        bullet_.y_ += bullet_.vy_ * dt.count() / 1000.0f;
+        auto bullet_ptr = bullet_.lock();
+        if (!bullet_ptr) {
+            fail();
+            return;
+        }
+        auto& bullet = *bullet_ptr;
 
-        if (std::abs(bullet_.x_) >= 2.0f ||
-            std::abs(bullet_.y_) >= 3.0f) {
+        bullet.x_ += bullet.vx_ * dt.count() / 1000.0f;
+        bullet.y_ += bullet.vy_ * dt.count() / 1000.0f;
+
+        if (std::abs(bullet.x_) >= 2.0f ||
+            std::abs(bullet.y_) >= 3.0f) {
             succeed();
             return;
         }
 
-        actor::MoveEvent move_event{bullet_.get_id(), bullet_.x_, bullet_.y_};
-        bullet_.state_manager_.get_event_manager().trigger(move_event);
+        actor::MoveEvent move_event{bullet.get_id(), bullet.x_, bullet.y_};
+        bullet.state_manager_.get_event_manager().trigger(move_event);
     }
 
     void on_success() override {
-        actor::DestroyEvent destroy_event{bullet_.get_id()};
-        bullet_.state_manager_.get_event_manager().queue(destroy_event);
+        auto bullet_ptr = bullet_.lock();
+        if (bullet_ptr) {
+            auto& bullet = *bullet_ptr;
+            actor::DestroyEvent destroy_event{bullet.get_id()};
+            bullet.state_manager_.get_event_manager().queue(destroy_event);
+        }
     }
 
     void on_fail() override {
@@ -41,7 +52,7 @@ protected:
     }
 
 public:
-    BulletFlyProcess(Bullet& bullet)
+    BulletFlyProcess(const std::shared_ptr<Bullet>& bullet)
     : bullet_{bullet} {}
 };
 
@@ -56,11 +67,12 @@ Bullet::Bullet(state::Manager& state_manager,
     float radian = degree / 180 * pi;
     vx_ = velocity_ * std::cos(radian);
     vy_ = velocity_ * std::sin(radian);
-
-    fly_process_ = std::make_shared<BulletFlyProcess>(*this);
 }
 
 void Bullet::init() {
+    auto this_ = std::dynamic_pointer_cast<Bullet>(shared_from_this());
+    fly_process_ = std::make_shared<BulletFlyProcess>(this_);
+
     float radius = 0.03f;
 
     auto image = std::make_shared<actor::GraphicsImage>(
@@ -89,6 +101,9 @@ void Bullet::start_fly() {
 
 void Bullet::end_fly() {
     fly_process_->fail();
+}
+
+Bullet::~Bullet() {
 }
 
 } // namespace game

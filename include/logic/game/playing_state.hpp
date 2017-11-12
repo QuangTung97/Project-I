@@ -30,12 +30,20 @@ private:
     int score_ = 0;
     int high_score_;
 
-    int heart_count_ = 4;
+    const int max_heart_count_ = 4;
+    int heart_count_ = max_heart_count_;
 
     std::shared_ptr<TextView> show_score_;
     std::shared_ptr<TextView> show_high_score_;
 
     std::vector<std::shared_ptr<ImageView>> heart_views;
+    std::shared_ptr<ViewGroup> heart_view_group_;
+
+    void init_heart_views();
+
+    void reset_heart_count();
+
+    void reduce_heart_count(int value);
 
     void increase_score(int value);
 

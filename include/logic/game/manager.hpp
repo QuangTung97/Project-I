@@ -7,6 +7,7 @@
 #include <graphics/gl/sprite_factory.hpp>
 
 #include <logic/abstract/event_manager.hpp>
+#include <logic/basic/event.hpp>
 #include <logic/basic/process_manager.hpp>
 #include <sound/abstract/sound.hpp>
 #include <asset_manager.hpp>
@@ -14,6 +15,25 @@
 
 namespace tung {
 namespace state {
+
+extern EventType<2322> STATE_MAKE_TRANSITION;
+
+class MakeTransition: public EventData {
+private:
+    GameState& state_;
+
+public:
+    MakeTransition(GameState& state)
+    : EventData{TimePoint{}, STATE_MAKE_TRANSITION}, state_{state} {}
+
+    IEventDataPtr clone() const override {
+        return std::make_unique<MakeTransition>(state_);
+    }
+
+    GameState& get_state() const {
+        return state_;
+    }
+};
 
 class Manager {
 private:
@@ -27,6 +47,8 @@ private:
     GameStatePtr start_;
     GameStatePtr playing_;
     GameStatePtr end_;
+
+    EventListener transition_listener_;
 
 private:
     IEventManager& event_manager_;

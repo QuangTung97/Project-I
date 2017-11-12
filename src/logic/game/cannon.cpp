@@ -65,9 +65,6 @@ actor::ActorId Cannon::shot() {
 }
 
 Cannon::~Cannon() {
-    actor::DestroyEvent destroy_actor{get_id()};
-    state_manager_.get_event_manager().trigger(destroy_actor);
-
     actor::DestroyEvent destroy_head{head_id_};
     state_manager_.get_event_manager().trigger(destroy_head);
 

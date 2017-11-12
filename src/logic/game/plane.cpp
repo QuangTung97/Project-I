@@ -23,50 +23,63 @@ static std::uniform_int_distribution<int> uniform_int01(0, 1);
 //-----------------
 void FlyProcess::on_init() {
     Process::on_init();
-    plane_.dx_ = 0.0f;
+    auto plane_ptr = plane_.lock();
+    if (plane_ptr) {
+        auto& plane = *plane_ptr;
+        plane.dx_ = 0.0f;
 
-    // Plane's Sound
-    actor::SoundStartedEvent event{plane_.get_id(), 0};
-    plane_.state_manager_.get_event_manager().trigger(event);
+        // Plane's Sound
+        actor::SoundStartedEvent event{plane.get_id(), 0};
+        plane.state_manager_.get_event_manager().trigger(event);
+    }
 }
 
 void FlyProcess::on_update(milliseconds dt) {
-    float dx = plane_.velocity_ * dt.count() / 1000.0f;
-    plane_.x_ += dx;
-    plane_.dx_ += dx;
-    if (plane_.dx_ > plane_.max_distance_) {
+    if (plane_.expired()) {
+        fail();
+        return;
+    }
+    auto plane_ptr = plane_.lock();
+    auto& plane = *plane_ptr;
+
+    float dx = plane.velocity_ * dt.count() / 1000.0f;
+    plane.x_ += dx;
+    plane.dx_ += dx;
+    if (plane.dx_ > plane.max_distance_) {
         succeed();
         return;
     }
 
-    actor::MoveEvent event{plane_.get_id(), plane_.x_, plane_.y_};
-    plane_.state_manager_.get_event_manager().trigger(event);
+    actor::MoveEvent event{plane.get_id(), plane.x_, plane.y_};
+    plane.state_manager_.get_event_manager().trigger(event);
 }
 
 void FlyProcess::on_success() {
-    // Plane's Sound
-    actor::SoundEndedEvent event{plane_.get_id(), 0};
-    plane_.state_manager_.get_event_manager().queue(event);
+    auto plane_ptr = plane_.lock();
+    if (plane_ptr) {
+        auto& plane = *plane_ptr;
+        // Plane's Sound
+        actor::SoundEndedEvent event{plane.get_id(), 0};
+        plane.state_manager_.get_event_manager().queue(event);
 
-    // Destroy actor
-    actor::DestroyEvent destroy_event{plane_.get_id()};
-    plane_.state_manager_.get_event_manager().queue(destroy_event);
+        // Destroy actor
+        actor::DestroyEvent destroy_event{plane.get_id()};
+        plane.state_manager_.get_event_manager().queue(destroy_event);
+    }
 }
 
 void FlyProcess::on_fail() {
-    // Plane's Sound
-    actor::SoundEndedEvent event{plane_.get_id(), 0};
-    plane_.state_manager_.get_event_manager().queue(event);
+    auto plane_ptr = plane_.lock();
+    if (plane_ptr) {
+        auto& plane = *plane_ptr;
+        // Plane's Sound
+        actor::SoundEndedEvent event{plane.get_id(), 0};
+        plane.state_manager_.get_event_manager().queue(event);
+    }
 }
 
 void FlyProcess::on_abort() {
-    // Plane's Sound
-    actor::SoundEndedEvent event{plane_.get_id(), 0};
-    plane_.state_manager_.get_event_manager().queue(event);
-
-    // Destroy actor
-    actor::DestroyEvent destroy_event{plane_.get_id()};
-    plane_.state_manager_.get_event_manager().queue(destroy_event);
+    on_success();
 }
 
 //------------------------------
@@ -76,8 +89,7 @@ Plane::Plane(state::Manager& state_manager, bool is_fighter)
 : state_manager_{state_manager}, is_fighter_{is_fighter},
     actor::Actor{actor::IdGenerator::new_id()}
 {
-    fly_process_ = std::make_shared<FlyProcess>(*this);
-    destroy_plane_ = std::make_shared<CallOnceProcess>(2s, [this]() {
+    destroy_plane_ = std::make_shared<CallOnceProcess>(2500ms, [this]() {
         actor::DestroyEvent destroy_actor{get_id()};
         state_manager_.get_event_manager().queue(destroy_actor);
     });
@@ -102,6 +114,8 @@ const std::string& get_random_commercial_plane_image() {
 }
 
 void Plane::init() {
+    auto this_ = std::dynamic_pointer_cast<Plane>(shared_from_this());
+    fly_process_ = std::make_shared<FlyProcess>(this_);
     const float radius = 0.15;
     const float velocity = 1.2;
     const float commercial_plane_prob = 0.2;
@@ -119,6 +133,7 @@ void Plane::init() {
 
     float prob = uniform(generator);
     if (prob <= commercial_plane_prob) {
+        is_fighter_ = false;
         auto image = std::make_shared<actor::GraphicsImage>(
             x_, y_,
             state_manager_.get_image_factory(), 
@@ -182,6 +197,9 @@ void Plane::explode() {
     state_manager_.get_event_manager().trigger(hide_event);
 
     state_manager_.get_process_manager().attach_process(destroy_plane_);
+}
+
+Plane::~Plane() {
 }
 
 } // namespace game

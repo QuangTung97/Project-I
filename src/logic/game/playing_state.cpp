@@ -76,6 +76,8 @@ PlayingState::PlayingState(Manager& manager)
         200, 30, 24, Color::RED, "High Score: 0"
     );
 
+    init_heart_views();
+
     auto plane_destroy = [this](const IEventData& event_) {
         auto& event = dynamic_cast<const actor::DestroyEvent&>(event_);
         // remove plane
@@ -107,7 +109,11 @@ PlayingState::PlayingState(Manager& manager)
                     increase_score(1);
                 }
                 else {
-
+                    reduce_heart_count(1);
+                    if (heart_count_ == 0) {
+                        MakeTransition event{*manager_.start_};
+                        manager_.get_event_manager().queue(event);
+                    }
                 }
                 plane->explode();
             }
@@ -118,13 +124,45 @@ PlayingState::PlayingState(Manager& manager)
         if (it != bullets_.end()) {
             auto ptr = GameLogic::get().get_actor(event.get_id()).lock();
             if (ptr) {
-                auto bullet = std::dynamic_pointer_cast<game::Bullet>(ptr);
+                auto bullet = std::dynamic_pointer_cast<game::Bullet>(std::move(ptr));
                 bullet->end_fly();
             }
             return;
         }
     };
     collide_listener_ = collide;
+}
+
+void PlayingState::init_heart_views() {
+    heart_view_group_ = std::make_shared<ViewGroup>(
+        GLFW::get_screen_width() - 200, 0, 40 * 40, 40
+    );
+    for (int i = 0; i < max_heart_count_; i++) {
+        float x = i * 40;
+        auto view = std::make_shared<ImageView>(
+            x, 10, 30, 30, "assets/heart.png"
+        );
+        heart_views.push_back(view);
+        heart_view_group_->add_view(view);
+    }
+}
+
+void PlayingState::reset_heart_count() {
+    for (auto& view: heart_views) 
+        view->set_image("assets/heart.png");
+    heart_count_ = max_heart_count_;
+}
+
+void PlayingState::reduce_heart_count(int value) {
+    if (heart_count_ == 0)
+        return;
+
+    int prev_index = heart_count_ - 1;
+    heart_count_ -= value;
+    int curr_index = heart_count_ - 1;
+    for (int i = curr_index + 1; i <= prev_index; i++) {
+        heart_views[i]->set_image("assets/black_heart.png");
+    }
 }
 
 void PlayingState::increase_score(int value) {
@@ -153,6 +191,7 @@ void PlayingState::store_high_score() {
 }
 
 void PlayingState::entry() {
+    plane_generator_->reset();
     manager_.get_process_manager().attach_process(plane_generator_);
     manager_.get_event_manager().add_listener(actor::EVENT_DESTROY, 
         plane_destroy_listener_);
@@ -164,19 +203,24 @@ void PlayingState::entry() {
     cannon_->init();
 
     score_ = 0;
-    increase_score(0);
     load_high_score();
+    increase_score(0);
+    reset_heart_count();
 
     manager_.get_view_root()->add_view(show_score_);
     manager_.get_view_root()->add_view(show_high_score_);
+    manager_.get_view_root()->add_view(heart_view_group_);
 }
 
 void PlayingState::exit() {
+    manager_.get_view_root()->remove_view(heart_view_group_);
     manager_.get_view_root()->remove_view(show_high_score_);
     manager_.get_view_root()->remove_view(show_score_);
 
     store_high_score();
     // Destroy cannon
+    actor::DestroyEvent destroy_cannon{cannon_->get_id()};
+    manager_.get_event_manager().trigger(destroy_cannon);
     cannon_ = nullptr;
 
     // Destroy planes
@@ -188,17 +232,20 @@ void PlayingState::exit() {
 
     // Destroy bullets
     auto bullets = bullets_;
-    for (auto& bullet: bullets) {
-        actor::DestroyEvent event{bullet};
-        manager_.get_event_manager().trigger(event);
+    for (auto bullet: bullets) {
+        auto bullet_ptr = std::dynamic_pointer_cast<game::Bullet>(
+            GameLogic::get().get_actor(bullet).lock()
+        );
+        bullet_ptr->end_fly();
     }
 
+    manager_.get_root()->detach_drawable(background_);
     manager_.get_event_manager().remove_listener(actor::EVENT_DESTROY, 
         plane_destroy_listener_);
     manager_.get_event_manager().remove_listener(actor::EVENT_COLLIDE, 
         collide_listener_);
 
-    manager_.get_root()->detach_drawable(background_);
+    plane_generator_->fail();
 }
 
 bool PlayingState::on_mouse_event(MouseButton button,

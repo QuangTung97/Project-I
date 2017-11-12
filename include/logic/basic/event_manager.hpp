@@ -32,7 +32,7 @@ public:
 
     void queue(IEventData& event) override;
 
-    void update();
+    void update() override;
 
     virtual ~EventManager() {}
 };

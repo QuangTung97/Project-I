@@ -1,1 +1,1 @@
-git ls-files *.hpp *.txt *.cpp | grep -v glm | grep -v fmod | xargs wc -l
+git ls-files "*.hpp" "*.txt" "*.cpp" | grep -v glm | grep -v fmod | xargs wc -l

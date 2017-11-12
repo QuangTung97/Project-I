@@ -51,7 +51,8 @@ void ProcessManager::abort_all_processes(bool immediate) {
     }
     else {
         for (auto& process: process_list_) {
-            process->set_state(Process::ABORTED);
+            if (process->is_alive())
+                process->set_state(Process::ABORTED);
         }
     }
 }

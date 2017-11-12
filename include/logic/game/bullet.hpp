@@ -27,6 +27,8 @@ public:
     void start_fly();
 
     void end_fly();
+
+    virtual ~Bullet();
 };
 
 } // namespace game

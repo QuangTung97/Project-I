@@ -8,7 +8,7 @@
 namespace tung {
 namespace actor {
 
-class Component {
+class Component: public std::enable_shared_from_this<Component> {
 private:
     StrongActorPtr owner_;
     friend class Actor;

@@ -10,13 +10,6 @@ StartState::StartState(Manager& manager)
     background_ = manager.get_image_factory().
         new_drawable("assets/start_background.png", 2.0);
 
-    /*
-    auto text = std::make_shared<TextView>(
-        100, 100, 48, Color::RED, "Score: 100"
-    );
-    manager_.get_view_root()->add_view(text);
-    */
-    
     manager_.get_asset_manager().get_image("assets/playing_background.png");
     manager_.get_asset_manager().get_image("assets/start_background.png");
     manager_.get_asset_manager().get_image("assets/bullet.png");
@@ -30,6 +23,8 @@ StartState::StartState(Manager& manager)
     manager_.get_asset_manager().get_image("assets/fighter3.png");
     manager_.get_asset_manager().get_image("assets/commercial_plane1.png");
     manager_.get_asset_manager().get_image("assets/commercial_plane2.png");
+    manager_.get_asset_manager().get_image("assets/heart.png");
+    manager_.get_asset_manager().get_image("assets/black_heart.png");
 }
 
 void StartState::entry() {
@@ -43,8 +38,10 @@ void StartState::exit() {
 bool StartState::on_mouse_event(MouseButton button,
     MouseEventType type, float x, float y) 
 {
-    if (button == MouseButton::LEFT && type == MouseEventType::DOWN)
-        manager_.make_transition_to(*manager_.playing_);
+    if (button == MouseButton::LEFT && type == MouseEventType::DOWN) {
+        MakeTransition event{*manager_.playing_};
+        manager_.get_event_manager().queue(event);
+    }
     return true;
 }
 

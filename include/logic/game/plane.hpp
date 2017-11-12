@@ -14,10 +14,10 @@ class Plane;
 
 class FlyProcess: public Process {
 private:
-    Plane& plane_;
+    std::weak_ptr<Plane> plane_;
 
 public:
-    FlyProcess(Plane& plane): plane_{plane} {}
+    FlyProcess(const std::shared_ptr<Plane>& plane): plane_{plane} {}
 
 protected:
     void on_init() override;
@@ -39,7 +39,7 @@ private:
     float x_, y_;
     float dx_ = 0.0f;
     const float velocity_ = 0.8;
-    const bool is_fighter_ = true;
+    bool is_fighter_ = true;
     const float max_distance_ = 4;
 
     StrongProcessPtr fly_process_;
@@ -57,6 +57,8 @@ public:
     void end_fly();
 
     void explode();
+
+    virtual ~Plane();
 };
 
 } // namespace game
