@@ -242,11 +242,6 @@ void PlayingState::exit() {
     for (auto bullet: bullets) {
         actor::DestroyEvent event{bullet};
         manager_.get_event_manager().trigger(event);
-        // auto bullet_ptr = std::dynamic_pointer_cast<game::Bullet>(
-            // GameLogic::get().get_actor(bullet).lock()
-        // );
-        // if (bullet_ptr)
-            // bullet_ptr->end_fly();
     }
 
     planes_.clear();

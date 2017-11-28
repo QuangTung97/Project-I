@@ -6,12 +6,16 @@
 
 namespace tung {
 
+// Class nhằm để tạo ra các Sprite Drawable
 class SpriteFactory {
 private:
     IGraphicsAssetManager& asset_manager_;
     IVertexObjectBuilder& builder_;
 
 public:
+    // constructor
+    // @asset_manager_: Bộ quản lý tài nguyên. 
+    // @builder: Builder để build vertex object. 
     SpriteFactory(IGraphicsAssetManager& asset_manager_,
         IVertexObjectBuilder& builder);
 

@@ -5,11 +5,15 @@
 
 namespace tung {
 
+// Interface quản lý các tài nguyên của game.
 struct IGraphicsAssetManager {
+    // @filename: Đường dẫn đến file tài nguyên đó 
     virtual IImagePtr get_image(const std::string& filename) = 0;
 
+    // @filename: Đường dẫn đến file tài nguyên đó 
     virtual ITexturePtr get_texture(const std::string& filename) = 0;
 
+    // Destructor
     virtual ~IGraphicsAssetManager() {}
 };
 

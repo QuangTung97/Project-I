@@ -5,8 +5,12 @@
 
 namespace tung {
 
+// Kế thừa từ shader_program.hpp
 class Simple2DShader: public ShaderProgram {
 public:
+    // Constructor
+    // @vs_file: Đường dẫn đến vertex shader
+    // @fs_file: Đường dẫn đến fragment shader
     Simple2DShader(std::string vs_file, std::string fs_file);
 
     void predraw(float width, float height) override;

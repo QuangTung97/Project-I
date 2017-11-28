@@ -124,7 +124,7 @@ void Plane::init() {
     auto this_ = std::dynamic_pointer_cast<Plane>(shared_from_this());
     fly_process_ = std::make_shared<FlyProcess>(this_);
     const float radius = 0.15;
-    const float velocity = 1.2;
+    const float velocity = 1.8;
     const float commercial_plane_prob = 0.3;
     const float width = radius * 1.6 * 2;
     const float height = radius * 2;

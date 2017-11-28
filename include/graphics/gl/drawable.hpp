@@ -6,6 +6,8 @@
 
 namespace tung {
 
+// Kế thừa từ graphics/abstract/drawable.hpp
+// Concrete class của interface này. 
 class Drawable: public IDrawable {
 protected:
     glm::mat4 model_matrix_;
@@ -15,6 +17,7 @@ protected:
     bool hidden_ = false;
 
 public:
+    // @object: Con trỏ trỏ đến Vertex Object 
     Drawable(IVertexObjectPtr object);
 
     Drawable();
@@ -36,6 +39,8 @@ public:
     virtual ~Drawable();
 };
 
+// Kế thừa từ graphics/abstract/drawable.hpp
+// Concrete class của interface này. 
 class DrawableGroup: public Drawable, public IDrawableManager {
 private:
     std::vector<IDrawablePtr> drawables_;

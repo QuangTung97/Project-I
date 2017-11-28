@@ -5,6 +5,7 @@
 
 namespace tung {
 
+// Class của các Drawable mà không vẽ gì lên màn hình. 
 class NullDrawable: public IDrawable {
 private:
     const glm::mat4 model_matrix_;

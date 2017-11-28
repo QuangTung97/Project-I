@@ -12,6 +12,7 @@ namespace tung {
 // Exception GLFW class's errors
 class glfw_exception: public std::exception {
 public:
+    // @error: Thông tin chi tiết của lỗi. 
     glfw_exception(std::string error);
     virtual const char *what() const noexcept override;
 
@@ -67,8 +68,10 @@ public:
     // Get GLFWwindow of current window, if want to have access to more information
     GLFWwindow *window() const noexcept;
 
+    // Lấy chiều rộng của màn hình. 
     static float get_screen_width() { return this_->screen_width_; }
 
+    // Lấy chiều cao của màn hình. 
     static float get_screen_height() { return this_->screen_height_; }
 
 private:
