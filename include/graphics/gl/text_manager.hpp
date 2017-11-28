@@ -9,6 +9,7 @@
 
 namespace tung {
 
+// Kế thừa từ graphics/abstract/text_manager.hpp
 class TextManager: public ITextManager {
 private:
     std::string font_;
@@ -32,9 +33,13 @@ private:
 
     std::unordered_map<Key, Value, KeyHash> factories_;
 
+    // Return: Tuple chứa đường dẫn tới font, màu sắc của font (red, green. blue).
     Key get_key() const ;
 
 public:
+    // Constructor
+    // @texture_factory: Reference tới factory tạo texture. 
+    // @builder: Reference tới builder tạo vertex object. 
     TextManager(ITextureFactory& texture_factory, 
         IVertexObjectBuilder& builder);
 

@@ -8,10 +8,7 @@
 
 namespace tung {
 
-// IVertexObject::~IVertexObject() {}
-
-// IVertexObjectBuilder::~IVertexObjectBuilder() {}
-
+// Kế thừa từ graphics/abstract/object.hpp
 class VertexObject: public IVertexObject {
 private:
     struct TextureBind {
@@ -33,6 +30,7 @@ public:
     virtual ~VertexObject();
 };
 
+// Kế thừa từ graphics/abstract/object.hpp
 class VertexObjectBuilder: public IVertexObjectBuilder {
 private:
     int element_count_ = 0;
@@ -51,6 +49,8 @@ private:
     std::vector<Attribute> attributes_;
 
 public:
+    // Constructor
+    // @program: Tham chiếu đến chương trình shader. 
     VertexObjectBuilder(IShaderProgram& program);
 
     void clear() override;

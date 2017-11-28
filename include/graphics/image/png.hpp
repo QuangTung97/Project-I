@@ -5,6 +5,7 @@
 
 namespace tung {
 
+// Kế thừa từ graphics/abstract/image.hpp
 class PngImage: public IImage {
 private:
     int width_, height_;

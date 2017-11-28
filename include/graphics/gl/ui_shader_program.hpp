@@ -5,8 +5,11 @@
 
 namespace tung {
 
+// Kế thừa từ shader_program.hpp
 class UIShaderProgram: public ShaderProgram {
 public:
+    // @vs_file: Đường dẫn đến file chứa code của vertex shader
+    // @fs_file: Đường dẫn đến file chứa code của fragment shader
     UIShaderProgram(std::string vs_file, std::string fs_file);
 
     void predraw(float width, float height) override;

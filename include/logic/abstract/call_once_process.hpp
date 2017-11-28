@@ -6,6 +6,7 @@
 
 namespace tung {
 
+// Tiến trình sẽ được gọi duy nhất một lần và kết thúc sau một khoảng thời gian. 
 class CallOnceProcess: public Process {
 private:
     const milliseconds duration_;
@@ -34,6 +35,9 @@ protected:
     }
 
 public:
+    // Constructor
+    // @duration: Khoảng thời gian trước khi gọi hàm func. 
+    // @func: Hàm sẽ được gọi. 
     CallOnceProcess(milliseconds duration, std::function<void()> func)
     : duration_{duration}, function_{func} {}
 };
