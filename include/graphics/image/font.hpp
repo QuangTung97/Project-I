@@ -7,6 +7,7 @@
 namespace tung {
 
 // Kế thừa từ graphics/abstract/image.hpp
+// Class chứa thông tin để của text dwói dạng ảnh.
 class FontImage: public IImage {
 private:
     int width_, height_;
@@ -33,6 +34,7 @@ public:
 
     Format format() const override;
 
+    // Destructor 
     virtual ~FontImage();
 };
 

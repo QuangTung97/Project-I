@@ -5,9 +5,12 @@
 #include <memory>
 #include "timer.hpp"
 
+// Base Class cho tất cả các event trong hệ thống
 namespace tung {
 
+// Base Class cho tất cả các Type ứng với mỗi loại event 
 struct IEventType {
+    // Trả về giá trị type id của event
     virtual int get_id() const = 0;
 };
 
@@ -15,6 +18,7 @@ struct IEventData;
 
 typedef std::unique_ptr<IEventData> IEventDataPtr;
 
+// Interface cho các event trong hệ thống 
 struct IEventData {
     virtual IEventType& get_event_type() const = 0;
 

@@ -6,6 +6,7 @@
 namespace tung {
 
 // Kế thừa từ graphics/abstract/image.hpp
+// Class chứa thông tin của một ảnh png 
 class PngImage: public IImage {
 private:
     int width_, height_;
@@ -32,6 +33,8 @@ public:
     virtual ~PngImage();
 };
 
+// Kế thừa từ graphics/abstract/image.hpp
+// Dùng để load ảnh dưới dạng png 
 class PngImageLoader: public IImageLoader {
 public:
     IImagePtr load(const std::string& filename) override;
