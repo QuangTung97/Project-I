@@ -11,16 +11,26 @@
 #include <view/text_view.hpp>
 #include <view/image_view.hpp>
 
+#include "level_manager.hpp"
+
 namespace tung {
+
+namespace actor {
+class CollideEvent;
+};
+
 namespace state {
+
+class LevelManager;
 
 class PlayingState: public GameState {
 private:
     friend class PlaneGenerator;
 
+    std::unique_ptr<LevelManager> level_manager_;
+
     IDrawablePtr background_;
     std::shared_ptr<game::Cannon> cannon_;
-    StrongProcessPtr plane_generator_;
     std::unordered_set<actor::ActorId> planes_;
     std::unordered_set<actor::ActorId> bullets_;
 
@@ -50,6 +60,8 @@ private:
     void load_high_score();
 
     void store_high_score();
+
+    void handle_collide_event(const actor::CollideEvent& event);
 
 public:
     PlayingState(Manager& manager);

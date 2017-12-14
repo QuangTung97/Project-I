@@ -11,62 +11,15 @@
 namespace tung {
 namespace state {
 
-class PlaneGenerator: public Process {
-private:
-    PlayingState& state_;
-    milliseconds elapsed_time_;
-    milliseconds cycle_;
-
-    const float Tmax_ = 1.0f;
-    const float Tmin_ = 0.4f;
-    const float after_seconds_ = 60;
-    const float value_down_to_ = 0.6f;
-
-    milliseconds get_T() {
-        float M = (Tmax_ - Tmin_) / (value_down_to_ - Tmin_);
-        float T = Tmin_ + (Tmax_ - Tmin_) 
-            * std::pow(M, -elapsed_time_.count() / (1000.0f * after_seconds_));
-        return milliseconds(int(T * 1000));
-    }
-
-protected:
-    void on_init() override {
-        Process::on_init();
-        elapsed_time_ = 0ms;
-        cycle_ = 1000ms;
-    }
-
-    void on_update(milliseconds dt) override {
-        elapsed_time_ += dt;
-        if (elapsed_time_ >= get_T()) {
-            elapsed_time_ = 0ms;
-            auto plane = std::make_shared<game::Plane>(
-                state_.manager_, true
-            );
-            plane->init();
-            plane->start_fly();
-            state_.planes_.insert(plane->get_id());
-        }
-    }
-
-    void on_success() override {
-    }
-
-    void on_fail() override {
-    }
-
-public:
-    PlaneGenerator(PlayingState& state)
-    : state_{state} {}
-};
-
-
 PlayingState::PlayingState(Manager& manager)
 : GameState(manager) 
 {
+    level_manager_ = std::make_unique<LevelManager>(
+            *this, manager_.process_manager_
+    );
+
     background_ = manager_.get_image_factory()
         .new_drawable("assets/playing_background.png", 2);
-    plane_generator_ = std::make_shared<PlaneGenerator>(*this);
 
     show_score_ = std::make_shared<TextView>(
         20, 30, 24, Color::RED, "Score: 0"
@@ -94,43 +47,46 @@ PlayingState::PlayingState(Manager& manager)
     };
     plane_destroy_listener_ = plane_destroy;
 
-    auto collide = [this](const IEventData& event_) {
-        auto& event = dynamic_cast<const actor::CollideEvent&>(event_);
-        auto find_it = planes_.find(event.get_id());
-        if (find_it != planes_.end()) {
-            auto bullet_it = bullets_.find(event.get_collide_width_id());
-            if (bullet_it == bullets_.end())
-                return;
-
-            auto ptr = GameLogic::get().get_actor(event.get_id()).lock();
-            if (ptr) {
-                auto plane = std::dynamic_pointer_cast<game::Plane>(ptr);
-                if (plane->is_fighter()) {
-                    increase_score(1);
-                }
-                else {
-                    reduce_heart_count(1);
-                    if (heart_count_ == 0) {
-                        MakeTransition event{*manager_.start_};
-                        manager_.get_event_manager().queue(event);
-                    }
-                }
-                plane->explode();
-            }
-            return;
-        }
-
-        auto it = bullets_.find(event.get_id());
-        if (it != bullets_.end()) {
-            auto ptr = GameLogic::get().get_actor(event.get_id()).lock();
-            if (ptr) {
-                auto bullet = std::dynamic_pointer_cast<game::Bullet>(std::move(ptr));
-                bullet->end_fly();
-            }
-            return;
-        }
+    collide_listener_ = [this](const IEventData& event_) {
+        const auto& event = dynamic_cast<const actor::CollideEvent&>(event_);
+        handle_collide_event(event);
     };
-    collide_listener_ = collide;
+}
+
+void PlayingState::handle_collide_event(const actor::CollideEvent& event) {
+    auto find_it = planes_.find(event.get_id());
+    if (find_it != planes_.end()) {
+        auto bullet_it = bullets_.find(event.get_collide_width_id());
+        if (bullet_it == bullets_.end())
+            return;
+
+        auto ptr = GameLogic::get().get_actor(event.get_id()).lock();
+        if (ptr) {
+            auto plane = std::dynamic_pointer_cast<game::Plane>(ptr);
+            if (plane->is_fighter()) {
+                increase_score(1);
+            }
+            else {
+                reduce_heart_count(1);
+                if (heart_count_ == 0) {
+                    MakeTransition event{*manager_.start_};
+                    manager_.get_event_manager().queue(event);
+                }
+            }
+            plane->explode();
+        }
+        return;
+    }
+
+    auto it = bullets_.find(event.get_id());
+    if (it != bullets_.end()) {
+        auto ptr = GameLogic::get().get_actor(event.get_id()).lock();
+        if (ptr) {
+            auto bullet = std::dynamic_pointer_cast<game::Bullet>(std::move(ptr));
+            bullet->end_fly();
+        }
+        return;
+    }
 }
 
 void PlayingState::init_heart_views() {
@@ -191,8 +147,6 @@ void PlayingState::store_high_score() {
 }
 
 void PlayingState::entry() {
-    plane_generator_->reset();
-    manager_.get_process_manager().attach_process(plane_generator_);
     manager_.get_event_manager().add_listener(actor::EVENT_DESTROY, 
         plane_destroy_listener_);
     manager_.get_event_manager().add_listener(actor::EVENT_COLLIDE, 
@@ -210,10 +164,12 @@ void PlayingState::entry() {
     manager_.get_view_root()->add_view(show_score_);
     manager_.get_view_root()->add_view(show_high_score_);
     manager_.get_view_root()->add_view(heart_view_group_);
+
+    level_manager_->entry();
 }
 
 void PlayingState::exit() {
-    plane_generator_->fail();
+    level_manager_->exit();
 
     manager_.get_view_root()->remove_view(heart_view_group_);
     manager_.get_view_root()->remove_view(show_high_score_);
