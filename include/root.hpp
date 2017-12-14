@@ -73,10 +73,15 @@ private:
     std::shared_ptr<ViewGroup> view_root_;
 
 public:
+    // Constructor
+    // Nơi mà tất cả các hệ thống được khởi tạo 
     Root();
 
+    // Chạy vòng lặp chính của hệ thống. 
     void run();
 
+    // Constructor
+    // Nơi mà tất cả các hệ thống được Hủy. 
     ~Root();
 };
 

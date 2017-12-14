@@ -7,6 +7,7 @@
 
 namespace tung {
 
+// Quản lý tài nguyên của hệ thống, Giúp cho việc dùng chung các tài nguyên. 
 class AssetManager: public IGraphicsAssetManager, public ISoundAssetManager {
 private:
     std::unordered_map<std::string, IImagePtr> images_;
@@ -18,6 +19,10 @@ private:
     ISoundManager& sound_manager_;
 
 public:
+    // Constructor
+    // @image_loader: Image loader cần thiết để load ảnh 
+    // @texture_factory: Texture Factory cần thiết để load texture. 
+    // @sound_manager: Sound Manager cần thiết để load âm thanh. 
     AssetManager(IImageLoader& image_loader, 
         ITextureFactory& texture_factory, 
         ISoundManager& sound_manager);
@@ -28,6 +33,7 @@ public:
 
     ISoundPtr get_sound(const std::string& filename) override;
 
+    // Destructor 
     ~AssetManager();
 };
 

@@ -6,6 +6,7 @@
 
 namespace tung {
 
+// Process sẽ được gọi liên tục sau một khoảng thời gian. 
 class LoopProcess: public Process {
 private:
     const milliseconds duration_;
@@ -27,9 +28,11 @@ protected:
     }
 
 public:
+    // Constructor
+    // @duration: Khoảng thời gian giữa hai lần gọi 
+    // @func: Hàm sẽ được gọi
     LoopProcess(milliseconds duration, std::function<void()> func)
     : duration_{duration}, function_{std::move(func)} {}
-
 };
 
 } // namespace tung

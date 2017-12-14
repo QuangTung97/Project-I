@@ -20,15 +20,24 @@ typedef std::unique_ptr<IEventData> IEventDataPtr;
 
 // Interface cho các event trong hệ thống 
 struct IEventData {
+    // Trả về kiểu event 
     virtual IEventType& get_event_type() const = 0;
 
+    // Trả về thời điểm event xảy ra 
     virtual TimePoint get_time_point() const = 0;
 
+    // Sinh ra một Event khác giống event hiện tại 
     virtual IEventDataPtr clone() const = 0;
 
+    // Destructor 
     virtual ~IEventData() {}
 };
 
+// ---------------------------------------------------
+// Thiết lập một tập các class để có chức năng 
+// tương tự std::function<const IEventData& event>
+// Nhưng có toán tử so sánh. 
+// ---------------------------------------------------
 struct ICallable {
     virtual void call(const IEventData& event) = 0;
 
