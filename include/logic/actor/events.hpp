@@ -14,6 +14,7 @@ extern EventType<9001> EVENT_CREATED;
 extern EventType<9002> EVENT_MOVE;
 extern EventType<9003> EVENT_ROTATE;
 
+// Sự kiện actor bị hủy. 
 class DestroyEvent: public EventData {
 private:
     const ActorId id_;
@@ -31,6 +32,7 @@ public:
     virtual ~DestroyEvent() {}
 };
 
+// Sự kiện actor được tạo. 
 class CreatedEvent: public EventData {
 private:
     const ActorId id_;
@@ -48,6 +50,7 @@ public:
     virtual ~CreatedEvent() {}
 };
 
+// Sự kiện actor được di chuyển 
 class MoveEvent: public EventData {
 private:
     const ActorId id_;
@@ -70,6 +73,7 @@ public:
     }
 };
 
+// Sự kiện quay hình ảnh.
 class RotateEvent: public EventData {
 private:
     const ActorId id_;
@@ -98,6 +102,7 @@ extern EventType<7001> EVENT_COLLIDE;
 extern EventType<7002> EVENT_DISABLE_COLLISION;
 extern EventType<7003> EVENT_ENABLE_COLLISION;
 
+// Sự kiện actor bị va chạm. 
 class CollideEvent: public EventData {
 private:
     const ActorId id_;
@@ -118,6 +123,7 @@ public:
     ActorId get_collide_width_id() const { return collide_width_id_; }
 };
 
+// Sự kiện actor bị disable 
 class DisableCollisionEvent: public EventData {
 private:
     const ActorId id_;
@@ -133,6 +139,7 @@ public:
     ActorId get_id() const { return id_; }
 };
 
+// Sự kiện actor được enable 
 class EnableCollisionEvent: public EventData {
 private:
     const ActorId id_;
@@ -154,6 +161,7 @@ public:
 extern EventType<11000> EVENT_SPRITE_STARTED;
 extern EventType<11001> EVENT_SPRITE_ENDED;
 
+// Sprite bắt đầu animation 
 class SpriteStartedEvent: public EventData {
 private:
     ActorId id_;
@@ -173,6 +181,7 @@ public:
     int get_index() const { return index_; }
 };
 
+// Sprite kết thúc animation 
 class SpriteEndedEvent: public EventData {
 private:
     ActorId id_;
@@ -199,6 +208,7 @@ public:
 extern EventType<1300> EVENT_SOUND_STARTED;
 extern EventType<1300> EVENT_SOUND_ENDED;
 
+// Bắt đầu chơi nhạc 
 class SoundStartedEvent: public EventData {
 private:
     ActorId id_;
@@ -218,6 +228,7 @@ public:
     int get_index() const { return index_; }
 };
 
+// Kết thúc chơi nhạc 
 class SoundEndedEvent: public EventData {
 private:
     ActorId id_;
@@ -244,6 +255,7 @@ extern EventType<3300> EVENT_GRAPHICS_IMAGE_SHOW;
 extern EventType<3301> EVENT_GRAPHICS_IMAGE_HIDE;
 extern EventType<3301> EVENT_GRAPHICS_IMAGE_ROTATE;
 
+// Sự kiện hiển thị hình ảnh. 
 class GraphicsImageShowEvent: public EventData {
 private:
     ActorId id_;
@@ -260,6 +272,7 @@ public:
     ActorId get_id() const { return id_; }
 };
 
+// Sự kiện ẩn hình ảnh. 
 class GraphicsImageHideEvent: public EventData {
 private:
     ActorId id_;
