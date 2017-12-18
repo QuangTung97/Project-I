@@ -47,6 +47,10 @@ bool Manager::on_mouse_event(MouseButton button,
     return current_->on_mouse_event(button, type, x, y);       
 }
 
+bool Manager::on_key_event(const KeyEvent& event) {
+    return current_->on_key_event(event);
+}
+
 Manager::~Manager() {
     current_->exit();
     event_manager_.remove_listener(STATE_MAKE_TRANSITION, transition_listener_);

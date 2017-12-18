@@ -34,6 +34,8 @@ public:
 class View: public IView {
 protected:
     MouseListener mouse_listener_ = nullptr;
+    KeyListener key_listener_ = nullptr;
+    bool focus_ = false;
     float x_, y_, w_, h_;
     IDrawablePtr drawable_;
 
@@ -50,7 +52,15 @@ public:
 
     void set_mouse_listener(MouseListener listener) override;
 
+    void set_key_listener(KeyListener listener) override;
+
     bool on_mouse_event(const IMouseEvent& event) override;
+
+    bool on_key_event(const KeyEvent& event) override;
+
+    void focus(bool value) override { focus_ = value; }
+
+    bool focus() const override { return focus_; }
 
     // Trả về drawable_ chứ các thông tin để vẽ view này lên màn hình. 
     const IDrawablePtr& get_drawable() const {
@@ -76,6 +86,9 @@ public:
 
     // Chỉnh sửa lại hàm on_mouse_event từ view để gọi đệ quy. 
     bool on_mouse_event(const IMouseEvent& event) override;
+
+    // Chỉnh sửa lại hàm on_mouse_event từ view để gọi đệ quy. 
+    bool on_key_event(const KeyEvent& event) override;
 
     void add_view(const IViewPtr& view) override;
 

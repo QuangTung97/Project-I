@@ -23,6 +23,8 @@ public:
 
     void rotate(float degree);
 
+    float angle() const { return head_angle_; }
+
     actor::ActorId shot();
 
     ~Cannon();

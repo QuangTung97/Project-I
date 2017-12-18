@@ -72,6 +72,8 @@ public:
 
     bool on_mouse_event(MouseButton button, 
         MouseEventType type, float x, float y) override;
+
+    bool on_key_event(const KeyEvent& event) override;
 };
 
 } // namespace state

@@ -36,6 +36,8 @@ enum class MouseButton {
 typedef std::function<void(MouseButton, MouseEventType, float, float)>
     MouseEventListener;
 
+typedef std::function<void(int, int, int, int)> KeyEventListener;
+
 class GLFW {
 public:
     // Contructor

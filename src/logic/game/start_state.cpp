@@ -45,5 +45,11 @@ bool StartState::on_mouse_event(MouseButton button,
     return true;
 }
 
+bool StartState::on_key_event(const KeyEvent&) {
+    MakeTransition event{*manager_.playing_};
+    manager_.get_event_manager().queue(event);
+    return true;
+}
+
 } // namespace state
 } // namespace tung

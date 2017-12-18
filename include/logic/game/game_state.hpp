@@ -3,6 +3,7 @@
 
 #include <memory>
 #include <graphics/gl/glfw.hpp>
+#include <view/abstract/keyboard.hpp>
 
 namespace tung {
 namespace state {
@@ -21,13 +22,13 @@ public:
 
     virtual void exit() {}
 
-    virtual bool on_mouse_event(
-        MouseButton button, 
-        MouseEventType type, 
-        float x, float y) 
+    virtual bool on_mouse_event(MouseButton button, 
+            MouseEventType type, float x, float y) 
     {
         return false;
     }
+
+    virtual bool on_key_event(const KeyEvent& event) { return false; }
 
     virtual ~GameState() {}
 };

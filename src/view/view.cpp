@@ -1,4 +1,5 @@
 #include <view/view.hpp>
+#include <view/abstract/keyboard.hpp>
 #include <graphics/gl/drawable.hpp>
 #include <graphics/gl/null_drawable.hpp>
 #include <algorithm>
@@ -51,6 +52,10 @@ void View::set_mouse_listener(MouseListener listener) {
     mouse_listener_ = listener;
 }
 
+void View::set_key_listener(KeyListener listener) {
+    key_listener_ = listener;
+}
+
 bool View::on_mouse_event(const IMouseEvent& event) {
     if (mouse_listener_ == nullptr)
         return false;
@@ -64,6 +69,12 @@ bool View::on_mouse_event(const IMouseEvent& event) {
     }
 
     return mouse_listener_(event);
+}
+
+bool View::on_key_event(const KeyEvent& event) {
+    if (key_listener_ && focus())
+        return key_listener_(event);
+    return false;
 }
 
 
@@ -118,6 +129,17 @@ bool ViewGroup::on_mouse_event(const IMouseEvent& event) {
         return false;
 
     return mouse_listener_(event);
+}
+
+bool ViewGroup::on_key_event(const KeyEvent& event) {
+    for (const auto& view: view_list_) {
+        bool handled = view->on_key_event(event);
+        if (handled)
+            return true;
+    }
+    if (key_listener_ && focus())
+        return key_listener_(event);
+    return false;
 }
 
 void ViewGroup::add_view(const IViewPtr& view) {

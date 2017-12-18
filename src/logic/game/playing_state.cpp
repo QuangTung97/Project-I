@@ -215,13 +215,48 @@ bool PlayingState::on_mouse_event(MouseButton button,
         if (ux != 0) {
             float radian = std::atan(uy / ux);
             float degree = radian * 180 / 3.141592654;
-            if (degree < 0)
+            if (ux < 0)
                 degree = 180 + degree;
+
             cannon_->rotate(degree);
             auto bullet_id = cannon_->shot();
             bullets_.insert(bullet_id);
         }
         return true;
+    }
+    return true;
+}
+
+float normalize(float angle) {
+    if (angle < 0) 
+        return 0;
+    if (angle > 180) 
+        return 180;
+    return angle;
+}
+
+bool PlayingState::on_key_event(const KeyEvent& event) {
+    if (event.type() == KeyType::UP)
+        return true;
+
+    float angle = cannon_->angle();
+
+    switch (event.button()) {
+    case KeyButton::LEFT:
+        angle = normalize(angle + 10);
+        cannon_->rotate(angle);
+        break;
+
+    case KeyButton::RIGHT:
+        angle = normalize(angle - 10);
+        cannon_->rotate(angle);
+        break;
+
+    case KeyButton::SPACE:
+    case KeyButton::ENTER:
+        auto bullet_id = cannon_->shot();
+        bullets_.insert(bullet_id);
+        break;
     }
     return true;
 }

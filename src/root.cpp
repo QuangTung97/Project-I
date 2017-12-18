@@ -7,12 +7,30 @@
 #include <graphics/gl/text_manager.hpp>
 #include <view/image_view.hpp>
 #include <view/text_view.hpp>
+#include <view/abstract/keyboard.hpp>
 #include <sound/sound.hpp>
 #include <thread>
+#include <unordered_map>
 
 // Lớp dùng để khởi tạo toàn bộ chương trình 
-
 namespace tung {
+
+// Chuyển đổi kiểu giữa GLFW sang View 
+const std::unordered_map<int, KeyButton> key_buttons = {
+    {GLFW_KEY_ENTER, KeyButton::ENTER},
+    {GLFW_KEY_SPACE, KeyButton::SPACE},
+    {GLFW_KEY_LEFT, KeyButton::LEFT},
+    {GLFW_KEY_RIGHT, KeyButton::RIGHT},
+    {GLFW_KEY_UP, KeyButton::UP},
+    {GLFW_KEY_DOWN, KeyButton::DOWN},
+};
+
+// Chuyển đổi kiểu giữa GLFW sang View 
+const std::unordered_map<int, KeyType> key_types = {
+    {GLFW_PRESS, KeyType::DOWN},
+    {GLFW_RELEASE, KeyType::UP},
+    {GLFW_REPEAT, KeyType::DOWN},
+};
 
 // @MouseButton button: có 4 loại: 
 //      LEFT, MIDDLE, RIGHT, NONE ứng với chuột trái, chuột giữa, chuột phải 
@@ -245,6 +263,32 @@ Root::Root() {
         state_manager_->on_mouse_event(button, type, x, y);
     };
     glfw_->set_mouse_listener(mouse_listener);
+
+    // Thiết lập callback xử lý sự kiện bàn phím 
+    KeyEventListener key_listener = 
+    [this](int key, int scancode, int action, int mods) {
+        auto button_it = key_buttons.find(key);
+        if (button_it == key_buttons.end())
+            return;
+        KeyButton button = button_it->second;
+        
+        auto type_it = key_types.find(action);
+        if (type_it == key_types.end())
+            return;
+        KeyType type = type_it->second;
+        
+        KeyModifier modifiers;
+        modifiers[static_cast<size_t>(KeyMod::SHIFT)] = mods & GLFW_MOD_SHIFT;
+        modifiers[static_cast<size_t>(KeyMod::CONTROL)] = mods & GLFW_MOD_CONTROL;
+        modifiers[static_cast<size_t>(KeyMod::ALT)] = mods & GLFW_MOD_ALT;
+        modifiers[static_cast<size_t>(KeyMod::SUPER)] = mods & GLFW_MOD_SUPER;
+        const KeyEvent event{button, type, modifiers};
+        view_root_->on_key_event(event);
+        state_manager_->on_key_event(event);
+    };
+    glfw_->set_key_callback(key_listener);
+
+    view_root_->focus(true);
 }
 
 // Chạy vòng lặp 

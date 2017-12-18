@@ -6,6 +6,8 @@
 
 namespace tung {
 
+class KeyEvent;
+
 // Chứa thông tin của một View để vẽ lên giao diện UI 
 struct IView {
     // Chứa thông tin của một sự kiện click hoặc di chuyển chuột 
@@ -51,13 +53,31 @@ struct IView {
     // @event: Sự kiện chuột tương ứng 
     virtual bool on_mouse_event(const IMouseEvent& event) = 0;
 
+    // Hàm sẽ được gọi mỗi khi có một sự kiện bàn phím 
+    // Hàm gọi đệ quy, từ gốc của View cho đến các lá của cây View 
+    // @event: Sự kiện bàn phím tương ứng
+    virtual bool on_key_event(const KeyEvent& event) = 0;
+
     // Định nghĩa lại kiểu dữ liệu cho hàm callback 
     typedef std::function<bool(const IMouseEvent&)> MouseListener;
+    typedef std::function<bool(const KeyEvent&)> KeyListener;
 
     // Thiết lập hàm lắng nghe mà sẽ được gọi mỗi khi 
     // on_mouse_event được gọi. 
     // @listener: Hàm lắng nghe được chỉ định. 
     virtual void set_mouse_listener(MouseListener listener) = 0;
+
+    // Thiết lập hàm lắng nghe mà sẽ được gọi mỗi khi 
+    // on_key_event được gọi. 
+    // @listener: Hàm lắng nghe được chỉ định. 
+    virtual void set_key_listener(KeyListener listener) = 0;
+
+    // Thiết lập giá trị của focus
+    // Focus nghĩa là view này đang nhận sự kiện bàn phím 
+    virtual void focus(bool value) = 0;
+
+    // Trả về giá trị của focus 
+    virtual bool focus() const = 0;
 
     // Destructor 
     virtual ~IView() {}
