@@ -38,7 +38,8 @@ private:
     state::Manager& state_manager_;
     float x_, y_;
     float dx_ = 0.0f;
-    const float velocity_ = 0.8;
+    const float base_velocity_ = 0.8f;
+    const float velocity_;
     bool is_fighter_ = true;
     const float max_distance_ = 4;
 
@@ -46,7 +47,7 @@ private:
     StrongProcessPtr destroy_plane_;
 
 public:
-    Plane(state::Manager& state_manager, bool is_fighter);
+    Plane(state::Manager& state_manager, float scaling_velocity);
 
     void init();
 

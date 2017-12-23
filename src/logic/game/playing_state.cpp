@@ -15,8 +15,9 @@ PlayingState::PlayingState(Manager& manager)
 : GameState(manager) 
 {
     level_manager_ = std::make_unique<LevelManager>(
-            *this, manager_.process_manager_
+            *this, manager_.process_manager_, *manager_.get_view_root()
     );
+    level_manager_->init();
 
     background_ = manager_.get_image_factory()
         .new_drawable("assets/playing_background.png", 2);
@@ -26,7 +27,7 @@ PlayingState::PlayingState(Manager& manager)
     );
 
     show_high_score_ = std::make_shared<TextView>(
-        200, 30, 24, Color::RED, "High Score: 0"
+        150, 30, 24, Color::RED, "High Score: 0"
     );
 
     init_heart_views();
@@ -90,8 +91,9 @@ void PlayingState::handle_collide_event(const actor::CollideEvent& event) {
 }
 
 void PlayingState::init_heart_views() {
+    const float base_x = GLFW::get_screen_width() - 170;
     heart_view_group_ = std::make_shared<ViewGroup>(
-        GLFW::get_screen_width() - 200, 0, 40 * 40, 40
+        base_x, 0, 40 * 40, 40
     );
     for (int i = 0; i < max_heart_count_; i++) {
         float x = i * 40;
@@ -121,12 +123,23 @@ void PlayingState::reduce_heart_count(int value) {
     }
 }
 
+void PlayingState::reset_score() {
+    score_ = 0;
+    show_score_->set_text("Score: " + std::to_string(score_));
+}
+
 void PlayingState::increase_score(int value) {
     score_ += value;
     show_score_->set_text("Score: " + std::to_string(score_));
     if (score_ > high_score_) {
         high_score_ = score_;
         show_high_score_->set_text("High Score: " + std::to_string(high_score_));
+    }
+
+    const int base_score = 10;
+    const int level = level_manager_->level();
+    if (score_ >= level * level * base_score) {
+        level_manager_->next_level();
     }
 }
 
@@ -156,16 +169,16 @@ void PlayingState::entry() {
     cannon_ = std::make_shared<game::Cannon>(manager_);
     cannon_->init();
 
-    score_ = 0;
+    reset_score();
     load_high_score();
-    increase_score(0);
     reset_heart_count();
+
+    level_manager_->entry();
+    level_manager_->next_level();
 
     manager_.get_view_root()->add_view(show_score_);
     manager_.get_view_root()->add_view(show_high_score_);
     manager_.get_view_root()->add_view(heart_view_group_);
-
-    level_manager_->entry();
 }
 
 void PlayingState::exit() {

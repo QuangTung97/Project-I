@@ -26,6 +26,7 @@ class LevelManager;
 class PlayingState: public GameState {
 private:
     friend class PlaneGenerator;
+    friend class PlaneGeneratorV2;
 
     std::unique_ptr<LevelManager> level_manager_;
 
@@ -54,6 +55,8 @@ private:
     void reset_heart_count();
 
     void reduce_heart_count(int value);
+
+    void reset_score(); 
 
     void increase_score(int value);
 

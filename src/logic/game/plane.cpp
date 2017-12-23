@@ -85,8 +85,9 @@ void FlyProcess::on_abort() {
 //------------------------------
 // Plane
 //------------------------------
-Plane::Plane(state::Manager& state_manager, bool is_fighter) 
-: state_manager_{state_manager}, is_fighter_{is_fighter},
+Plane::Plane(state::Manager& state_manager, float scaling_velocity) 
+: state_manager_{state_manager}, 
+    velocity_{base_velocity_ * scaling_velocity},
     actor::Actor{actor::IdGenerator::new_id()}
 {}
 
@@ -124,7 +125,7 @@ void Plane::init() {
     auto this_ = std::dynamic_pointer_cast<Plane>(shared_from_this());
     fly_process_ = std::make_shared<FlyProcess>(this_);
     const float radius = 0.15;
-    const float velocity = 1.8;
+    // const float velocity = 1.8;
     const float commercial_plane_prob = 0.3;
     const float width = radius * 1.6 * 2;
     const float height = radius * 2;
