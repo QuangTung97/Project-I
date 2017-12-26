@@ -9,6 +9,7 @@ add_library(logic-game
     playing_state.cpp
     end_state.cpp
     level_manager.cpp
+    bomb.cpp
 )
 
 target_link_libraries(logic-game

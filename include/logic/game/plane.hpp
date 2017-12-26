@@ -15,6 +15,7 @@ class Plane;
 class FlyProcess: public Process {
 private:
     std::weak_ptr<Plane> plane_;
+    bool dropped_bomb_ = false;
 
 public:
     FlyProcess(const std::shared_ptr<Plane>& plane): plane_{plane} {}
@@ -31,6 +32,8 @@ protected:
     void on_abort() override;
 };
 
+class Bomb;
+
 class Plane: public actor::Actor {
 private:
     friend class FlyProcess;
@@ -42,6 +45,8 @@ private:
     const float velocity_;
     bool is_fighter_ = true;
     const float max_distance_ = 4;
+
+    float drop_bomb_x_position_;
 
     StrongProcessPtr fly_process_;
     StrongProcessPtr destroy_plane_;

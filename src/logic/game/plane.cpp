@@ -1,4 +1,5 @@
 #include <logic/game/plane.hpp>
+#include <logic/game/bomb.hpp>
 #include <logic/actor/events.hpp>
 #include <logic/abstract/call_once_process.hpp>
 #include <logic/game_logic.hpp>
@@ -17,6 +18,7 @@ static std::uniform_real_distribution<float> uniform(0, 1);
 static std::uniform_real_distribution<float> y_uniform(-0.2, 0.8);
 static std::uniform_int_distribution<int> uniform_int02(0, 2);
 static std::uniform_int_distribution<int> uniform_int01(0, 1);
+static std::uniform_real_distribution<float> bomb_x_uniform(-0.5f, 0.5f);
 
 //-----------------
 // FlyProcess
@@ -48,6 +50,15 @@ void FlyProcess::on_update(milliseconds dt) {
     if (plane.dx_ > plane.max_distance_) {
         succeed();
         return;
+    }
+
+    if (plane.is_fighter() && !dropped_bomb_ && plane.x_ >= plane.drop_bomb_x_position_) {
+        dropped_bomb_ = true;
+        auto bomb = std::make_shared<Bomb>(
+            plane.state_manager_, plane.x_, plane.y_ - 0.15f
+        );
+        bomb->init();
+        bomb->start_fly();
     }
 
     actor::MoveEvent event{plane.get_id(), plane.x_, plane.y_};
@@ -125,7 +136,6 @@ void Plane::init() {
     auto this_ = std::dynamic_pointer_cast<Plane>(shared_from_this());
     fly_process_ = std::make_shared<FlyProcess>(this_);
     const float radius = 0.15;
-    // const float velocity = 1.8;
     const float commercial_plane_prob = 0.3;
     const float width = radius * 1.6 * 2;
     const float height = radius * 2;
@@ -165,6 +175,8 @@ void Plane::init() {
 
         auto collision = std::make_shared<actor::CircleCollision>(x_, y_, radius);
         add_component(std::move(collision));
+
+        drop_bomb_x_position_ = bomb_x_uniform(generator);
     }
 
     auto sprite = std::make_shared<actor::Sprite>(
