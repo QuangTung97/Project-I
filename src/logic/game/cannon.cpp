@@ -3,6 +3,7 @@
 #include <logic/actor/events.hpp>
 #include <logic/game_logic.hpp>
 #include <logic/game/bullet.hpp>
+#include <logic/actor/collision.hpp>
 
 namespace tung {
 namespace game {
@@ -34,6 +35,10 @@ void Cannon::init() {
     );
     base->add_component(std::move(base_image));
 
+    auto collision = std::make_shared<actor::CircleCollision>(
+        x, y, base_height / 2
+    );
+    add_component(std::move(collision));
 
     GameLogic::get().add_actor(shared_from_this());
     actor::CreatedEvent actor_created{get_id()};

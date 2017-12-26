@@ -19,6 +19,10 @@ namespace actor {
 class CollideEvent;
 };
 
+namespace game {
+class FlyProcess;
+}
+
 namespace state {
 
 class LevelManager;
@@ -27,6 +31,7 @@ class PlayingState: public GameState {
 private:
     friend class PlaneGenerator;
     friend class PlaneGeneratorV2;
+    friend class game::FlyProcess;
 
     std::unique_ptr<LevelManager> level_manager_;
 
@@ -34,6 +39,7 @@ private:
     std::shared_ptr<game::Cannon> cannon_;
     std::unordered_set<actor::ActorId> planes_;
     std::unordered_set<actor::ActorId> bullets_;
+    std::unordered_set<actor::ActorId> bombs_;
 
     EventListener plane_destroy_listener_;
     EventListener collide_listener_;

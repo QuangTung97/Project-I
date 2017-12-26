@@ -2,6 +2,10 @@
 #include <logic/actor/events.hpp>
 #include <logic/actor/graphics_image.hpp>
 #include <logic/game_logic.hpp>
+#include <logic/actor/sprite.hpp>
+#include <logic/actor/sound.hpp>
+#include <logic/abstract/call_once_process.hpp>
+#include <logic/actor/collision.hpp>
 
 namespace tung {
 namespace game {
@@ -16,7 +20,7 @@ protected:
     void on_update(milliseconds dt) override {
         auto bomb = bomb_.lock();
         if (!bomb) {
-            fail();
+            succeed();
             return;
         }
 
@@ -40,6 +44,9 @@ protected:
     }
 
     void on_fail() override {
+    }
+
+    void on_abort() override {
         on_success();
     }
 
@@ -53,6 +60,8 @@ Bomb::Bomb(state::Manager& state_manager, float x, float y)
 : actor::Actor(actor::IdGenerator::new_id()), 
     state_manager_{state_manager}, x_{x}, y_{y} {}
 
+#include <iostream>
+
 void Bomb::init() {
     auto self = std::dynamic_pointer_cast<Bomb>(
         shared_from_this()
@@ -65,6 +74,24 @@ void Bomb::init() {
         height_, "assets/bomb.png"
     );
     add_component(std::move(graphics));
+
+    auto sound = std::make_shared<actor::Sound>(
+        state_manager_.get_sound_manager());
+    sound->add_sound(1, "assets/plane_explode.mp3");
+    add_component(std::move(sound));
+
+    auto sprite = std::make_shared<actor::Sprite>(
+        state_manager_.get_root(), 
+        state_manager_.get_sprite_factory(),
+        state_manager_.get_process_manager()
+    );
+    sprite->add_sprite(0, "assets/explosion1.png", 6, 8, height_ * 1.2f);
+    add_component(std::move(sprite));
+
+    auto collision = std::make_shared<actor::RectangleCollision>(
+        x_, y_, height_ * 170.0f / 515.0f, height_
+    );
+    add_component(std::move(collision));
 
     GameLogic::get().add_actor(shared_from_this());
     actor::CreatedEvent actor_created{get_id()};
@@ -88,7 +115,36 @@ void Bomb::end_fly() {
 }
 
 void Bomb::explode() {
+    fly_process_->fail();
+    fly_process_ = nullptr;
 
+    actor::DisableCollisionEvent disable_collision{get_id()};
+    state_manager_.get_event_manager().trigger(disable_collision);
+
+    actor::GraphicsImageHideEvent hide_event{get_id()};
+    state_manager_.get_event_manager().trigger(hide_event);
+
+    // Explosion's Sound
+    actor::SoundStartedEvent sound_started{get_id(), 1};
+    state_manager_.get_event_manager().trigger(sound_started);
+
+    actor::SpriteStartedEvent sprite_started{get_id(), 0};
+    state_manager_.get_event_manager().trigger(sprite_started);
+
+    std::weak_ptr<Bomb> self = std::dynamic_pointer_cast<Bomb>(
+        shared_from_this()
+    );
+
+    auto destroy_process = std::make_shared<CallOnceProcess>(2500ms, 
+        [self=std::move(self)] {
+        auto this_ = self.lock();
+        if (this_) {
+            actor::DestroyEvent destroy_actor{this_->get_id()};
+            this_->state_manager_.get_event_manager().trigger(destroy_actor);
+        }
+    });
+
+    state_manager_.get_process_manager().attach_process(std::move(destroy_process));
 }
 
 } // namespace game
