@@ -267,23 +267,30 @@ Root::Root() {
     // Thiết lập callback xử lý sự kiện bàn phím 
     KeyEventListener key_listener = 
     [this](int key, int scancode, int action, int mods) {
+        // Kiểm tra xem nút đó có nằm trong tập được chấp nhận không 
         auto button_it = key_buttons.find(key);
         if (button_it == key_buttons.end())
             return;
         KeyButton button = button_it->second;
         
+        // Kiểm tra xem type của nút đó có nằm trong tập được chấp nhận không 
         auto type_it = key_types.find(action);
         if (type_it == key_types.end())
             return;
         KeyType type = type_it->second;
         
+        // Thiết lập các giá trị của các nút Modifier 
         KeyModifier modifiers;
         modifiers[static_cast<size_t>(KeyMod::SHIFT)] = mods & GLFW_MOD_SHIFT;
         modifiers[static_cast<size_t>(KeyMod::CONTROL)] = mods & GLFW_MOD_CONTROL;
         modifiers[static_cast<size_t>(KeyMod::ALT)] = mods & GLFW_MOD_ALT;
         modifiers[static_cast<size_t>(KeyMod::SUPER)] = mods & GLFW_MOD_SUPER;
+
+        // Tạo một KeyEvent 
         const KeyEvent event{button, type, modifiers};
+        // Gửi nó cho các view 
         view_root_->on_key_event(event);
+        // Gửi nó cho các trạng thái trong game
         state_manager_->on_key_event(event);
     };
     glfw_->set_key_callback(key_listener);

@@ -8,6 +8,7 @@
 namespace tung {
 namespace system {
 
+// Hệ thống điều khiển hiển thị 2D
 class Graphics {
 private:
     IEventManager& event_manager_;
@@ -22,8 +23,10 @@ private:
     std::unordered_map<actor::ActorId, GraphicsImageWeakPtr> 
         graphics_image_components_;
 public:
+    // Constructor 
     Graphics(IEventManager& event_manager);
-
+    
+    // Destructor 
     ~Graphics();
 };
 

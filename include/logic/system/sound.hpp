@@ -8,6 +8,7 @@
 namespace tung {
 namespace system {
 
+// Hệ thống điều khiển phát âm thanh
 class Sound {
 private:
     IEventManager& manager_;
@@ -23,8 +24,10 @@ private:
     ActorComponentMap components_;
 
 public:
+    // Constructor 
     Sound(IEventManager& manager);
 
+    // Destructor
     ~Sound();
 };
 

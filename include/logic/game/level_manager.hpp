@@ -12,6 +12,7 @@ namespace state {
 
 class PlayingState;
 
+// Lớp kiểm soát level của game 
 class LevelManager {
 private:
     PlayingState& playing_state_;
@@ -22,9 +23,11 @@ private:
     StrongProcessPtr plane_generator_;
     IViewManager& root_;
 
+    // Hàm được gọi khi chuyển sang một level mới 
     void show_new_level();
 
 public:
+    // Constructor 
     LevelManager(
             PlayingState& playing_state,
             ProcessManager& process_manager,
@@ -35,14 +38,19 @@ public:
         root_{root}
         {}
 
+    // Khởi tạo Level Manager 
     void init();
 
+    // Hàm được gọi ở bắt đầu mỗi level
+    // Kể cả level 1  
     void next_level();
 
     int level() const { return level_; }
 
+    // Bắt đầu trạng thái Playing 
     void entry();
 
+    // Kết thúc trạng thái Playing
     void exit();
 
     ~LevelManager() {}

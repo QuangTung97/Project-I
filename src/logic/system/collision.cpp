@@ -7,6 +7,7 @@
 namespace tung {
 namespace system {
 
+// Constructor 
 Collision::Collision(IEventManager& manager, ITimer& timer)
 : manager_{manager}, timer_{timer} {
     auto actor_created = [this](const IEventData& event) {

@@ -9,6 +9,7 @@
 namespace tung {
 namespace system {
 
+// Hệ thống kiểm soát va đập 
 class Collision {
 private:
     IEventManager& manager_;
@@ -26,10 +27,13 @@ private:
     ActorComponentMap actor_components_;
 
 public:
+    // Constructor 
     Collision(IEventManager& manager, ITimer& timer);
-
+    
+    // Tính toán va đập giữa các object 
     void update();
 
+    // Destructor
     ~Collision();
 };
 

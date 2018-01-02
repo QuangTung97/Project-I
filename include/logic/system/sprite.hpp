@@ -8,6 +8,7 @@
 namespace tung {
 namespace system {
 
+// Hệ thống điều khiển hiển thị animation 
 class Sprite {
 private:
     IEventManager& manager_;
@@ -24,8 +25,10 @@ private:
     ActorComponentMap components_;
 
 public:
+    // Constructor
     Sprite(IEventManager& manager);
 
+    // Destructor
     ~Sprite();
 };
 
