@@ -6,25 +6,49 @@
 #include <logic/actor/sound.hpp>
 #include <logic/abstract/call_once_process.hpp>
 #include <logic/actor/collision.hpp>
+#include <cmath>
 
 namespace tung {
 namespace game {
+
+float normalize(float degree) {
+    int times = degree / 360;
+    return degree - times * 360;
+}
 
 typedef std::weak_ptr<Bomb> WeakBombPtr;
 
 class BombFlyProcess: public Process {
 private:
     WeakBombPtr bomb_;
+    milliseconds elapsed_time_ = 0s;
+    float x0_, y0_;
+    float vx_, vy_;
+    float degree_;
 
 protected: 
+    void on_init() override {
+        Process::on_init();
+        auto bomb = bomb_.lock();
+        if (!bomb) {
+            succeed();
+            return;
+        }
+        actor::RotateEvent rotate_event{bomb->get_id(), degree_};
+        bomb->state_manager_.get_event_manager().trigger(rotate_event);
+    }
+
     void on_update(milliseconds dt) override {
+        elapsed_time_ += dt;
         auto bomb = bomb_.lock();
         if (!bomb) {
             succeed();
             return;
         }
 
-        bomb->y_ -= bomb->velocity_ * dt.count() / 1000.f;
+
+        bomb->x_ = x0_ + vx_ * elapsed_time_.count() / 1000.0f;
+        bomb->y_ = y0_ + vy_ * elapsed_time_.count() / 1000.0f;
 
         if (bomb->y_ < -1) {
             succeed();
@@ -52,15 +76,32 @@ protected:
 
 public:
     BombFlyProcess(WeakBombPtr bomb)
-    : bomb_{std::move(bomb)} {}
+    : bomb_{std::move(bomb)} {
+        auto ptr = bomb_.lock();
+        const float cannon_x = 0;
+        const float cannon_y = -1;
+        if (ptr) {
+            x0_ = ptr->x_;
+            y0_ = ptr->y_;
+            float dx = cannon_x - x0_;
+            float dy = cannon_y - y0_;
+            float d = std::sqrt(dx*dx + dy*dy);
+            vx_ = dx / d * ptr->velocity_;
+            vy_ = dy / d * ptr->velocity_;
+
+            degree_ = std::acos(dx / d) * 180 / M_PI;
+            if (dy < 0) {
+                degree_ = -degree_;
+            }
+            degree_ = normalize(degree_ + 90);
+        }
+    }
 
 };
 
 Bomb::Bomb(state::Manager& state_manager, float x, float y)
 : actor::Actor(actor::IdGenerator::new_id()), 
     state_manager_{state_manager}, x_{x}, y_{y} {}
-
-#include <iostream>
 
 void Bomb::init() {
     auto self = std::dynamic_pointer_cast<Bomb>(
@@ -88,8 +129,13 @@ void Bomb::init() {
     sprite->add_sprite(0, "assets/explosion1.png", 6, 8, height_ * 1.2f);
     add_component(std::move(sprite));
 
+    /*
     auto collision = std::make_shared<actor::RectangleCollision>(
         x_, y_, height_ * 170.0f / 515.0f, height_
+    );
+    */
+    auto collision = std::make_shared<actor::CircleCollision>(
+        x_, y_, height_ / 2
     );
     add_component(std::move(collision));
 

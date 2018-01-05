@@ -26,6 +26,8 @@ private:
     std::weak_ptr<Plane> plane_;
     bool dropped_bomb_ = false;
     state::PlayingState& playing_state_;
+    float x0_;
+    milliseconds elapsed_time_ = 0s;
 
 public:
     FlyProcess(std::shared_ptr<Plane> plane, state::PlayingState& state)
@@ -37,15 +39,18 @@ protected:
         auto plane_ptr = plane_.lock();
         if (plane_ptr) {
             auto& plane = *plane_ptr;
-            plane.dx_ = 0.0f;
-
+            x0_ = plane.x_;
             // Plane's Sound
             actor::SoundStartedEvent event{plane.get_id(), 0};
             plane.state_manager_.get_event_manager().trigger(event);
         }
+        else {
+            succeed();
+        }
     }
 
     void on_update(milliseconds dt) override {
+        elapsed_time_ += dt;
         if (plane_.expired()) {
             fail();
             return;
@@ -53,15 +58,13 @@ protected:
         auto plane_ptr = plane_.lock();
         auto& plane = *plane_ptr;
 
-        float dx = plane.velocity_ * dt.count() / 1000.0f;
-        plane.x_ += dx;
-        plane.dx_ += dx;
-        if (plane.dx_ > plane.max_distance_) {
+        plane.x_ = x0_ + plane.velocity_ * elapsed_time_.count() / 1000.0f;
+        if (plane.x_ - x0_ > plane.max_distance_) {
             succeed();
             return;
         }
 
-        if (plane.is_fighter() && !dropped_bomb_ && plane.x_ >= plane.drop_bomb_x_position_) {
+        if (!dropped_bomb_ && plane.will_drop_bomb_ && plane.x_ >= plane.drop_bomb_x_position_) {
             dropped_bomb_ = true;
             auto bomb = std::make_shared<Bomb>(
                 plane.state_manager_, plane.x_, plane.y_ - 0.15f
@@ -109,10 +112,10 @@ protected:
 //------------------------------
 Plane::Plane(state::Manager& state_manager, 
     float scaling_velocity, state::PlayingState& playing_state) 
-: state_manager_{state_manager}, 
-    velocity_{base_velocity_ * scaling_velocity},
+: actor::Actor{actor::IdGenerator::new_id()},
+    state_manager_{state_manager}, 
     playing_state_{playing_state},
-    actor::Actor{actor::IdGenerator::new_id()}
+    velocity_{base_velocity_ * scaling_velocity}
 {}
 
 const std::string& get_random_fighter_image() {
@@ -189,6 +192,8 @@ void Plane::init() {
         auto collision = std::make_shared<actor::CircleCollision>(x_, y_, radius);
         add_component(std::move(collision));
 
+        const float prob = 0.3f;
+        will_drop_bomb_ = uniform(generator) < prob ? true : false;
         drop_bomb_x_position_ = bomb_x_uniform(generator);
     }
 

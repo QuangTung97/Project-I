@@ -14,7 +14,7 @@ private:
 
     state::Manager& state_manager_;
     float x_, y_;
-    const float velocity_ = 1.0f;
+    const float velocity_ = 0.7f;
     const float height_ = 0.15f;
     bool flying_ = false;
     StrongProcessPtr fly_process_;
@@ -25,6 +25,8 @@ public:
     void init();
 
     void start_fly();
+
+    void rotate(float degree);
 
     bool flying() { return flying_; }
 
