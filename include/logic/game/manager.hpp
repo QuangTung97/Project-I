@@ -18,11 +18,14 @@ namespace state {
 
 extern EventType<2322> STATE_MAKE_TRANSITION;
 
+// Sự kiện chuyển trạng thái của game 
 class MakeTransition: public EventData {
 private:
     GameState& state_;
 
 public:
+    // Constructor
+    // @state: Trạng thái kế tiếp 
     MakeTransition(GameState& state)
     : EventData{TimePoint{}, STATE_MAKE_TRANSITION}, state_{state} {}
 
@@ -30,11 +33,13 @@ public:
         return std::make_unique<MakeTransition>(state_);
     }
 
+    // Return: Trạng thái kế tiếp 
     GameState& get_state() const {
         return state_;
     }
 };
 
+// Lớp quản lý các trạng thái của game 
 class Manager {
 private:
     friend class GameState;
@@ -66,6 +71,14 @@ private:
     IViewManagerPtr view_root_;
 
 public:
+    // Constructor
+    // @manager: Tham chiếu đến bộ quản lý sự kiện 
+    // @asset_manager: Tham chiếu đến bộ quản lý tài nguyên 
+    // @image_drawable_factory: Tham chiếu đến factory sinh Image Drawable 
+    // @sprite_factory: Tham chiếu đến factory sinh Sprite Drawable 
+    // @sound_manager: Tham chiếu đến bộ quản lý âm thanh 
+    // @root_drawable: Gốc của cây Drawable 
+    // @view_root: Gốc của cây các phần tử UI 
     Manager(IEventManager& manager, 
         ProcessManager& process_manager,
         AssetManager& asset_manager,
@@ -84,17 +97,30 @@ public:
         view_root_{view_root}
     { init(); }
 
+    // Khởi tạo 
     void init();
 
+    // Chuyển trạng thái:
+    // @state: Trạng thái tiếp theo 
     void make_transition_to(GameState& state);
 
+    // Hàm sẽ được gọi khi một sự kiện chuột xảy ra 
+    // @button: Nút đã bấm 
+    // @type: Cách thức bấm 
+    // @x, @y: Tọa độ của chuột 
     bool on_mouse_event(MouseButton button, 
         MouseEventType type, float x, float y);
 
+    // Hàm sẽ được gọi khi một sự kiện bàn phím xảy ra
+    // @event: Sự kiện bàn phím đó 
     bool on_key_event(const KeyEvent& event);
 
+    // Destructor
     ~Manager();
 
+    //-------------------------------------------
+    // Các hàm get tham chiếu đến các bộ quản lý 
+    //-------------------------------------------
     IEventManager& get_event_manager() const {
         return event_manager_;
     }

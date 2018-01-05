@@ -6,6 +6,8 @@
 
 namespace tung {
 
+// Một implementation của các Interface thao tác với âm thanh. 
+// Ở đây sử dụng FMOD 
 class Sound: public ISound {
 private:
     struct SoundRefCount {
@@ -24,6 +26,7 @@ private:
     friend class SoundManager;
 
 public:
+    // Constructor
     Sound();
 
     void play() override;
@@ -44,6 +47,7 @@ public:
 
     ISoundPtr clone() override;
 
+    // Destructor
     virtual ~Sound();
 };
 
@@ -52,6 +56,7 @@ private:
     FMOD::System *system_;
 
 public:
+    // Constructor
     SoundManager();
 
     ISoundPtr load(const std::string& filename) override;
@@ -60,6 +65,7 @@ public:
 
     void update() override;
 
+    // Destructor
     virtual ~SoundManager();
 };
 

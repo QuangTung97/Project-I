@@ -8,6 +8,8 @@
 namespace tung {
 namespace state {
 
+// Trạng thái sau trạng thái đang chơi (playing)
+// Hiện tại chưa được sử dụng 
 class EndState: public GameState {
 private:
     IDrawablePtr background_;
