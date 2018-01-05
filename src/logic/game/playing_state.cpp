@@ -2,11 +2,15 @@
 #include <logic/game/manager.hpp>
 #include <logic/game/bullet.hpp>
 #include <logic/game/plane.hpp>
+#include <logic/game/bomb.hpp>
+
 #include <graphics/gl/glfw.hpp>
 #include <logic/actor/events.hpp>
 #include <logic/game_logic.hpp>
 #include <cmath>
 #include <fstream>
+
+#include <iostream>
 
 namespace tung {
 namespace state {
@@ -38,6 +42,12 @@ PlayingState::PlayingState(Manager& manager)
         auto find_it = planes_.find(event.get_id());
         if (find_it != planes_.end()) {
             planes_.erase(find_it);
+        }
+
+        // remove bomb
+        find_it = bombs_.find(event.get_id());
+        if (find_it != bombs_.end()) {
+            bombs_.erase(find_it);
         }
 
         // remove bullet
@@ -79,12 +89,42 @@ void PlayingState::handle_collide_event(const actor::CollideEvent& event) {
         return;
     }
 
+    find_it = bombs_.find(event.get_id());
+    if (find_it != bombs_.end()) {
+        auto collide_with_id = event.get_collide_width_id();
+        if (collide_with_id != cannon_->get_id() &&
+            bullets_.find(collide_with_id) == bullets_.end())
+            return;
+
+        auto ptr = GameLogic::get().get_actor(event.get_id()).lock();
+        if (ptr) {
+            auto bomb = std::dynamic_pointer_cast<game::Bomb>(ptr);
+            bomb->explode();
+        }
+        return;
+    }
+
     auto it = bullets_.find(event.get_id());
-    if (it != bullets_.end()) {
+    if (it != bullets_.end() && 
+        event.get_collide_width_id() != cannon_->get_id()) {
+
         auto ptr = GameLogic::get().get_actor(event.get_id()).lock();
         if (ptr) {
             auto bullet = std::dynamic_pointer_cast<game::Bullet>(std::move(ptr));
             bullet->end_fly();
+        }
+        return;
+    }
+
+    if (event.get_id() == cannon_->get_id()) {
+        auto bomb_it = bombs_.find(event.get_collide_width_id());
+        if (bomb_it == bombs_.end())
+            return;
+
+        reduce_heart_count(1);
+        if (heart_count_ == 0) {
+            MakeTransition event{*manager_.start_};
+            manager_.get_event_manager().queue(event);
         }
         return;
     }
@@ -202,7 +242,7 @@ void PlayingState::exit() {
 
     // Destroy planes
     auto planes = planes_;
-    for (auto& plane: planes) {
+    for (auto plane: planes) {
         actor::DestroyEvent event{plane};
         manager_.get_event_manager().trigger(event);
     }
@@ -213,8 +253,15 @@ void PlayingState::exit() {
         manager_.get_event_manager().trigger(event);
     }
 
+    auto bombs = bombs_;
+    for (auto bomb_id: bombs) {
+        actor::DestroyEvent event{bomb_id};
+        manager_.get_event_manager().trigger(event);
+    }
+
     planes_.clear();
     bullets_.clear();
+    bombs_.clear();
 }
 
 bool PlayingState::on_mouse_event(MouseButton button,

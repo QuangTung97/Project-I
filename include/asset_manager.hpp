@@ -37,6 +37,6 @@ public:
     ~AssetManager();
 };
 
-}
+} // namespace tung
 
 #endif

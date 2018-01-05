@@ -7,6 +7,7 @@
 #include <logic/actor/collision.hpp>
 #include <logic/actor/sprite.hpp>
 #include <logic/actor/graphics_image.hpp>
+#include <logic/game/playing_state.hpp>
 #include <random>
 
 namespace tung {
@@ -20,86 +21,101 @@ static std::uniform_int_distribution<int> uniform_int02(0, 2);
 static std::uniform_int_distribution<int> uniform_int01(0, 1);
 static std::uniform_real_distribution<float> bomb_x_uniform(-0.5f, 0.5f);
 
-//-----------------
-// FlyProcess
-//-----------------
-void FlyProcess::on_init() {
-    Process::on_init();
-    auto plane_ptr = plane_.lock();
-    if (plane_ptr) {
-        auto& plane = *plane_ptr;
-        plane.dx_ = 0.0f;
+class FlyProcess: public Process {
+private:
+    std::weak_ptr<Plane> plane_;
+    bool dropped_bomb_ = false;
+    state::PlayingState& playing_state_;
+    float x0_;
+    milliseconds elapsed_time_ = 0s;
 
-        // Plane's Sound
-        actor::SoundStartedEvent event{plane.get_id(), 0};
+public:
+    FlyProcess(std::shared_ptr<Plane> plane, state::PlayingState& state)
+    : plane_{std::move(plane)}, playing_state_{state} {}
+
+protected:
+    void on_init() override {
+        Process::on_init();
+        auto plane_ptr = plane_.lock();
+        if (plane_ptr) {
+            auto& plane = *plane_ptr;
+            x0_ = plane.x_;
+            // Plane's Sound
+            actor::SoundStartedEvent event{plane.get_id(), 0};
+            plane.state_manager_.get_event_manager().trigger(event);
+        }
+        else {
+            succeed();
+        }
+    }
+
+    void on_update(milliseconds dt) override {
+        elapsed_time_ += dt;
+        if (plane_.expired()) {
+            fail();
+            return;
+        }
+        auto plane_ptr = plane_.lock();
+        auto& plane = *plane_ptr;
+
+        plane.x_ = x0_ + plane.velocity_ * elapsed_time_.count() / 1000.0f;
+        if (plane.x_ - x0_ > plane.max_distance_) {
+            succeed();
+            return;
+        }
+
+        if (!dropped_bomb_ && plane.will_drop_bomb_ && plane.x_ >= plane.drop_bomb_x_position_) {
+            dropped_bomb_ = true;
+            auto bomb = std::make_shared<Bomb>(
+                plane.state_manager_, plane.x_, plane.y_ - 0.15f
+            );
+            bomb->init();
+            bomb->start_fly();
+            playing_state_.bombs_.insert(bomb->get_id());
+        }
+
+        actor::MoveEvent event{plane.get_id(), plane.x_, plane.y_};
         plane.state_manager_.get_event_manager().trigger(event);
     }
-}
 
-void FlyProcess::on_update(milliseconds dt) {
-    if (plane_.expired()) {
-        fail();
-        return;
-    }
-    auto plane_ptr = plane_.lock();
-    auto& plane = *plane_ptr;
+    void on_success() override {
+        auto plane_ptr = plane_.lock();
+        if (plane_ptr) {
+            auto& plane = *plane_ptr;
+            // Plane's Sound
+            actor::SoundEndedEvent event{plane.get_id(), 0};
+            plane.state_manager_.get_event_manager().trigger(event);
 
-    float dx = plane.velocity_ * dt.count() / 1000.0f;
-    plane.x_ += dx;
-    plane.dx_ += dx;
-    if (plane.dx_ > plane.max_distance_) {
-        succeed();
-        return;
+            // Destroy actor
+            actor::DestroyEvent destroy_event{plane.get_id()};
+            plane.state_manager_.get_event_manager().trigger(destroy_event);
+        }
     }
 
-    if (plane.is_fighter() && !dropped_bomb_ && plane.x_ >= plane.drop_bomb_x_position_) {
-        dropped_bomb_ = true;
-        auto bomb = std::make_shared<Bomb>(
-            plane.state_manager_, plane.x_, plane.y_ - 0.15f
-        );
-        bomb->init();
-        bomb->start_fly();
+    void on_fail() override {
+        auto plane_ptr = plane_.lock();
+        if (plane_ptr) {
+            auto& plane = *plane_ptr;
+            // Plane's Sound
+            actor::SoundEndedEvent event{plane.get_id(), 0};
+            plane.state_manager_.get_event_manager().trigger(event);
+        }
     }
 
-    actor::MoveEvent event{plane.get_id(), plane.x_, plane.y_};
-    plane.state_manager_.get_event_manager().trigger(event);
-}
-
-void FlyProcess::on_success() {
-    auto plane_ptr = plane_.lock();
-    if (plane_ptr) {
-        auto& plane = *plane_ptr;
-        // Plane's Sound
-        actor::SoundEndedEvent event{plane.get_id(), 0};
-        plane.state_manager_.get_event_manager().trigger(event);
-
-        // Destroy actor
-        actor::DestroyEvent destroy_event{plane.get_id()};
-        plane.state_manager_.get_event_manager().trigger(destroy_event);
+    void on_abort() override {
+        on_success();
     }
-}
-
-void FlyProcess::on_fail() {
-    auto plane_ptr = plane_.lock();
-    if (plane_ptr) {
-        auto& plane = *plane_ptr;
-        // Plane's Sound
-        actor::SoundEndedEvent event{plane.get_id(), 0};
-        plane.state_manager_.get_event_manager().trigger(event);
-    }
-}
-
-void FlyProcess::on_abort() {
-    on_success();
-}
+};
 
 //------------------------------
 // Plane
 //------------------------------
-Plane::Plane(state::Manager& state_manager, float scaling_velocity) 
-: state_manager_{state_manager}, 
-    velocity_{base_velocity_ * scaling_velocity},
-    actor::Actor{actor::IdGenerator::new_id()}
+Plane::Plane(state::Manager& state_manager, 
+    float scaling_velocity, state::PlayingState& playing_state) 
+: actor::Actor{actor::IdGenerator::new_id()},
+    state_manager_{state_manager}, 
+    playing_state_{playing_state},
+    velocity_{base_velocity_ * scaling_velocity}
 {}
 
 const std::string& get_random_fighter_image() {
@@ -134,7 +150,7 @@ void Plane::init() {
     });
 
     auto this_ = std::dynamic_pointer_cast<Plane>(shared_from_this());
-    fly_process_ = std::make_shared<FlyProcess>(this_);
+    fly_process_ = std::make_shared<FlyProcess>(this_, playing_state_);
     const float radius = 0.15;
     const float commercial_plane_prob = 0.3;
     const float width = radius * 1.6 * 2;
@@ -176,6 +192,8 @@ void Plane::init() {
         auto collision = std::make_shared<actor::CircleCollision>(x_, y_, radius);
         add_component(std::move(collision));
 
+        const float prob = 0.3f;
+        will_drop_bomb_ = uniform(generator) < prob ? true : false;
         drop_bomb_x_position_ = bomb_x_uniform(generator);
     }
 
