@@ -11,6 +11,7 @@ void Texture::bind(unsigned int active_number, int location) {
 }
 
 Texture::~Texture() {
+    // Xóa texture trong GPU 
     glDeleteTextures(1, &texture_);
 }
 
@@ -20,11 +21,15 @@ TextureFactory::TextureFactory() {}
 ITexturePtr TextureFactory::create(
         const IImagePtr& image)
 {
+    // Tạo một object texture 
     auto texture = std::make_shared<Texture>();
 
+    // Sinh một vùng nhớ lưu trữ texture 
     glGenTextures(1, &texture->texture_);
+    // Thiết lập texture đó lưu trữ ảnh 2D
     glBindTexture(GL_TEXTURE_2D, texture->texture_);
 
+    // Định dạng và kiểu của texture 
     int format;
     if (image->format() == IImage::FORMAT_RGB)
         format = GL_RGB;
@@ -41,6 +46,7 @@ ITexturePtr TextureFactory::create(
     else 
         return nullptr;
 
+    // Truyền dữ liệu cho texture đó 
     glTexImage2D(GL_TEXTURE_2D, 
             0, // level of detail, 0 if not has
             image->color_component_count(), 
@@ -51,6 +57,7 @@ ITexturePtr TextureFactory::create(
             type,
             image->data());
 
+    // Thiết lập phương thức nội suy cho các pixel trên texture 
     glTexParameteri(GL_TEXTURE_2D, 
             GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, 

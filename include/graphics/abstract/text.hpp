@@ -29,16 +29,16 @@ struct IText {
     virtual const IDrawablePtr& get_drawable() const = 0;
 
     // Return: Chiều rộng của dòng văn bản. 
-    virtual const int get_width() const = 0;
+    virtual int get_width() const = 0;
 
     // Return: Chiều cao của dòng văn bản. 
-    virtual const int get_height() const = 0;
+    virtual int get_height() const = 0;
 
     // Return: Vị trí bắt đầu của văn bản, từ trái sang. Quy định bởi Glyph trong FreeType. 
-    virtual const int get_left() const = 0;
+    virtual int get_left() const = 0;
     
     // Return: Vị trí bắt đầu của văn bản, từ trên xuống. Quy định bởi Glyph trong FreeType. 
-    virtual const int get_top() const = 0;
+    virtual int get_top() const = 0;
 
     // Destructor
     virtual ~IText() {}

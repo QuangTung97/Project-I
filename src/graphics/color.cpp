@@ -2,6 +2,7 @@
 
 namespace tung {
 
+// Khởi tạo các hằng số 
 const Color Color::RED{255, 0, 0};
 const Color Color::WHITE{255, 255, 255};
 const Color Color::BLACK{0, 0, 0};
