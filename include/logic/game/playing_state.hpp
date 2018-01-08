@@ -27,6 +27,8 @@ namespace state {
 
 class LevelManager;
 
+// Lớp thể hiện trạng thái đang chơi
+// Chỉ có duy nhất một object của class này trong game 
 class PlayingState: public GameState {
 private:
     friend class PlaneGenerator;
@@ -56,23 +58,34 @@ private:
     std::vector<std::shared_ptr<ImageView>> heart_views;
     std::shared_ptr<ViewGroup> heart_view_group_;
 
+    // Khởi tạo các view hiển thị mạng 
     void init_heart_views();
 
+    // Thiết lập lại giá trị mạng đang có 
     void reset_heart_count();
 
+    // Giảm mạng 
     void reduce_heart_count(int value);
 
+    // Thiết lập lại điểm số 
     void reset_score(); 
 
+    // Tăng điểm 
     void increase_score(int value);
 
+    // Load điểm cao từ file lên 
     void load_high_score();
 
+    // Lưu trữ điểm cao xuống file 
     void store_high_score();
 
+    // Xử lý sự kiện va chạm 
+    // @event: Sự kiện va chạm 
     void handle_collide_event(const actor::CollideEvent& event);
 
 public:
+    // Constructor
+    // @manager: Tham chiếu đến bộ quản lý trạng thái 
     PlayingState(Manager& manager);
 
     void entry() override;

@@ -15,6 +15,7 @@ private:
     IDrawablePtr background_;
 
 public:
+    // Constructor
     EndState(Manager& manager);
 
     void entry() override;

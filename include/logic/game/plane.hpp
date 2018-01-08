@@ -15,6 +15,7 @@ class PlayingState;
 
 namespace game {
 
+// Lớp đại diện cho một máy bay 
 class Plane: public actor::Actor {
 private:
     friend class FlyProcess;
@@ -34,19 +35,29 @@ private:
     StrongProcessPtr destroy_plane_;
 
 public:
+    // Constructor
+    // @state_manager: Tham chiếu đến bộ quản lý trạng thái 
+    // @scaling_velocity: Tỉ lệ vận tốc 
+    // @playings_state: Tham chiếu đến object thái đang chơi 
     Plane(state::Manager& state_manager, 
         float scaling_velocity, state::PlayingState& playing_state);
 
+    // Khởi tạo 
     void init();
 
+    // Bắt đầu bay 
     void start_fly();
 
+    // Trả về liệu máy bay có phải là máy bay chiến đấu hay không 
     bool is_fighter() { return is_fighter_; }
 
+    // Kết thúc bay 
     void end_fly();
 
+    // Phát nổ 
     void explode();
 
+    // Destructor
     virtual ~Plane();
 };
 
