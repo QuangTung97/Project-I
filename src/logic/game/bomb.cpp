@@ -117,7 +117,7 @@ void Bomb::init() {
     add_component(std::move(graphics));
 
     auto sound = std::make_shared<actor::Sound>(
-        state_manager_.get_sound_manager());
+        state_manager_.get_asset_manager());
     sound->add_sound(1, "assets/plane_explode.mp3");
     add_component(std::move(sound));
 

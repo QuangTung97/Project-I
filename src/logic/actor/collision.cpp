@@ -3,10 +3,12 @@
 namespace tung {
 namespace actor {
 
+// Tìm dấu của một giá trị 
 template <typename T> int sign(T val) {
     return (T(0) < val) - (val < T(0));
 }
 
+// Kiểm tra xem điểm có nằm trong hình trong hay không 
 bool is_inside_circle(float cx, float cy, float radius, float x, float y) {
     float dx = x - cx;
     float dy = y - cy;
@@ -17,6 +19,7 @@ bool is_inside_circle(float cx, float cy, float radius, float x, float y) {
         return false;
 }
 
+// kiểm tra xem 2 hình tròn có va đập nhau hay không
 bool is_two_circle_collided(float x1, float y1, float radius1,
     float x2, float y2, float radius2)
 {
@@ -27,6 +30,7 @@ bool is_two_circle_collided(float x1, float y1, float radius1,
     return d2 < sum * sum;
 }
 
+// Kiểm tra xem 1 hình tròn với hình vuông có va đập nhau hay không 
 bool is_rectangle_circle_collided(float rx, float ry, 
     float width, float height, 
     float cx, float cy, float radius) 
@@ -53,6 +57,7 @@ bool is_rectangle_circle_collided(float rx, float ry,
     }
 }
 
+// Kiểm tra xem 2 hình chữ nhật có va đập  nhau hay không 
 bool is_two_rectangle_collided(
     float x1, float y1, float width1, float height1,
     float x2, float y2, float width2, float height2)
@@ -68,14 +73,19 @@ bool is_two_rectangle_collided(
 const ComponentId Collision::COMPONENT_ID = ComponentId::COLLISION;
 
 bool CircleCollision::is_collided(const Collision& other) {
+    // Nếu other là hình tròn 
     if (other.get_type() == Type::CIRCLE) {
+        // Down cast
         const auto& circle = dynamic_cast<const CircleCollision&>(other);
         return is_two_circle_collided(
             x_, y_, radius_,
             circle.x_, circle.y_, circle.radius_
         );
     }
+
+    // Nếu other là hình chữ nhật 
     else if (other.get_type() == Type::RECTANGLE) {
+        // down cast
         const auto& rec = dynamic_cast<const RectangleCollision&>(other);
         return is_rectangle_circle_collided(
             rec.x_, rec.y_, rec.width_, rec.height_,
@@ -86,6 +96,7 @@ bool CircleCollision::is_collided(const Collision& other) {
 }
 
 bool RectangleCollision::is_collided(const Collision& other) {
+    // Tương tự 
     if (other.get_type() == Type::CIRCLE) {
         const auto& circle = dynamic_cast<const CircleCollision&>(other);
         return is_rectangle_circle_collided(

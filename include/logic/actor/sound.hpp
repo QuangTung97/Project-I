@@ -3,7 +3,7 @@
 
 #include "component.hpp"
 #include "actor.hpp"
-#include <sound/abstract/sound.hpp>
+#include <sound/abstract/sound_asset_manager.hpp>
 #include <unordered_map>
 
 namespace tung {
@@ -13,14 +13,14 @@ namespace actor {
 class Sound: public Component {
 private:
     std::unordered_map<int, ISoundPtr> sounds_;
-    ISoundManager& manager_;
+    ISoundAssetManager& manager_;
 
 public:
     static const ComponentId COMPONENT_ID;
 
     // Constructor 
     // @manager: Manager quản lý âm thanh. 
-    Sound(ISoundManager& manager)
+    Sound(ISoundAssetManager& manager)
     : manager_{manager} {}
 
     ComponentId get_id() const override {

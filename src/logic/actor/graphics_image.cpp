@@ -11,8 +11,11 @@ GraphicsImage::GraphicsImage(float x, float y,
     float height, const std::string& filename)
 : root_{std::move(root)}
 {
+    // tạo một drawable chứa hình ảnh 
     drawable_ = factory.new_drawable(filename, height);
+    // Di chuyển nó đến tọa độ (x, y) 
     drawable_->translate({x, y, 0});
+    // Nối nó vào root 
     root_->attach_drawable(drawable_);
 }
 

@@ -61,7 +61,6 @@ private:
     AssetManager& asset_manager_;
     ImageDrawableFactory& image_drawable_factory_;
     SpriteFactory& sprite_factory_;
-    ISoundManager& sound_manager_;
 
     IDrawableManagerPtr root_drawable_;
     IDrawableManagerPtr lower_group_;
@@ -76,7 +75,6 @@ public:
     // @asset_manager: Tham chiếu đến bộ quản lý tài nguyên 
     // @image_drawable_factory: Tham chiếu đến factory sinh Image Drawable 
     // @sprite_factory: Tham chiếu đến factory sinh Sprite Drawable 
-    // @sound_manager: Tham chiếu đến bộ quản lý âm thanh 
     // @root_drawable: Gốc của cây Drawable 
     // @view_root: Gốc của cây các phần tử UI 
     Manager(IEventManager& manager, 
@@ -84,7 +82,6 @@ public:
         AssetManager& asset_manager,
         ImageDrawableFactory& image_drawable_factory,
         SpriteFactory& sprite_factory,
-        ISoundManager& sound_manager,
         IDrawableManagerPtr root_drawable,
         IViewManagerPtr view_root
     ): event_manager_{manager},
@@ -92,7 +89,6 @@ public:
         asset_manager_{asset_manager},
         image_drawable_factory_{image_drawable_factory},
         sprite_factory_{sprite_factory},
-        sound_manager_{sound_manager},
         root_drawable_{std::move(root_drawable)},
         view_root_{view_root}
     { init(); }
@@ -159,10 +155,6 @@ public:
 
     SpriteFactory& get_sprite_factory() const {
         return sprite_factory_;
-    }
-
-    ISoundManager& get_sound_manager() const {
-        return sound_manager_;
     }
 };
 

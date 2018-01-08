@@ -249,7 +249,6 @@ Root::Root() {
         *asset_manager_,
         *image_drawable_factory_,
         *sprite_factory_,
-        *sound_manager_,
         root,
         view_root_
     );

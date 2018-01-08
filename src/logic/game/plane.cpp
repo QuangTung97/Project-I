@@ -160,7 +160,7 @@ void Plane::init() {
     y_ = y_uniform(generator);
 
     auto sound = std::make_shared<actor::Sound>(
-        state_manager_.get_sound_manager());
+        state_manager_.get_asset_manager());
     // sound->add_sound(0, "assets/plane_fly.mp3");
     sound->add_sound(1, "assets/plane_explode.mp3");
     add_component(std::move(sound));
