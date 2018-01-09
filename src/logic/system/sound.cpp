@@ -8,6 +8,7 @@ namespace system {
 Sound::Sound(IEventManager& manager)
 : manager_{manager} 
 {
+    // Lắng nghe các sự kiện 
     auto actor_created = [this](const IEventData& event_) {
         auto& event = dynamic_cast<const actor::CreatedEvent&>(event_);
         auto tmp_actor = GameLogic::get().get_actor(event.get_id()).lock();

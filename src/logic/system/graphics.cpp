@@ -9,11 +9,18 @@ namespace system {
 
 Graphics::Graphics(IEventManager& event_manager)
 : event_manager_{event_manager} {
+    // Lắng nghe các sự kiện 
+    // Như actor được tạo / huỷ , ...
+    // Và gọi các hàm tương ứng 
     auto actor_created = [this](const IEventData& event_) {
         auto& event = dynamic_cast<const actor::CreatedEvent&>(event_);
+        // Tìm kiếm actor trong GameLogic
         auto tmp_actor = GameLogic::get().get_actor(event.get_id()).lock();
+        // Nếu actor có tồn tại 
         if (tmp_actor) {
+            // Down casting
             auto comp = tmp_actor->get_component<actor::GraphicsImage>().lock();
+            // Nếu component tồn tại, lưu trữ nó vào danh sách các component 
             if (comp)
                 graphics_image_components_[event.get_id()] = comp;
         }

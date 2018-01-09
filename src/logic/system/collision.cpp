@@ -10,6 +10,7 @@ namespace system {
 // Constructor 
 Collision::Collision(IEventManager& manager, ITimer& timer)
 : manager_{manager}, timer_{timer} {
+    // Lắng nghe các sự kiện 
     auto actor_created = [this](const IEventData& event) {
         const auto& data = dynamic_cast<const actor::CreatedEvent&>(event);
         auto actor = GameLogic::get().get_actor(data.get_id()).lock();

@@ -20,31 +20,38 @@ protected:
 
     void on_update(milliseconds dt) override {
         auto bullet_ptr = bullet_.lock();
+        // Nếu đạn không còn tồn tại 
         if (!bullet_ptr) {
             fail();
             return;
         }
         auto& bullet = *bullet_ptr;
 
+        // Tính toán vị trí mới của viên đạn 
         bullet.x_ += bullet.vx_ * dt.count() / 1000.0f;
         bullet.y_ += bullet.vy_ * dt.count() / 1000.0f;
 
         const float ratio = (float)GLFW::get_screen_width() / GLFW::get_screen_height();
 
+        // Kiểm tra xem viên đại có bay quá màn hình không 
         if (std::abs(bullet.x_) > ratio ||
             std::abs(bullet.y_) > 1.0f) {
+            // Nếu có, kết thúc tiến trình 
             succeed();
             return;
         }
 
+        // Gửi sự kiện di chuyển viên đạn
         actor::MoveEvent move_event{bullet.get_id(), bullet.x_, bullet.y_};
         bullet.state_manager_.get_event_manager().trigger(move_event);
     }
 
     void on_success() override {
         auto bullet_ptr = bullet_.lock();
+        // Nếu viên đạn còn tồn tại
         if (bullet_ptr) {
             auto& bullet = *bullet_ptr;
+            // Gửi sự kiện hủy nó 
             actor::DestroyEvent destroy_event{bullet.get_id()};
             bullet.state_manager_.get_event_manager().trigger(destroy_event);
         }
@@ -64,6 +71,7 @@ Bullet::Bullet(state::Manager& state_manager,
 : actor::Actor{actor::IdGenerator::new_id()},
     state_manager_{state_manager}
 {
+    // Tính toán vx, vy
     x_ = x;
     y_ = y;
     const float pi = 3.141592654;
@@ -78,6 +86,7 @@ void Bullet::init() {
 
     float radius = 0.03f;
 
+    // Tạo graphics component
     auto image = std::make_shared<actor::GraphicsImage>(
         x_, y_,
         state_manager_.get_image_factory(),
@@ -86,23 +95,29 @@ void Bullet::init() {
     );
     add_component(std::move(image));
 
+    // kiểu va đập là hình tròn 
     auto collision = std::make_shared<actor::CircleCollision>(
         x_, y_, radius
     );
     add_component(std::move(collision));
 
+    // Thêm actor vào GameLogic 
     GameLogic::get().add_actor(shared_from_this());
+    // Gửi sự kiện tạo mới actor 
     actor::CreatedEvent actor_created{get_id()};
     state_manager_.get_event_manager().trigger(actor_created);
 }
 
 void Bullet::start_fly() {
+    // Reset lại tiến trình bay 
     fly_process_->reset();
+    // Thêm nó vào danh sách tiến trình 
     state_manager_.get_process_manager()
         .attach_process(fly_process_);
 }
 
 void Bullet::end_fly() {
+    // Hủy quá trình bay 
     fly_process_->fail();
 }
 

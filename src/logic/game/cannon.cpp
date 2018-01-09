@@ -19,6 +19,7 @@ void Cannon::init() {
     const float base_height = 0.2;
     const float head_height = 0.13;
 
+    // Tạo graphics component cho nòng súng 
     auto head_image = std::make_shared<actor::GraphicsImage>(
         x, y, 
         state_manager_.get_image_factory(),
@@ -27,6 +28,7 @@ void Cannon::init() {
     );
     head->add_component(std::move(head_image));
 
+    // Tạo graphics component cho phần bệ 
     auto base_image = std::make_shared<actor::GraphicsImage>(
         x, y, 
         state_manager_.get_image_factory(),
@@ -35,15 +37,19 @@ void Cannon::init() {
     );
     base->add_component(std::move(base_image));
 
+    // Kiểu va đập hình tròn
     auto collision = std::make_shared<actor::CircleCollision>(
         x, y, base_height / 2
     );
     add_component(std::move(collision));
 
+    // Thêm actor 
     GameLogic::get().add_actor(shared_from_this());
+    // Gửi sự kiện tạo mới actor 
     actor::CreatedEvent actor_created{get_id()};
     state_manager_.get_event_manager().trigger(actor_created);
 
+    // Làm tương tự với phần đầu và phần bệ 
     GameLogic::get().add_actor(head);
     actor::CreatedEvent head_created{head_id_};
     state_manager_.get_event_manager().trigger(head_created);
@@ -52,24 +58,29 @@ void Cannon::init() {
     actor::CreatedEvent base_created{base_id_};
     state_manager_.get_event_manager().trigger(base_created);
 
+    // Xoay cho nòng súng hướng thẳng đứng
     rotate(90);
 }
 
 void Cannon::rotate(float degree) {
     head_angle_ = degree;
+    // Gửi sự kiện xoay nóng súng 
     actor::RotateEvent rotate_head{head_id_, degree};
     state_manager_.get_event_manager().trigger(rotate_head);
 }
 
 actor::ActorId Cannon::shot() {
+    // Tạo một viên đại 
     auto bullet = std::make_shared<game::Bullet>(
         state_manager_, 0, -1, head_angle_);
     bullet->init();
+    // Và cho nó di chuyển 
     bullet->start_fly();
     return bullet->get_id();
 }
 
 Cannon::~Cannon() {
+    // Gửi sự kiện hủy phần nòng súng và phần bệ 
     actor::DestroyEvent destroy_head{head_id_};
     state_manager_.get_event_manager().trigger(destroy_head);
 

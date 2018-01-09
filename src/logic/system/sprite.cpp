@@ -11,6 +11,7 @@ namespace system {
 Sprite::Sprite(IEventManager& manager) 
 : manager_{manager}
 {
+    // Lắng nghe các sự kiện 
     auto actor_created = [this](const IEventData& event_) {
         auto& event = dynamic_cast<const actor::CreatedEvent&>(event_);
 

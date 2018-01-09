@@ -10,9 +10,12 @@ GameLogic::GameLogic(IEventManager& manager)
 : manager_{manager} {
     this_ = this;
 
+    // Lắng nghe sự kiện hủy actor 
     auto listener = [this](const IEventData& event) {
         const auto& data = dynamic_cast<const actor::DestroyEvent&>(event);
+        // Tìm actor trong từ điển các actor 
         auto it = actors_.find(data.get_id());
+        // Xóa nó nếu tìm thấy 
         if (it != actors_.end())
             actors_.erase(it);
     };

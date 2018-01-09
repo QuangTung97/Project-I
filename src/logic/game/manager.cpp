@@ -10,13 +10,18 @@ namespace state {
 EventType<2322> STATE_MAKE_TRANSITION;
 
 void Manager::init() {
+    // Lắng nghe sự kiện chuyển đổi trạng thái  
     auto make_transition = [this](const IEventData& event_) {
         auto& event = dynamic_cast<const MakeTransition&>(event_);
         make_transition_to(event.get_state());
     };
     transition_listener_ = make_transition;
+    // Thêm nó vào event manager
     event_manager_.add_listener(STATE_MAKE_TRANSITION, transition_listener_);
 
+    // Chia màn hình thành 3 nhóm 
+    // Nhóm ở trong cùng, 
+    // nhóm ở giữa và nhóm ngoài cùng 
     auto lower_group = std::make_shared<DrawableGroup>();
     auto middle_group = std::make_shared<DrawableGroup>();
     auto upper_group = std::make_shared<DrawableGroup>();
@@ -27,15 +32,18 @@ void Manager::init() {
     middle_group_ = middle_group;
     upper_group_ = upper_group;
 
+    // Khởi tạo các trạng thái 
     start_ = std::make_unique<StartState>(*this);
     playing_ = std::make_unique<PlayingState>(*this);
     end_ = std::make_unique<EndState>(*this);
 
+    // Gọi hàm entry của trạng thái đầu tiên 
     current_ = start_.get();
     current_->entry();
 }
 
 void Manager::make_transition_to(GameState& state) {
+    // Gọi exit của trạng thái trước và entry của trạng thái sau 
     current_->exit();
     state.entry();
     current_ = &state;
@@ -52,7 +60,9 @@ bool Manager::on_key_event(const KeyEvent& event) {
 }
 
 Manager::~Manager() {
+    // Gọi exit của trạng thái cuối cùng 
     current_->exit();
+    // Xóa listener
     event_manager_.remove_listener(STATE_MAKE_TRANSITION, transition_listener_);
 }
 
